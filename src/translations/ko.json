@@ -1,0 +1,69 @@
+{
+  "welcome": {
+    "title": "Z에 오신 것을 환영합니다",
+    "tagline": "빠르고 가벼운 에디터",
+    "getStarted": "시작하기",
+    "newProject": "새 프로젝트",
+    "openProject": "프로젝트 열기",
+    "cloneRepository": "저장소 복제",
+    "version": "Z",
+    "loading": "로딩중..."
+  },
+  "editor": {
+    "explorer": "파일 탐색기가 여기에 표시됩니다",
+    "container": "메인 컨테이너가 여기에 표시됩니다"
+  },
+  "git": {
+    "clone": {
+      "modalTitle": "저장소 복제",
+      "repoUrl": "저장소 URL",
+      "repoUrlPlaceholder": "https://github.com/username/repository.git",
+      "directory": "디렉토리 이름 (선택사항)",
+      "directoryPlaceholder": "내-프로젝트",
+      "cloneButton": "저장소 복제",
+      "cloningButton": "복제 중...",
+      "cancel": "취소",
+      "progress": "복제 진행 상황",
+      "urlError": "유효한 Git 저장소 URL을 입력해주세요",
+      "genericError": "저장소 복제에 실패했습니다",
+      "success": "저장소가 성공적으로 복제되었습니다"
+    }
+  },
+  "analytics": {
+    "title": "분석",
+    "modalTitle": "Z 개선에 도움 주기",
+    "modalIntro": "기능 및 안정성 향상을 위해 익명 데이터를 수집합니다. 공유할 항목을 선택할 수 있습니다:",
+    "basicInfo": "기본 정보",
+    "basicDescription": "Z 버전, 빌드 코드, OS 정보, 사용 빈도",
+    "systemInfo": "시스템 정보",
+    "systemDescription": "화면 해상도, 프로세서 아키텍처",
+    "privacy": "개인 데이터나 파일 내용은 절대 수집하지 않습니다.",
+    "dataPreview": "데이터 미리보기",
+    "dataPreviewDescription": "허용된 데이터만 전송됩니다. 비활성화된 항목(취소선)은 제외됩니다.",
+    "appVersion": "앱 버전:",
+    "buildCode": "빌드 코드:",
+    "platform": "플랫폼:",
+    "os": "운영 체제:",
+    "architecture": "아키텍처:",
+    "resolution": "해상도:",
+    "disableAll": "모두 비활성화",
+    "save": "저장",
+    "analyticsDisabled": "분석이 비활성화되었습니다. 데이터가 전송되지 않습니다",
+    "onlyBasic": "기본 정보만 전송됩니다",
+    "analyticsEnabled": "분석이 활성화되었습니다. Z 개선에 도움을 주셔서 감사합니다"
+  },
+  "language": {
+    "title": "언어",
+    "en": "영어",
+    "ru": "러시아어",
+    "fr": "프랑스어",
+    "de": "독일어",
+    "es": "스페인어",
+    "it": "이탈리아어",
+    "zh": "중국어",
+    "ja": "일본어",
+    "pt": "포르투갈어",
+    "ko": "한국어",
+    "ar": "아랍어"
+  }
+} 

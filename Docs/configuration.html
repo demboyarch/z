@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuration - Z Documentation</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/z-logo.svg">
+  <link rel="stylesheet" href="assets/css/docs.css">
+  <meta name="description" content="Configuration guide for Z editor">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <img src="assets/images/z-logo.svg" alt="Z Logo">
+      <span>Z Documentation</span>
+    </div>
+    <div class="header-actions">
+      <div class="sidebar-toggle" id="sidebar-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </div>
+      <a href="https://github.com/z-editor/z" class="header-button" target="_blank">GitHub</a>
+      <div class="theme-toggle" id="theme-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main container -->
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-heading">Getting Started</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a href="index.html" class="sidebar-nav-link">Introduction</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="installation.html" class="sidebar-nav-link">Installation</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="quick-start.html" class="sidebar-nav-link">Quick Start</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-heading">Features</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a href="z-rosetta.html" class="sidebar-nav-link">Z-Rosetta (Multilingual)</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-heading">Reference</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a href="api.html" class="sidebar-nav-link">API Reference</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="configuration.html" class="sidebar-nav-link">Configuration</a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main content -->
+    <main class="content">
+      <h1>Configuration</h1>
+      
+      <p>Z offers various ways to customize your editing experience. This guide covers the available configuration options and how to apply them.</p>
+      
+      <h2>Settings Files</h2>
+      
+      <p>Z uses the following JSON configuration files:</p>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Purpose</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>settings.json</code></td>
+            <td>User preferences including language, theme, and editor behavior</td>
+            <td>
+              <code>%AppData%\Local\Z\</code> (Windows)<br>
+              <code>~/.local/share/Z/</code> (Linux)<br>
+              <code>~/Library/Application Support/Z/</code> (macOS)
+            </td>
+          </tr>
+          <tr>
+            <td><code>keybindings.json</code></td>
+            <td>Custom keyboard shortcuts</td>
+            <td>Same as <code>settings.json</code></td>
+          </tr>
+          <tr>
+            <td><code>analytics-settings.json</code></td>
+            <td>Anonymous usage data collection preferences</td>
+            <td>Same as <code>settings.json</code></td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <div class="note">
+        <strong>Note:</strong> The configuration files are automatically created with default values when they don't exist.
+      </div>
+      
+      <h2>Editor Settings</h2>
+      
+      <p>The <code>settings.json</code> file allows you to customize various aspects of Z. Here are the available options:</p>
+      
+      <h3>Interface Preferences</h3>
+      
+      <pre><code>{
+  "ui": {
+    "theme": "light", // "light" or "dark"
+    "fontSize": 14,
+    "fontFamily": "SF Mono, Monaco, Consolas, monospace",
+    "lineHeight": 1.5,
+    "showLineNumbers": true,
+    "showIndentGuides": true,
+    "showWhitespace": false,
+    "minimap": {
+      "enabled": true,
+      "size": "proportional" // "proportional" or "fixed"
+    }
+  }
+}</code></pre>
+      
+      <h3>Editor Behavior</h3>
+      
+      <pre><code>{
+  "editor": {
+    "tabSize": 2,
+    "insertSpaces": true,
+    "wordWrap": "off", // "off", "on", "wordWrapColumn", "bounded"
+    "wordWrapColumn": 80,
+    "autoIndent": "full", // "none", "keep", "full"
+    "formatOnSave": false,
+    "formatOnPaste": false,
+    "trimTrailingWhitespace": true,
+    "insertFinalNewline": true
+  }
+}</code></pre>
+      
+      <h3>Language Preferences</h3>
+      
+      <pre><code>{
+  "language": "en", // Language code (e.g., "en", "ru")
+  "languageSpecific": {
+    "javascript": {
+      "tabSize": 2,
+      "formatOnSave": true
+    },
+    "python": {
+      "tabSize": 4,
+      "insertSpaces": true
+    }
+  }
+}</code></pre>
+      
+      <h3>File Associations</h3>
+      
+      <pre><code>{
+  "files": {
+    "associations": {
+      "*.jsx": "javascriptreact",
+      "*.ts": "typescript",
+      "*.mdx": "markdown"
+    },
+    "exclude": {
+      "**/.git": true,
+      "**/.DS_Store": true,
+      "**/node_modules": true,
+      "**/.vscode": true
+    },
+    "encoding": "utf8",
+    "eol": "\n" // "\n" for LF, "\r\n" for CRLF
+  }
+}</code></pre>
+      
+      <h2>Keyboard Shortcuts</h2>
+      
+      <p>You can customize keyboard shortcuts in the <code>keybindings.json</code> file:</p>
+      
+      <pre><code>[
+  {
+    "key": "ctrl+shift+f",
+    "command": "workbench.action.findInFiles"
+  },
+  {
+    "key": "ctrl+`",
+    "command": "workbench.action.terminal.toggleTerminal"
+  },
+  {
+    "key": "alt+z",
+    "command": "editor.action.toggleWordWrap"
+  }
+]</code></pre>
+      
+      <p>Each keybinding has the following properties:</p>
+      
+      <ul>
+        <li><code>key</code>: The key combination (e.g., <code>ctrl+shift+f</code>)</li>
+        <li><code>command</code>: The command ID to execute</li>
+        <li><code>when</code> (optional): Context when the keybinding is active</li>
+      </ul>
+      
+      <h3>Key Modifiers</h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Modifier</th>
+            <th>Windows/Linux</th>
+            <th>macOS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>ctrl</code></td>
+            <td>Control key</td>
+            <td>Control key</td>
+          </tr>
+          <tr>
+            <td><code>shift</code></td>
+            <td>Shift key</td>
+            <td>Shift key</td>
+          </tr>
+          <tr>
+            <td><code>alt</code></td>
+            <td>Alt key</td>
+            <td>Option key</td>
+          </tr>
+          <tr>
+            <td><code>cmd</code></td>
+            <td>Windows key</td>
+            <td>Command key</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <h2>Analytics Settings</h2>
+      
+      <p>Z can collect anonymous usage data to help improve the editor. You can control this through the <code>analytics-settings.json</code> file:</p>
+      
+      <pre><code>{
+  "basicAnalytics": true, // Basic usage data (version, OS, features used)
+  "systemAnalytics": false // System information (screen resolution, architecture)
+}</code></pre>
+      
+      <div class="note">
+        <strong>Privacy Note:</strong> Z never collects personal information or file contents.
+      </div>
+      
+      <h2>Z-Rosetta Language Settings</h2>
+      
+      <p>As described in the <a href="z-rosetta.html">Z-Rosetta documentation</a>, language preferences are stored in the main <code>settings.json</code> file:</p>
+      
+      <pre><code>{
+  "language": "en" // Language code (e.g., "en", "ru")
+}</code></pre>
+      
+      <h2>Project-Specific Settings</h2>
+      
+      <p>Z also supports project-specific settings through a <code>.z/settings.json</code> file in the project root. Settings in this file override the global settings, but only for that specific project.</p>
+      
+      <p>Example project settings:</p>
+      
+      <pre><code>{
+  "editor": {
+    "tabSize": 4,
+    "insertSpaces": true,
+    "formatOnSave": true
+  },
+  "files": {
+    "exclude": {
+      "**/build": true,
+      "**/dist": true
+    }
+  }
+}</code></pre>
+      
+      <h2>Configuration UI</h2>
+      
+      <p>While you can edit the JSON files directly, Z also provides a settings UI:</p>
+      
+      <ol>
+        <li>Open Z and click on the settings gear icon in the status bar</li>
+        <li>Navigate through the categories in the settings panel</li>
+        <li>Changes are saved automatically</li>
+      </ol>
+      
+      <div class="warning">
+        <strong>Note:</strong> Some advanced settings are only available through the JSON files.
+      </div>
+      
+      <h2>Resetting to Defaults</h2>
+      
+      <p>To reset Z to default settings:</p>
+      
+      <ol>
+        <li>Close Z</li>
+        <li>Delete or rename the configuration files</li>
+        <li>Restart Z (new default configuration files will be created)</li>
+      </ol>
+      
+      <h2>Future Configuration Options</h2>
+      
+      <p>Z is actively developing additional configuration options in the following areas:</p>
+      
+      <ul>
+        <li>Git integration preferences</li>
+        <li>Extension management</li>
+        <li>Debugger settings</li>
+        <li>Terminal customization</li>
+        <li>Snippet management</li>
+      </ul>
+      
+      <p>Check back regularly for updates to the configuration documentation as these features are implemented.</p>
+    </main>
+  </div>
+
+  <script src="assets/js/docs.js"></script>
+</body>
+</html> 

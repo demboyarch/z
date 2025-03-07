@@ -1,0 +1,338 @@
+/* Минималистичный и профессиональный дизайн документации */
+:root {
+  /* Основные цвета */
+  --bg-color: #ffffff;
+  --bg-sidebar: #f8f9fa;
+  --text-primary: #212529;
+  --text-secondary: #495057;
+  --text-muted: #6c757d;
+  --accent-color: #0d6efd;
+  --accent-hover: #0b5ed7;
+  --border-color: #dee2e6;
+  --header-height: 60px;
+  --sidebar-width: 280px;
+  
+  /* Радиусы и тени */
+  --border-radius: 4px;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Базовые стили */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Типографика */
+h1, h2, h3, h4 {
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  line-height: 1.3;
+}
+
+h1 {
+  font-size: 2.25rem;
+  margin-top: 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+h2 {
+  font-size: 1.75rem;
+  margin-top: 2.5rem;
+  padding-top: 0.5rem;
+}
+
+h3 {
+  font-size: 1.4rem;
+  margin-top: 2rem;
+}
+
+p {
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+code {
+  font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9em;
+  background-color: #f8f9fa;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  color: #d63384;
+}
+
+pre {
+  background-color: #f8f9fa;
+  padding: 1.25rem;
+  border-radius: var(--border-radius);
+  overflow-x: auto;
+  margin-bottom: 1.75rem;
+  border: 1px solid var(--border-color);
+}
+
+pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+  display: block;
+  line-height: 1.6;
+}
+
+ul, ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.75rem;
+}
+
+li {
+  margin-bottom: 0.5rem;
+}
+
+/* Контейнер */
+.container {
+  display: flex;
+  min-height: 100vh;
+  padding-top: var(--header-height);
+}
+
+/* Шапка */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background-color: var(--bg-color);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.5rem;
+  z-index: 1000;
+  box-shadow: var(--shadow-sm);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.logo img {
+  height: 32px;
+  width: auto;
+  margin-right: 0.75rem;
+}
+
+.github-link a {
+  font-weight: 500;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s;
+}
+
+.github-link a:hover {
+  background-color: var(--bg-sidebar);
+  border-color: var(--text-muted);
+  text-decoration: none;
+}
+
+/* Боковое меню */
+.sidebar {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-color);
+  overflow-y: auto;
+  padding: 1.5rem 0;
+  z-index: 900;
+}
+
+.sidebar-heading {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 0 1.5rem;
+  margin: 1.5rem 0 0.75rem;
+}
+
+.sidebar-nav {
+  list-style: none;
+  padding-left: 0;
+}
+
+.sidebar-nav li {
+  margin-bottom: 0;
+}
+
+.sidebar-nav-link {
+  display: block;
+  padding: 0.5rem 1.5rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  border-left: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.sidebar-nav-link.active {
+  font-weight: 600;
+  color: var(--accent-color);
+  background-color: rgba(13, 110, 253, 0.05);
+  border-left-color: var(--accent-color);
+}
+
+.sidebar-nav-link:hover {
+  color: var(--accent-color);
+  background-color: rgba(13, 110, 253, 0.03);
+  text-decoration: none;
+}
+
+/* Основной контент */
+.content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 2.5rem 3rem;
+  max-width: 900px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Блоки примечаний */
+.note, .warning {
+  padding: 1.25rem;
+  margin-bottom: 1.75rem;
+  border-left: 4px solid;
+  border-radius: var(--border-radius);
+}
+
+.note {
+  background-color: rgba(13, 110, 253, 0.05);
+  border-left-color: var(--accent-color);
+}
+
+.warning {
+  background-color: #fff3cd;
+  border-left-color: #ffc107;
+}
+
+.note strong, .warning strong {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Таблицы */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.75rem;
+  font-size: 0.95rem;
+}
+
+th, td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+th {
+  font-weight: 600;
+  background-color: var(--bg-sidebar);
+}
+
+tr:hover {
+  background-color: rgba(0, 0, 0, 0.01);
+}
+
+/* Мобильная версия */
+.sidebar-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 240px;
+  }
+  
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    box-shadow: none;
+  }
+  
+  .sidebar.active {
+    transform: translateX(0);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .content {
+    margin-left: 0;
+    padding: 1.5rem;
+  }
+  
+  .header {
+    padding: 0 1rem;
+  }
+  
+  .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  h1 {
+    font-size: 1.75rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+  }
+  
+  .github-link a {
+    font-size: 0.9rem;
+    padding: 0.3rem 0.6rem;
+  }
+  
+  pre, code {
+    font-size: 0.85rem;
+  }
+} 

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Z Documentation</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/z-logo.svg">
+  <link rel="stylesheet" href="assets/css/docs.css">
+  <meta name="description" content="Official documentation for Z, a lightweight, fast code editor">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <button class="sidebar-toggle" id="sidebar-toggle">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+    <div class="logo">
+      <img src="assets/images/z-logo.svg" alt="Z Logo">
+      <span>Z Documentation</span>
+    </div>
+    
+    <div class="github-link">
+      <a href="https://github.com/z-editor/z" target="_blank">GitHub</a>
+    </div>
+  </header>
+
+  <!-- Main container -->
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-heading">Getting Started</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html" class="sidebar-nav-link active">Introduction</a></li>
+        <li><a href="installation.html" class="sidebar-nav-link">Installation</a></li>
+        <li><a href="quick-start.html" class="sidebar-nav-link">Quick Start</a></li>
+      </ul>
+
+      <div class="sidebar-heading">Features</div>
+      <ul class="sidebar-nav">
+        <li><a href="z-rosetta.html" class="sidebar-nav-link">Z-Rosetta</a></li>
+      </ul>
+
+      <div class="sidebar-heading">Reference</div>
+      <ul class="sidebar-nav">
+        <li><a href="api.html" class="sidebar-nav-link">API Reference</a></li>
+        <li><a href="configuration.html" class="sidebar-nav-link">Configuration</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main content -->
+    <main class="content">
+      <h1>Z Documentation</h1>
+      
+      <p>Welcome to the official documentation for <strong>Z</strong>, a lightweight, fast code editor designed for efficient coding and development workflows.</p>
+      
+      <h2>About Z</h2>
+      <p>Z is a modern code editor built for speed and simplicity. It combines a clean interface with powerful features to enhance your coding experience.</p>
+      
+      <div class="note">
+        <strong>Note:</strong> Z is currently in active development. While the core functionality is stable, you may encounter occasional bugs or incomplete features.
+      </div>
+      
+      <h2>Key Features</h2>
+      
+      <ul>
+        <li><strong>Lightweight:</strong> Small install size with fast startup times</li>
+        <li><strong>Z-Rosetta:</strong> Built-in multilingual support</li>
+        <li><strong>Modern Interface:</strong> Clean, distraction-free coding environment</li>
+        <li><strong>Performance:</strong> Optimized for speed, even with large files</li>
+      </ul>
+      
+      <h2>Getting Started</h2>
+      
+      <p>Ready to get started with Z? Follow these guides:</p>
+      
+      <ul>
+        <li><a href="installation.html">Installation Guide</a> - Install Z on your system</li>
+        <li><a href="quick-start.html">Quick Start Guide</a> - Learn the basics of Z</li>
+        <li><a href="z-rosetta.html">Z-Rosetta</a> - Work with Z in multiple languages</li>
+      </ul>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebar = document.querySelector('.sidebar');
+      
+      sidebarToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+      });
+      
+      document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 768 && 
+            sidebar.classList.contains('active') && 
+            !sidebar.contains(event.target) && 
+            !sidebarToggle.contains(event.target)) {
+          sidebar.classList.remove('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html> 

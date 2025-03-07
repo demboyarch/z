@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Z-Rosetta - Z Documentation</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/z-logo.svg">
+  <link rel="stylesheet" href="assets/css/docs.css">
+  <meta name="description" content="Z-Rosetta multilingual support documentation for Z editor">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <button class="sidebar-toggle" id="sidebar-toggle">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+    <div class="logo">
+      <img src="assets/images/z-logo.svg" alt="Z Logo">
+      <span>Z Documentation</span>
+    </div>
+    
+    <div class="github-link">
+      <a href="https://github.com/z-editor/z" target="_blank">GitHub</a>
+    </div>
+  </header>
+
+  <!-- Main container -->
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-heading">Getting Started</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html" class="sidebar-nav-link">Introduction</a></li>
+        <li><a href="installation.html" class="sidebar-nav-link">Installation</a></li>
+        <li><a href="quick-start.html" class="sidebar-nav-link">Quick Start</a></li>
+      </ul>
+
+      <div class="sidebar-heading">Features</div>
+      <ul class="sidebar-nav">
+        <li><a href="z-rosetta.html" class="sidebar-nav-link active">Z-Rosetta</a></li>
+      </ul>
+
+      <div class="sidebar-heading">Reference</div>
+      <ul class="sidebar-nav">
+        <li><a href="api.html" class="sidebar-nav-link">API Reference</a></li>
+        <li><a href="configuration.html" class="sidebar-nav-link">Configuration</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main content -->
+    <main class="content">
+      <h1>Z-Rosetta: Multilingual Support</h1>
+      
+      <p>Z-Rosetta is Z's built-in internationalization system that allows the editor interface to be displayed in multiple languages. This document explains how Z-Rosetta works, how to use it, and how developers can add support for new languages.</p>
+      
+      <div class="note">
+        <strong>Note:</strong> Z-Rosetta automatically stores language preferences in <code>%AppData%\Local\Z\settings.json</code> on Windows, <code>~/.local/share/Z/settings.json</code> on Linux, and <code>~/Library/Application Support/Z/settings.json</code> on macOS.
+      </div>
+      
+      <h2>Using Z-Rosetta as a User</h2>
+      
+      <h3>Changing the Language</h3>
+      <p>You can change the language of the Z interface through the language selector located in the welcome screen:</p>
+      
+      <ol>
+        <li>Open Z to see the welcome screen</li>
+        <li>Find the language selector dropdown in the bottom panel</li>
+        <li>Select your preferred language from the dropdown</li>
+        <li>The interface will immediately update to show text in the selected language</li>
+      </ol>
+      
+      <p>Your language preference is automatically saved and will be remembered the next time you start Z.</p>
+      
+      <h3>Currently Supported Languages</h3>
+      <p>Z-Rosetta currently supports the following languages:</p>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Language</th>
+            <th>Code</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>English</td>
+            <td><code>en</code></td>
+            <td>Complete</td>
+          </tr>
+          <tr>
+            <td>Russian</td>
+            <td><code>ru</code></td>
+            <td>Complete</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <h2>Technical Overview</h2>
+      
+      <h3>Architecture</h3>
+      <p>Z-Rosetta is built with a two-part architecture:</p>
+      
+      <ul>
+        <li><strong>Backend (Main Process)</strong>: Handles loading, storing, and managing language settings</li>
+        <li><strong>Frontend (Renderer Process)</strong>: Renders UI elements in the selected language</li>
+      </ul>
+      
+      <p>Language translations are stored as JSON files in the <code>src/translations</code> directory, with each language having its own file (e.g., <code>en.json</code>, <code>ru.json</code>).</p>
+      
+      <h3>Translation Files Structure</h3>
+      <p>Each translation file is a hierarchical JSON object organized by feature areas. For example:</p>
+      
+      <pre><code>{
+  "welcome": {
+    "title": "Welcome to Z",
+    "tagline": "Fast, lightweight editor for you",
+    "getStarted": "Get Started",
+    "newProject": "New Project"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "modalTitle": "Help improve Z"
+  }
+}</code></pre>
+      
+      <h2>Developer Guide: Using Z-Rosetta</h2>
+      
+      <h3>Adding Translatable Elements</h3>
+      <p>To make an HTML element translatable, add the <code>data-z-rosetta</code> attribute with a translation key:</p>
+      
+      <pre><code>&lt;h1 data-z-rosetta="welcome.title"&gt;Welcome to Z&lt;/h1&gt;
+&lt;p data-z-rosetta="welcome.tagline"&gt;Fast, lightweight editor for you&lt;/p&gt;</code></pre>
+      
+      <p>When the page loads, Z-Rosetta will replace the content with the translation corresponding to the current language.</p>
+      
+      <h3>Translation Key Format</h3>
+      <p>Translation keys use dot notation to navigate the JSON structure:</p>
+      
+      <ul>
+        <li><code>welcome.title</code> refers to the "title" property under the "welcome" object</li>
+        <li><code>analytics.modalTitle</code> refers to the "modalTitle" property under the "analytics" object</li>
+      </ul>
+      
+      <h3>Handling Dynamic Content</h3>
+      <p>For dynamic content that needs translation, you can use the Z-Rosetta API directly in JavaScript:</p>
+      
+      <pre><code>// Get a translation
+const translatedText = window.zRosettaClient.translate('welcome.newProject');
+
+// Show a translated message
+showToastMessage('analytics.analyticsEnabled', 'success');</code></pre>
+      
+      <h3>Adding a New Language</h3>
+      <p>To add support for a new language:</p>
+      
+      <ol>
+        <li>Create a new JSON file in the <code>src/translations</code> directory (e.g., <code>fr.json</code> for French)</li>
+        <li>Copy the structure from <code>en.json</code> and translate all values (keep the keys the same)</li>
+        <li>Add the new language code to the <code>availableLanguages</code> array in <code>src/translations/z-rosetta.js</code></li>
+      </ol>
+      
+      <div class="warning">
+        <strong>Important:</strong> Always maintain the same JSON structure across all language files. Missing keys will fall back to showing the key name instead of a translation.
+      </div>
+      
+      <h2>API Methods</h2>
+      <p>The Z-Rosetta client API provides these methods:</p>
+      
+      <pre><code>// Initialize the translation system
+window.zRosettaClient.initialize();
+
+// Get a translation
+window.zRosettaClient.translate('welcome.title');
+
+// Change the language
+window.zRosettaClient.setLanguage('ru');
+
+// Create a language selector UI
+window.zRosettaClient.createLanguageSelector('container-id');
+
+// Update all translatable elements on the page
+window.zRosettaClient.updatePageContent();</code></pre>
+      
+      <h2>Future Improvements</h2>
+      <p>The Z-Rosetta system is planned to receive these improvements in future releases:</p>
+      
+      <ul>
+        <li><strong>More Languages</strong>: Adding support for additional languages</li>
+        <li><strong>Pluralization</strong>: Better handling of plural forms for different languages</li>
+        <li><strong>RTL Support</strong>: Proper support for right-to-left languages</li>
+        <li><strong>Community Translations</strong>: A system for community members to contribute translations</li>
+      </ul>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebar = document.querySelector('.sidebar');
+      
+      sidebarToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+      });
+      
+      document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 768 && 
+            sidebar.classList.contains('active') && 
+            !sidebar.contains(event.target) && 
+            !sidebarToggle.contains(event.target)) {
+          sidebar.classList.remove('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html> 

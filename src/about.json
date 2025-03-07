@@ -1,0 +1,19 @@
+{
+  "version": "0.1.0",
+  "channel": "dev",
+  "fullVersion": "0.1.0-dev",
+  "buildCode": "0.1.0-dev+win64.20250305.49ypxq",
+  "buildDate": "2025-03-05",
+  "os": {
+    "windows": true,
+    "macos": false,
+    "linux": false
+  },
+  "currentOS": "Windows",
+  "architecture": "x64",
+  "contributors": [
+    "Z Team"
+  ],
+  "repository": "https://github.com/z-editor/z",
+  "license": "MIT"
+}

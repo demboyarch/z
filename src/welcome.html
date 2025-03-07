@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z</title>
+    <!-- Add z-rosetta client script -->
+    <script src="translations/z-rosetta-client.js"></script>
+    <style>
+        :root {
+            /* Core colors */
+            --bg-color: #fafafa;
+            --surface-color: #ffffff;
+            --primary-color: #161616;
+            --accent-color: #1A73E8;
+            --muted-color: rgba(0, 0, 0, 0.64);
+            --subtle-color: rgba(0, 0, 0, 0.38);
+            --border-color: rgba(0, 0, 0, 0.12);
+            --divider-color: rgba(0, 0, 0, 0.08);
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.05);
+            
+            /* Dimensions */
+            --header-height: 38px;
+            --border-radius: 6px;
+            
+            /* Animation */
+            --transition-fast: 120ms ease;
+
+            /* Action buttons */
+            --action-button-bg: rgba(0, 0, 0, 0.04);
+            --action-button-hover-bg: rgba(0, 0, 0, 0.06);
+            --action-button-active-bg: rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            font-size: 14px;
+            line-height: 1.5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Title bar */
+        .titlebar {
+            height: var(--header-height);
+            background-color: var(--surface-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            -webkit-app-region: drag;
+            border-bottom: 1px solid var(--divider-color);
+            z-index: 100;
+        }
+
+        .window-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--muted-color);
+        }
+
+        .window-controls {
+            display: flex;
+            -webkit-app-region: no-drag;
+        }
+
+        .window-control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+
+        .control-close {
+            background-color: #F44336;
+        }
+
+        .control-minimize {
+            background-color: #FFEB3B;
+        }
+
+        .control-maximize {
+            background-color: #4CAF50;
+        }
+
+        /* Main content */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            overflow-y: auto;
+        }
+
+        .welcome-container {
+            max-width: 580px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo {
+            width: 72px;
+            height: 72px;
+            margin-bottom: 24px;
+            animation: subtle-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes subtle-pop {
+            0% {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .welcome-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .welcome-tagline {
+            font-size: 16px;
+            color: var(--muted-color);
+            margin-bottom: 0;
+        }
+
+        /* Action buttons - Zed Editor Style */
+        .action-buttons-container {
+            margin-top: 36px;
+            width: 100%;
+            max-width: 600px;
+            animation: fade-slide-up 0.4s ease-out;
+            animation-fill-mode: both;
+            animation-delay: 0.1s;
+        }
+
+        .actions-heading {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--muted-color);
+            margin-bottom: 16px;
+            text-align: left;
+            padding-left: 4px;
+            letter-spacing: 0.01em;
+        }
+
+        /* Add spinner animation */
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .spinner {
+            animation: spin 1.2s linear infinite;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: flex-start;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .action-button {
+            background-color: var(--action-button-bg);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 180ms cubic-bezier(0.33, 1, 0.68, 1);
+            display: flex;
+            align-items: center;
+            flex: 1;
+            min-width: 180px;
+            max-width: 190px;
+            color: var(--primary-color);
+            box-shadow: none;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(4px);
+        }
+
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                        rgba(255, 255, 255, 0.1) 0%, 
+                        rgba(255, 255, 255, 0.05) 50%, 
+                        rgba(0, 0, 0, 0.02) 100%);
+            opacity: 0;
+            transition: opacity 200ms ease, transform 200ms ease;
+            transform: translateY(4px);
+        }
+
+        .action-button:hover {
+            background-color: var(--action-button-hover-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .action-button:hover::before {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .action-button:active {
+            transform: translateY(0);
+            background-color: var(--action-button-active-bg);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition-duration: 100ms;
+        }
+
+        .action-button svg {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            color: var(--accent-color);
+            transition: transform 180ms ease;
+        }
+
+        .action-button:hover svg {
+            transform: scale(1.1);
+        }
+
+        .action-button-text {
+            font-weight: 500;
+            font-size: 14px;
+            letter-spacing: 0.01em;
+        }
+
+        /* Version info */
+        .version-info {
+            position: absolute;
+            bottom: 16px;
+            font-size: 12px;
+            color: var(--subtle-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .build-code {
+            margin-left: 4px;
+        }
+        
+        /* Analytics toggle */
+        .analytics-toggle {
+            margin-left: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 2px 6px;
+            border-radius: 12px;
+            transition: all var(--transition-fast);
+            font-size: 12px;
+        }
+        
+        .analytics-toggle:hover {
+            background-color: var(--divider-color);
+        }
+        
+        .analytics-toggle svg {
+            width: 14px;
+            height: 14px;
+            margin-right: 4px;
+            color: var(--muted-color);
+        }
+        
+        /* Analytics modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .modal-content {
+            background-color: var(--surface-color);
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16);
+            width: 580px;
+            max-width: 95%;
+            padding: 0;
+            transform: translateY(10px) scale(0.98);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            background-color: var(--accent-color);
+            color: white;
+            margin-bottom: 0;
+        }
+        
+        .modal-header svg {
+            width: 20px;
+            height: 20px;
+            color: white;
+            margin-right: 12px;
+        }
+        
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: white;
+        }
+        
+        .modal-body {
+            margin-bottom: 0;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+        
+        .modal-column {
+            flex: 1 1 50%;
+            min-width: 250px;
+            padding: 20px;
+        }
+        
+        .modal-intro {
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 10px 20px;
+            border-top: 1px solid var(--divider-color);
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        /* Improved checkbox options */
+        .analytics-options-container {
+            margin-bottom: 16px;
+        }
+        
+        .analytics-option {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease-in-out;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        
+        .analytics-option:hover {
+            background-color: var(--divider-color);
+        }
+        
+        .analytics-option.active {
+            border-color: var(--accent-color);
+            background-color: rgba(26, 115, 232, 0.05);
+        }
+        
+        /* Improved toast style */
+        .toast-message {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(33, 33, 33, 0.95);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            max-width: 90%;
+        }
+        
+        .toast-message.success {
+            background-color: rgba(46, 125, 50, 0.95);
+        }
+        
+        .toast-message.warning {
+            background-color: rgba(245, 124, 0, 0.95);
+        }
+        
+        .toast-message.error {
+            background-color: rgba(211, 47, 47, 0.95);
+        }
+        
+        .toast-message svg {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        
+        .toast-message.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .toast-message.hidden {
+            opacity: 0;
+            transform: translateX(-50%) translateY(10px);
+        }
+
+        /* Additional styles for data preview */
+        .analytics-preview {
+            background-color: rgba(0,0,0,0.03);
+            border-radius: var(--border-radius);
+            padding: 12px;
+            margin-top: 10px;
+            overflow-y: auto;
+            max-height: 120px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .analytics-preview h4 {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--muted-color);
+        }
+        
+        .analytics-preview-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+            gap: 6px 12px;
+        }
+        
+        .preview-item {
+            margin-bottom: 6px;
+            position: relative;
+            transition: opacity 0.3s ease, color 0.3s ease;
+        }
+        
+        .preview-label {
+            display: block;
+            font-size: 11px;
+            color: var(--subtle-color);
+            margin-bottom: 1px;
+        }
+        
+        .preview-value {
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--primary-color);
+        }
+        
+        .preview-item.disabled {
+            opacity: 0.3;
+            text-decoration: line-through;
+            color: var(--subtle-color);
+        }
+        
+        .preview-item.disabled:after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background-color: var(--subtle-color);
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.3;
+        }
+        
+        /* Animation for checkboxes and analytics options */
+        .analytics-option {
+            transition: all 0.3s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .analytics-option:after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--accent-color);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .analytics-option.active:after {
+            opacity: 0.05;
+        }
+        
+        .analytics-checkbox {
+            margin-right: 12px;
+            margin-top: 3px;
+            accent-color: var(--accent-color);
+            width: 16px;
+            height: 16px;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+        
+        .analytics-checkbox:checked {
+            transform: scale(1.2);
+        }
+        
+        /* Animated transitions for preview items */
+        .preview-basic, .preview-system {
+            transition: all 0.3s ease;
+        }
+        
+        .modal-button {
+            padding: 6px 16px;
+            border-radius: var(--border-radius);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: none;
+            outline: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .modal-button:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        
+        .modal-button:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            20% {
+                transform: scale(25, 25);
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(40, 40);
+            }
+        }
+        
+        .modal-button-secondary {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--muted-color);
+        }
+        
+        .modal-button-secondary:hover {
+            background-color: var(--divider-color);
+            color: var(--primary-color);
+        }
+        
+        .modal-button-primary {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .modal-button-primary:hover {
+            background-color: #0d64c9;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .analytics-label h4 {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+        
+        .analytics-label p {
+            font-size: 12px;
+            color: var(--muted-color);
+            margin: 0;
+        }
+
+        /* Add this animation for a nicer page load experience */
+        @keyframes fade-slide-up {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Add these styles for the hover indicator */
+        .action-button::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transform: translateX(-50%);
+            transition: width 200ms ease;
+            border-radius: 4px;
+        }
+
+        .action-button:hover::after {
+            width: 40px;
+        }
+
+        /* Git Clone Modal Styles */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--muted-color);
+            font-size: 13px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            color: var(--primary-color);
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .error-message {
+            color: #e53935;
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+            animation: fade-in 0.3s ease-in-out;
+        }
+
+        @keyframes fade-in {
+            0% { opacity: 0; transform: translateY(-5px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .clone-progress {
+            margin-top: 16px;
+            display: none;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .clone-progress.visible {
+            display: block;
+            animation: fade-in 0.3s ease-in-out;
+        }
+
+        .clone-progress-header {
+            background-color: var(--divider-color);
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--muted-color);
+        }
+
+        .clone-progress-content {
+            padding: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+            background-color: var(--bg-color);
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--primary-color);
+            white-space: pre-wrap;
+        }
+
+        /* z-rosetta language selector styles */
+        .z-rosetta-language-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 16px;
+            background-color: var(--action-button-bg);
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+        }
+        
+        .z-rosetta-language-selector:hover {
+            background-color: var(--action-button-hover-bg);
+        }
+        
+        .z-rosetta-language-label {
+            font-size: 12px;
+            color: var(--muted-color);
+        }
+        
+        .z-rosetta-language-select {
+            font-size: 12px;
+            border: none;
+            background: transparent;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 0;
+            margin: 0;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0 top 50%;
+            background-size: 8px auto;
+            padding-right: 12px;
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.3s ease-out;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        .loading-text {
+            font-size: 14px;
+            color: var(--muted-color);
+        }
+
+        .content-container {
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" data-z-rosetta="welcome.loading">Loading...</div>
+    </div>
+
+    <!-- Content container that will be shown after initialization -->
+    <div id="content-container" class="content-container">
+        <!-- Title Bar -->
+        <div class="titlebar">
+            <div class="window-controls">
+                <div class="window-control control-close" id="close-btn"></div>
+                <div class="window-control control-minimize" id="minimize-btn"></div>
+                <div class="window-control control-maximize" id="maximize-btn"></div>
+            </div>
+            <div class="window-title">Z</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <div class="welcome-container">
+                <img src="assets/Z-dev-logo.svg" alt="Z Logo" class="logo">
+                <h1 class="welcome-title" data-z-rosetta="welcome.title">Welcome to Z</h1>
+                <p class="welcome-tagline" data-z-rosetta="welcome.tagline">Fast, lightweight editor for you</p>
+                
+                <div class="action-buttons-container">
+                    <h2 class="actions-heading" data-z-rosetta="welcome.getStarted">Get Started</h2>
+                    
+                    <div class="action-buttons">
+                        <div class="action-button" id="new-project">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            <span class="action-button-text" data-z-rosetta="welcome.newProject">New Project</span>
+                        </div>
+                        
+                        <div class="action-button" id="open-project">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path>
+                                <polygon points="12 15 17 21 7 21 12 15"></polygon>
+                            </svg>
+                            <span class="action-button-text" data-z-rosetta="welcome.openProject">Open Project</span>
+                        </div>
+                        
+                        <div class="action-button" id="clone-repo">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+                                <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                            </svg>
+                            <span class="action-button-text" data-z-rosetta="welcome.cloneRepository">Clone Repository</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="version-info">
+                <span data-z-rosetta="welcome.version">Z</span> <span id="full-version">0.1.0-dev</span> • <span id="build-code" class="build-code">loading...</span>
+                
+
+                <div class="analytics-toggle" id="analytics-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <span data-z-rosetta="analytics.title">Analytics</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Settings Modal -->
+        <div class="modal-overlay" id="analytics-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                    <h3 class="modal-title" data-z-rosetta="analytics.modalTitle">Help improve Z</h3>
+                </div>
+                <div class="modal-body">
+                    <!-- Left Column -->
+                    <div class="modal-column">
+                        <div class="modal-intro">
+                            <p data-z-rosetta="analytics.modalIntro">We collect anonymous data to improve features and stability. You can choose what to share:</p>
+                        </div>
+                        
+                        <div class="analytics-options-container">
+                            <div class="analytics-option" id="analytics-basic-option">
+                                <input type="checkbox" id="analytics-basic" class="analytics-checkbox" checked>
+                                <div class="analytics-label">
+                                    <h4 data-z-rosetta="analytics.basicInfo">Basic Information</h4>
+                                    <p data-z-rosetta="analytics.basicDescription">Z version, build code, OS info, usage frequency</p>
+                                </div>
+                            </div>
+                            
+                            <div class="analytics-option" id="analytics-system-option">
+                                <input type="checkbox" id="analytics-system" class="analytics-checkbox" checked>
+                                <div class="analytics-label">
+                                    <h4 data-z-rosetta="analytics.systemInfo">System Information</h4>
+                                    <p data-z-rosetta="analytics.systemDescription">Screen resolution, processor architecture</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p style="font-style: italic; font-size: 12px; margin-top: 10px; color: var(--muted-color);" data-z-rosetta="analytics.privacy">We never collect personal data or file contents.</p>
+                    </div>
+                    
+                    <!-- Right Column -->
+                    <div class="modal-column">
+                        <div class="modal-intro">
+                            <h4 style="margin-bottom: 8px; font-size: 14px;" data-z-rosetta="analytics.dataPreview">Data Preview</h4>
+                            <p data-z-rosetta="analytics.dataPreviewDescription">Only allowed data will be sent. Disabled items (strikethrough) are excluded.</p>
+                        </div>
+                        
+                        <!-- Data Preview Section -->
+                        <div class="analytics-preview">
+                            <div class="analytics-preview-content" id="analytics-preview-content">
+                                <div class="preview-item preview-basic">
+                                    <span class="preview-label" data-z-rosetta="analytics.appVersion">App version:</span>
+                                    <span class="preview-value" id="preview-version">0.1.0-dev</span>
+                                </div>
+                                <div class="preview-item preview-basic">
+                                    <span class="preview-label" data-z-rosetta="analytics.buildCode">Build code:</span>
+                                    <span class="preview-value" id="preview-buildcode">win64.20250305</span>
+                                </div>
+                                <div class="preview-item preview-basic">
+                                    <span class="preview-label" data-z-rosetta="analytics.platform">Platform:</span>
+                                    <span class="preview-value" id="preview-platform">win64</span>
+                                </div>
+                                <div class="preview-item preview-system">
+                                    <span class="preview-label" data-z-rosetta="analytics.os">OS:</span>
+                                    <span class="preview-value" id="preview-os">Windows</span>
+                                </div>
+                                <div class="preview-item preview-system">
+                                    <span class="preview-label" data-z-rosetta="analytics.architecture">Architecture:</span>
+                                    <span class="preview-value" id="preview-arch">x64</span>
+                                </div>
+                                <div class="preview-item preview-system">
+                                    <span class="preview-label" data-z-rosetta="analytics.resolution">Resolution:</span>
+                                    <span class="preview-value" id="preview-resolution">1920x1080</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-button modal-button-secondary" id="analytics-cancel" data-z-rosetta="analytics.disableAll">Disable All</button>
+                    <button class="modal-button modal-button-primary" id="analytics-save" data-z-rosetta="analytics.save">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Templates - Not visible until shown -->
+        <div class="toast-message" id="toast-success" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span id="toast-success-message" data-z-rosetta="analytics.analyticsEnabled">Settings saved successfully</span>
+        </div>
+        
+        <div class="toast-message warning" id="toast-warning" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span id="toast-warning-message" data-z-rosetta="analytics.onlyBasic">Some settings are disabled</span>
+        </div>
+        
+        <div class="toast-message error" id="toast-error" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+            <span id="toast-error-message" data-z-rosetta="analytics.analyticsDisabled">Analytics disabled</span>
+        </div>
+        <!-- Git Clone Modal -->
+        <div class="modal-overlay" id="git-clone-modal" style="width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center;">
+            <div class="modal-content" style="background: var(--surface-color); border-radius: var(--border-radius); box-shadow: var(--shadow-md); width: 480px; max-width: 90%; position: relative;">
+                <div class="modal-header" style="display: flex; align-items: center; padding: 16px; border-bottom: 1px solid var(--border-color);">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; margin-right: 12px;">
+                        <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+                        <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                    </svg>
+                    <h3 class="modal-title" data-z-rosetta="git.clone.modalTitle" style="margin: 0; font-size: 16px; font-weight: 600;">Clone Repository</h3>
+                </div>
+                <div class="modal-body" style="padding: 16px;">
+                    <form id="clone-repo-form" style="display: block;flex-direction: column; gap: 16px;">
+                        <div class="form-group" style="display: flex; flex-direction: column; gap: 8px;">
+                            <label class="form-label" for="repo-url" data-z-rosetta="git.clone.repoUrl" style="font-weight: 500;">Repository URL</label>
+                            <input 
+                                type="text" 
+                                id="repo-url" 
+                                class="form-input" 
+                                data-z-rosetta-placeholder="git.clone.repoUrlPlaceholder"
+                                placeholder="https://github.com/username/repository.git"
+                                required
+                                style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--border-radius); font-size: 14px; transition: border-color var(--transition-fast);"
+                            >
+                            <div class="error-message" id="repo-url-error" data-z-rosetta="git.clone.urlError" style="color: #d32f2f; font-size: 12px; display: none;">Please enter a valid Git repository URL</div>
+                        </div>
+                        <div class="form-group" style="display: flex; flex-direction: column; gap: 8px;">
+                            <label class="form-label" for="repo-directory" data-z-rosetta="git.clone.directory" style="font-weight: 500;">Directory Name (optional)</label>
+                            <input 
+                                type="text" 
+                                id="repo-directory" 
+                                class="form-input" 
+                                data-z-rosetta-placeholder="git.clone.directoryPlaceholder"
+                                placeholder="my-project"
+                                style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--border-radius); font-size: 14px; transition: border-color var(--transition-fast);"
+                            >
+                        </div>
+                        <div class="clone-progress" id="clone-progress" style="display: none;">
+                            <div class="clone-progress-header" data-z-rosetta="git.clone.progress" style="font-weight: 500; margin-bottom: 8px;">Cloning Progress</div>
+                            <div class="clone-progress-content" style="height: 4px; background: var(--divider-color); border-radius: 2px;"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px; padding: 16px; border-top: 1px solid var(--border-color);">
+                    <button class="modal-button modal-button-secondary" id="git-clone-cancel" data-z-rosetta="git.clone.cancel" style="padding: 8px 16px; border: none; border-radius: var(--border-radius); background: var(--action-button-bg); font-size: 14px; cursor: pointer; transition: background var(--transition-fast);">Cancel</button>
+                    <button class="modal-button modal-button-primary" id="git-clone-button" data-z-rosetta="git.clone.cloneButton" style="padding: 8px 16px; border: none; border-radius: var(--border-radius); background: var(--accent-color); color: white; font-size: 14px; cursor: pointer; transition: opacity var(--transition-fast);">Clone Repository</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Setup z-rosetta IPC bridge for renderer process
+        if (!window.zRosetta) {
+            window.zRosetta = {
+                getLanguage: () => window.ipc.invoke('z-rosetta-get-language'),
+                getTranslations: () => window.ipc.invoke('z-rosetta-get-translations'),
+                setLanguage: (language) => window.ipc.invoke('z-rosetta-set-language', language),
+                onLanguageChanged: (callback) => window.ipc.on('z-rosetta-language-changed', callback)
+            };
+        }
+
+        // Initialize z-rosetta and show content when ready
+        document.addEventListener('DOMContentLoaded', async () => {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const contentContainer = document.getElementById('content-container');
+            
+            try {
+                // Create z-rosetta client instance
+                window.zRosettaClient = new ZRosettaClient();
+                
+                // Initialize with a timeout
+                const initPromise = window.zRosettaClient.initialize();
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Initialization timeout')), 5000)
+                );
+                
+                // Wait for initialization or timeout
+                await Promise.race([initPromise, timeoutPromise]);
+                
+                // Update page content with translations
+                window.zRosettaClient.updatePageContent();
+                
+                // Show content
+                contentContainer.style.opacity = '1';
+                loadingOverlay.style.opacity = '0';
+                
+                // Remove loading overlay after transition
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 300);
+            } catch (error) {
+                console.error('Failed to initialize z-rosetta:', error);
+                // Show content anyway after error
+                contentContainer.style.opacity = '1';
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 300);
+            }
+            
+            // Continue with other initialization...
+        });
+
+        // Load build information using the exposed API (async now)
+        window.buildInfo.getBuildInfo()
+            .then(buildInfo => {
+                document.getElementById('full-version').textContent = buildInfo.fullVersion || buildInfo.version;
+                document.getElementById('build-code').textContent = buildInfo.buildCode.split('+')[1] || buildInfo.buildCode;
+            })
+            .catch(error => {
+                console.error('Error loading build info:', error);
+                // Set fallback values if there's an error
+                document.getElementById('full-version').textContent = '0.1.0-dev';
+                document.getElementById('build-code').textContent = 'dev-build';
+            });
+        
+        // Initialize z-rosetta client and create language selector
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Initialize z-rosetta client
+                await window.zRosettaClient.initialize();
+                
+                
+                // Update all translations on the page
+                window.zRosettaClient.updatePageContent();
+                
+                console.log('Z-Rosetta initialized successfully');
+            } catch (error) {
+                console.error('Error initializing Z-Rosetta:', error);
+            }
+        });
+            
+        // Window control buttons
+        document.getElementById('minimize-btn').addEventListener('click', () => {
+            window.windowControls.minimize();
+        });
+        
+        document.getElementById('maximize-btn').addEventListener('click', () => {
+            window.windowControls.maximize();
+        });
+        
+        document.getElementById('close-btn').addEventListener('click', () => {
+            window.windowControls.close();
+        });
+        
+        // Action button event handlers
+        document.getElementById('new-project').addEventListener('click', () => {
+            console.log('New project clicked');
+        });
+        
+        document.getElementById('open-project').addEventListener('click', async () => {
+            try {
+                // Show loading state
+                const button = document.getElementById('open-project');
+                const originalContent = button.innerHTML;
+                button.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="spinner">
+                        <circle cx="12" cy="12" r="10" stroke-dasharray="30 50" stroke-linecap="round"></circle>
+                    </svg>
+                    <span class="action-button-text">Selecting...</span>
+                `;
+                
+                // Show directory selection dialog
+                const result = await window.project.selectDirectory();
+                
+                if (result.canceled) {
+                    // Restore button state if canceled
+                    button.innerHTML = originalContent;
+                    return;
+                }
+                
+                // Update button to show opening state
+                button.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="spinner">
+                        <circle cx="12" cy="12" r="10" stroke-dasharray="30 50" stroke-linecap="round"></circle>
+                    </svg>
+                    <span class="action-button-text">Opening...</span>
+                `;
+                
+                // Open the selected project
+                const openResult = await window.project.openProject(result.projectPath);
+                
+                if (!openResult.success) {
+                    // Show error message
+                    showToastMessage(`Error: ${openResult.error}`, 'error');
+                    button.innerHTML = originalContent;
+                }
+                
+                // The main window will be replaced with the editor window on success
+            } catch (error) {
+                console.error('Error opening project:', error);
+                showToastMessage(`Error: ${error.message}`, 'error');
+                
+                // Restore button state
+                const button = document.getElementById('open-project');
+                button.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path>
+                        <polygon points="12 15 17 21 7 21 12 15"></polygon>
+                    </svg>
+                    <span class="action-button-text">Open Project</span>
+                `;
+            }
+        });
+        
+        document.getElementById('clone-repo').addEventListener('click', () => {
+            console.log('Clone repository clicked');
+            openGitCloneModal();
+        });
+        
+        // Analytics functionalities
+        const analyticsBasicCheckbox = document.getElementById('analytics-basic');
+        const analyticsSystemCheckbox = document.getElementById('analytics-system');
+        const analyticsBasicOption = analyticsBasicCheckbox.closest('.analytics-option');
+        const analyticsSystemOption = analyticsSystemCheckbox.closest('.analytics-option');
+        
+        // Function to update visual state of analytics options
+        function updateAnalyticsOptionState() {
+            analyticsBasicOption.classList.toggle('active', analyticsBasicCheckbox.checked);
+            analyticsSystemOption.classList.toggle('active', analyticsSystemCheckbox.checked);
+            
+            // Update preview items
+            updatePreviewItems();
+            
+            // Visual feedback about what will happen
+            const feedbackText = document.getElementById('analytics-feedback') || 
+                createFeedbackElement();
+                
+            if (!analyticsBasicCheckbox.checked) {
+                feedbackText.textContent = 'No data will be sent';
+                feedbackText.style.color = '#F44336';
+            } else if (!analyticsSystemCheckbox.checked) {
+                feedbackText.textContent = 'Only basic information will be sent';
+                feedbackText.style.color = '#FF9800';
+            } else {
+                feedbackText.textContent = 'All information will be sent';
+                feedbackText.style.color = '#4CAF50';
+            }
+        }
+        
+        // Create feedback element
+        function createFeedbackElement() {
+            const element = document.createElement('p');
+            element.id = 'analytics-feedback';
+            element.style.marginTop = '12px';
+            element.style.fontSize = '13px';
+            element.style.fontWeight = '500';
+            element.style.textAlign = 'center';
+            element.style.transition = 'color 0.3s ease';
+            
+            // Insert after the analytics preview
+            const previewElement = document.querySelector('.analytics-preview');
+            previewElement.parentNode.insertBefore(element, previewElement.nextSibling);
+            
+            return element;
+        }
+        
+        // Function to update preview items based on selected checkboxes
+        function updatePreviewItems() {
+            // Get all basic info items
+            const basicItems = document.querySelectorAll('.preview-basic');
+            // Get all system info items
+            const systemItems = document.querySelectorAll('.preview-system');
+            
+            // Update basic info items
+            basicItems.forEach(item => {
+                item.classList.toggle('disabled', !analyticsBasicCheckbox.checked);
+                // Add animation when toggling
+                item.style.transform = analyticsBasicCheckbox.checked ? 
+                    'translateX(0)' : 'translateX(5px)';
+            });
+            
+            // Update system info items
+            systemItems.forEach(item => {
+                item.classList.toggle('disabled', !analyticsSystemCheckbox.checked);
+                // Add animation when toggling
+                item.style.transform = analyticsSystemCheckbox.checked ? 
+                    'translateX(0)' : 'translateX(5px)';
+            });
+        }
+        
+        // Load preview data from build info
+        function loadPreviewData() {
+            window.buildInfo.getBuildInfo()
+                .then(buildInfo => {
+                    // Populate preview with actual data
+                    document.getElementById('preview-version').textContent = buildInfo.fullVersion || buildInfo.version;
+                    document.getElementById('preview-buildcode').textContent = buildInfo.buildCode.split('+')[1] || buildInfo.buildCode;
+                    document.getElementById('preview-platform').textContent = buildInfo.buildCode.split('+')[1]?.split('.')[0] || 'unknown';
+                    document.getElementById('preview-os').textContent = buildInfo.currentOS || 'Unknown';
+                    document.getElementById('preview-arch').textContent = buildInfo.architecture || 'Unknown';
+                    
+                    // Set a placeholder for screen resolution
+                    // In a real app, you would get actual screen resolution
+                    const screenWidth = window.screen.width;
+                    const screenHeight = window.screen.height;
+                    document.getElementById('preview-resolution').textContent = `${screenWidth}x${screenHeight}`;
+                    
+                    // Update preview items visibility
+                    updatePreviewItems();
+                })
+                .catch(error => {
+                    console.error('Error loading build info for preview:', error);
+                });
+        }
+        
+        // Listen for checkbox changes with visual animation
+        analyticsBasicCheckbox.addEventListener('change', () => {
+            // Apply animation to option element
+            analyticsBasicOption.style.transform = 'scale(1.02)';
+            setTimeout(() => {
+                analyticsBasicOption.style.transform = 'scale(1)';
+            }, 150);
+            
+            updateAnalyticsOptionState();
+        });
+        
+        analyticsSystemCheckbox.addEventListener('change', () => {
+            // Apply animation to option element
+            analyticsSystemOption.style.transform = 'scale(1.02)';
+            setTimeout(() => {
+                analyticsSystemOption.style.transform = 'scale(1)';
+            }, 150);
+            
+            updateAnalyticsOptionState();
+        });
+        
+        // System checkbox should depend on basic checkbox
+        analyticsBasicCheckbox.addEventListener('change', () => {
+            if (!analyticsBasicCheckbox.checked) {
+                analyticsSystemCheckbox.checked = false;
+                analyticsSystemCheckbox.disabled = true;
+                analyticsSystemOption.style.opacity = '0.5';
+            } else {
+                analyticsSystemCheckbox.disabled = false;
+                analyticsSystemOption.style.opacity = '1';
+            }
+        });
+        
+        // Analytics modal
+        document.getElementById('analytics-toggle').addEventListener('click', () => {
+            const modal = document.getElementById('analytics-modal');
+            modal.classList.add('active');
+            
+            // Добавляем анимацию появления для элементов внутри модального окна
+            const options = document.querySelectorAll('.analytics-option');
+            options.forEach((option, index) => {
+                option.style.opacity = '0';
+                option.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    option.style.opacity = '1';
+                    option.style.transform = 'translateY(0)';
+                }, 100 + index * 50);
+            });
+            
+            // Анимация для превью данных
+            const preview = document.querySelector('.analytics-preview');
+            preview.style.opacity = '0';
+            preview.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+                preview.style.opacity = '1';
+                preview.style.transform = 'translateY(0)';
+            }, 200);
+            
+            // Load preview data when modal opens
+            loadPreviewData();
+            // Update visual state when modal opens
+            updateAnalyticsOptionState();
+        });
+        
+        // Function to show toast messages
+        function showToastMessage(messageKey, type = 'info') {
+            let toast;
+            
+            // Select the appropriate toast template based on type
+            if (type === 'success') {
+                toast = document.getElementById('toast-success');
+                document.getElementById('toast-success-message').textContent = window.zRosettaClient.translate(messageKey);
+            } else if (type === 'warning') {
+                toast = document.getElementById('toast-warning');
+                document.getElementById('toast-warning-message').textContent = window.zRosettaClient.translate(messageKey);
+            } else if (type === 'error') {
+                toast = document.getElementById('toast-error');
+                document.getElementById('toast-error-message').textContent = window.zRosettaClient.translate(messageKey);
+            } else {
+                // For custom messages
+                toast = document.getElementById('toast-message');
+                if (!toast) {
+                    toast = document.createElement('div');
+                    toast.id = 'toast-message';
+                    toast.className = 'toast-message';
+                    document.body.appendChild(toast);
+                }
+                toast.textContent = window.zRosettaClient.translate(messageKey);
+            }
+            
+            // Show the toast
+            toast.style.display = 'flex';
+            setTimeout(() => {
+                toast.classList.add('visible');
+            }, 10);
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('visible');
+                toast.classList.add('hidden');
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                    toast.classList.remove('hidden');
+                }, 300);
+            }, 3000);
+        }
+        
+        // Show temporary message
+        function showAnalyticsMessage(message, type = 'info') {
+            // Use the general toast message function
+            showToastMessage(message, type);
+        }
+        
+        document.getElementById('analytics-cancel').addEventListener('click', () => {
+            // Отключаем все чекбоксы и сохраняем настройки
+            analyticsBasicCheckbox.checked = false;
+            analyticsSystemCheckbox.checked = false;
+            
+            // Сразу сохраняем настройки об отказе
+            window.analytics.updateSettings({
+                basicAnalytics: false,
+                systemAnalytics: false
+            });
+            
+            // Show toast message
+            showToastMessage('analytics.analyticsDisabled', 'error');
+            
+            // Update visual state
+            updateAnalyticsOptionState();
+            
+            document.getElementById('analytics-modal').classList.remove('active');
+        });
+        
+        document.getElementById('analytics-save').addEventListener('click', () => {
+            const basicAnalytics = analyticsBasicCheckbox.checked;
+            const systemAnalytics = analyticsSystemCheckbox.checked;
+            
+            // Отправляем настройки в main process
+            window.analytics.updateSettings({
+                basicAnalytics,
+                systemAnalytics
+            });
+            
+            // Show toast message based on settings
+            if (!basicAnalytics) {
+                showToastMessage('analytics.analyticsDisabled', 'error');
+            } else if (!systemAnalytics) {
+                showToastMessage('analytics.onlyBasic', 'warning');
+            } else {
+                showToastMessage('analytics.analyticsEnabled', 'success');
+            }
+            
+            document.getElementById('analytics-modal').classList.remove('active');
+        });
+        
+        // Добавляем стили для анимации
+        document.addEventListener('DOMContentLoaded', () => {
+            // Добавляем стили для анимации элементов модального окна
+            const style = document.createElement('style');
+            style.textContent = `
+                .analytics-option, .analytics-preview {
+                    transition: opacity 0.3s ease, transform 0.3s ease;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Получаем текущие настройки от main процесса
+            window.analytics.getSettings()
+                .then(settings => {
+                    console.log('Loaded analytics settings:', settings);
+                    
+                    // Если настройки еще не установлены (первый запуск), показываем диалог
+                    if (settings.basicAnalytics === null) {
+                        // Небольшая задержка для лучшего UX
+                        setTimeout(() => {
+                            document.getElementById('analytics-modal').classList.add('active');
+                            // Анимация для элементов
+                            const options = document.querySelectorAll('.analytics-option');
+                            options.forEach((option, index) => {
+                                option.style.opacity = '0';
+                                option.style.transform = 'translateY(10px)';
+                                setTimeout(() => {
+                                    option.style.opacity = '1';
+                                    option.style.transform = 'translateY(0)';
+                                }, 300 + index * 50);
+                            });
+                            
+                            // Анимация для превью данных
+                            const preview = document.querySelector('.analytics-preview');
+                            preview.style.opacity = '0';
+                            preview.style.transform = 'translateY(10px)';
+                            setTimeout(() => {
+                                preview.style.opacity = '1';
+                                preview.style.transform = 'translateY(0)';
+                            }, 400);
+                            
+                            // Load preview data
+                            loadPreviewData();
+                            // Default state for first launch
+                            updateAnalyticsOptionState();
+                        }, 500);
+                    }
+                    
+                    // В любом случае устанавливаем текущие значения чекбоксов
+                    // Если null, то по умолчанию активны
+                    analyticsBasicCheckbox.checked = 
+                        settings.basicAnalytics === null ? true : settings.basicAnalytics;
+                    analyticsSystemCheckbox.checked = 
+                        settings.systemAnalytics === null ? true : settings.systemAnalytics;
+                    
+                    // Disable system checkbox if basic is unchecked
+                    if (!analyticsBasicCheckbox.checked) {
+                        analyticsSystemCheckbox.disabled = true;
+                        analyticsSystemOption.style.opacity = '0.5';
+                    }
+                    
+                    // Update visual state
+                    updateAnalyticsOptionState();
+                })
+                .catch(error => {
+                    console.error('Error loading analytics settings:', error);
+                    // В случае ошибки устанавливаем значения по умолчанию
+                    analyticsBasicCheckbox.checked = true;
+                    analyticsSystemCheckbox.checked = true;
+                    // Update visual state
+                    updateAnalyticsOptionState();
+                });
+        });
+
+        /**
+         * Git Repository Cloning Functionality
+         */
+        
+        // Function to open Git clone modal
+        function openGitCloneModal() {
+            const modal = document.getElementById('git-clone-modal');
+            modal.classList.add('active');
+            
+            // Reset form when opening modal
+            document.getElementById('clone-repo-form').reset();
+            document.getElementById('repo-url-error').classList.remove('visible');
+            document.getElementById('clone-progress').classList.remove('visible');
+            document.querySelector('.clone-progress-content').textContent = '';
+        }
+        
+        // Function to close Git clone modal
+        function closeGitCloneModal() {
+            const modal = document.getElementById('git-clone-modal');
+            modal.classList.remove('active');
+        }
+        
+        // Function to validate Git URL
+        function isValidGitUrl(url) {
+            // Basic Git URL validation
+            const gitUrlPattern = /^(https?:\/\/|git@)([^\s:]+)(:|\/)[^\s]+?(.git)?$/;
+            return gitUrlPattern.test(url);
+        }
+        
+        // Handle clone repository button click
+        document.getElementById('git-clone-button').addEventListener('click', async () => {
+            const repoUrl = document.getElementById('repo-url').value.trim();
+            const directory = document.getElementById('repo-directory').value.trim();
+            const urlError = document.getElementById('repo-url-error');
+            const cloneButton = document.getElementById('git-clone-button');
+            const progressElement = document.getElementById('clone-progress');
+            const progressContent = progressElement.querySelector('.clone-progress-content');
+            
+            // Validate URL
+            if (!isValidGitUrl(repoUrl)) {
+                urlError.classList.add('visible');
+                return;
+            }
+            
+            // Hide any previous errors
+            urlError.classList.remove('visible');
+            
+            // Update UI to show cloning state
+            cloneButton.disabled = true;
+            cloneButton.textContent = window.zRosettaClient.translate('git.clone.cloningButton') || 'Cloning...';
+            progressContent.textContent = '';
+            progressElement.classList.add('visible');
+            
+            try {
+                // Setup progress listener
+                window.git.getCloneProgress((event, progress) => {
+                    progressContent.textContent += progress + '\n';
+                    progressContent.scrollTop = progressContent.scrollHeight;
+                });
+                
+                // Start cloning
+                const result = await window.git.cloneRepository(repoUrl, directory);
+                
+                // Success - open the project
+                console.log('Repository cloned successfully:', result.path);
+                
+                // Show success toast
+                showToastMessage('git.clone.success', 'success');
+                
+                // Close modal
+                closeGitCloneModal();
+                
+                // Open the cloned project
+                const openResult = await window.project.openProject(result.path);
+                
+                if (!openResult.success) {
+                    // Show error message if opening failed
+                    showToastMessage(`Error: ${openResult.error}`, 'error');
+                }
+                
+                // The main window will be replaced with the editor window on success
+                
+            } catch (error) {
+                console.error('Clone failed:', error);
+                // Show error message
+                urlError.textContent = error.message || window.zRosettaClient.translate('git.clone.genericError') || 'Failed to clone repository';
+                urlError.classList.add('visible');
+                
+                // Hide progress display
+                progressElement.classList.remove('visible');
+            } finally {
+                // Restore button state
+                cloneButton.disabled = false;
+                cloneButton.textContent = window.zRosettaClient.translate('git.clone.cloneButton') || 'Clone Repository';
+            }
+        });
+        
+        // Handle cancel button click
+        document.getElementById('git-clone-cancel').addEventListener('click', () => {
+            closeGitCloneModal();
+        });
+        
+        // Close modal when clicking outside
+        document.getElementById('git-clone-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'git-clone-modal') {
+                closeGitCloneModal();
+            }
+        });
+        
+        // Handle Enter key in form fields
+        document.getElementById('repo-url').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('git-clone-button').click();
+            }
+        });
+        
+        document.getElementById('repo-directory').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('git-clone-button').click();
+            }
+        });
+        
+        // Handle Escape key to close modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeGitCloneModal();
+            }
+        });
+    </script>
+</body>
+</html> 

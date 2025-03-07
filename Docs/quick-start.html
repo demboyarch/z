@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Start - Z Documentation</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/z-logo.svg">
+  <link rel="stylesheet" href="assets/css/docs.css">
+  <meta name="description" content="Quick start guide for Z editor">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <img src="assets/images/z-logo.svg" alt="Z Logo">
+      <span>Z Documentation</span>
+    </div>
+    <div class="header-actions">
+      <div class="sidebar-toggle" id="sidebar-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </div>
+      <a href="https://github.com/z-editor/z" class="header-button" target="_blank">GitHub</a>
+      <div class="theme-toggle" id="theme-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main container -->
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-heading">Getting Started</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a href="index.html" class="sidebar-nav-link">Introduction</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="installation.html" class="sidebar-nav-link">Installation</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="quick-start.html" class="sidebar-nav-link">Quick Start</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-heading">Features</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a href="z-rosetta.html" class="sidebar-nav-link">Z-Rosetta (Multilingual)</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-heading">Reference</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a href="api.html" class="sidebar-nav-link">API Reference</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="configuration.html" class="sidebar-nav-link">Configuration</a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main content -->
+    <main class="content">
+      <h1>Quick Start Guide</h1>
+      
+      <p>Welcome to Z! This quick start guide will walk you through the basic features and get you up and running with Z in no time.</p>
+      
+      <div class="note">
+        <strong>Note:</strong> This guide assumes you've already <a href="installation.html">installed Z</a> on your system.
+      </div>
+      
+      <h2>The Welcome Screen</h2>
+      
+      <p>When you first open Z, you'll see the welcome screen with these main options:</p>
+      
+      <ul>
+        <li><strong>New Project</strong>: Create a new coding project</li>
+        <li><strong>Open Project</strong>: Open an existing local project folder</li>
+        <li><strong>Clone Repository</strong>: Clone a Git repository to work on</li>
+      </ul>
+      
+      <p>The welcome screen also displays the current version of Z and provides access to settings like analytics and language preferences.</p>
+      
+      <h3>Changing the Interface Language</h3>
+      
+      <p>Z supports multiple languages through the Z-Rosetta system. To change the interface language:</p>
+      
+      <ol>
+        <li>Look for the language selector dropdown at the bottom of the welcome screen</li>
+        <li>Click it and select your preferred language</li>
+        <li>The interface will immediately update to reflect your selection</li>
+      </ol>
+      
+      <p>Your language preference is automatically saved for future sessions. See the <a href="z-rosetta.html">Z-Rosetta documentation</a> for more details.</p>
+      
+      <h2>Creating Your First Project</h2>
+      
+      <h3>Option 1: New Project</h3>
+      <ol>
+        <li>Click <strong>New Project</strong> on the welcome screen</li>
+        <li>Select a template or start with an empty project</li>
+        <li>Choose a location to save your project</li>
+        <li>Give your project a name</li>
+        <li>Click <strong>Create Project</strong></li>
+      </ol>
+      
+      <h3>Option 2: Open Existing Project</h3>
+      <ol>
+        <li>Click <strong>Open Project</strong> on the welcome screen</li>
+        <li>Browse to select a folder containing your project</li>
+        <li>Click <strong>Open</strong></li>
+      </ol>
+      
+      <h3>Option 3: Clone a Git Repository</h3>
+      <ol>
+        <li>Click <strong>Clone Repository</strong> on the welcome screen</li>
+        <li>Enter the repository URL (HTTPS or SSH)</li>
+        <li>Choose a local destination folder</li>
+        <li>Click <strong>Clone</strong></li>
+      </ol>
+      
+      <h2>Understanding the Z Interface</h2>
+      
+      <p>Once you've opened a project, you'll see the main Z interface with these components:</p>
+      
+      <h3>1. Editor Window</h3>
+      <p>The central area where you edit your code. Z features:</p>
+      <ul>
+        <li>Syntax highlighting for various languages</li>
+        <li>Intelligent code completion</li>
+        <li>Multiple cursor support</li>
+        <li>Inline error and warning indicators</li>
+      </ul>
+      
+      <h3>2. File Explorer</h3>
+      <p>Located on the left side, showing your project's file structure:</p>
+      <ul>
+        <li>Navigate through project folders</li>
+        <li>Create, rename, and delete files</li>
+        <li>Right-click for additional file operations</li>
+      </ul>
+      
+      <h3>3. Status Bar</h3>
+      <p>At the bottom of the window, providing information like:</p>
+      <ul>
+        <li>Current file path</li>
+        <li>Line and column position</li>
+        <li>File encoding and line ending type</li>
+        <li>Current Git branch (if applicable)</li>
+      </ul>
+      
+      <h2>Essential Keyboard Shortcuts</h2>
+      
+      <p>Z includes a comprehensive set of keyboard shortcuts to boost your productivity:</p>
+      
+      <h3>General</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Windows/Linux</th>
+            <th>macOS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>New File</td>
+            <td><code>Ctrl+N</code></td>
+            <td><code>⌘+N</code></td>
+          </tr>
+          <tr>
+            <td>Open File</td>
+            <td><code>Ctrl+O</code></td>
+            <td><code>⌘+O</code></td>
+          </tr>
+          <tr>
+            <td>Save File</td>
+            <td><code>Ctrl+S</code></td>
+            <td><code>⌘+S</code></td>
+          </tr>
+          <tr>
+            <td>Save All</td>
+            <td><code>Ctrl+Shift+S</code></td>
+            <td><code>⌘+Shift+S</code></td>
+          </tr>
+          <tr>
+            <td>Close Editor</td>
+            <td><code>Ctrl+W</code></td>
+            <td><code>⌘+W</code></td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <h3>Editing</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Windows/Linux</th>
+            <th>macOS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cut</td>
+            <td><code>Ctrl+X</code></td>
+            <td><code>⌘+X</code></td>
+          </tr>
+          <tr>
+            <td>Copy</td>
+            <td><code>Ctrl+C</code></td>
+            <td><code>⌘+C</code></td>
+          </tr>
+          <tr>
+            <td>Paste</td>
+            <td><code>Ctrl+V</code></td>
+            <td><code>⌘+V</code></td>
+          </tr>
+          <tr>
+            <td>Undo</td>
+            <td><code>Ctrl+Z</code></td>
+            <td><code>⌘+Z</code></td>
+          </tr>
+          <tr>
+            <td>Redo</td>
+            <td><code>Ctrl+Y</code> or <code>Ctrl+Shift+Z</code></td>
+            <td><code>⌘+Shift+Z</code></td>
+          </tr>
+          <tr>
+            <td>Find</td>
+            <td><code>Ctrl+F</code></td>
+            <td><code>⌘+F</code></td>
+          </tr>
+          <tr>
+            <td>Replace</td>
+            <td><code>Ctrl+H</code></td>
+            <td><code>⌘+H</code></td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <h3>Navigation</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Windows/Linux</th>
+            <th>macOS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Go to File</td>
+            <td><code>Ctrl+P</code></td>
+            <td><code>⌘+P</code></td>
+          </tr>
+          <tr>
+            <td>Go to Line</td>
+            <td><code>Ctrl+G</code></td>
+            <td><code>⌘+G</code></td>
+          </tr>
+          <tr>
+            <td>Toggle File Explorer</td>
+            <td><code>Ctrl+B</code></td>
+            <td><code>⌘+B</code></td>
+          </tr>
+          <tr>
+            <td>Toggle Terminal</td>
+            <td><code>Ctrl+`</code></td>
+            <td><code>⌘+`</code></td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <h2>Next Steps</h2>
+      
+      <p>Now that you're familiar with Z's basic features, here are some suggestions for next steps:</p>
+      
+      <ul>
+        <li>Explore the <a href="z-rosetta.html">Z-Rosetta documentation</a> to learn about multilingual support</li>
+        <li>Check the <a href="configuration.html">Configuration guide</a> to customize Z to your preferences</li>
+        <li>Visit the <a href="api.html">API Reference</a> if you're interested in extending Z's functionality</li>
+      </ul>
+      
+      <div class="note">
+        <strong>Tip:</strong> Z is designed to be intuitive, so don't hesitate to explore the interface and experiment with different features!
+      </div>
+    </main>
+  </div>
+
+  <script src="assets/js/docs.js"></script>
+</body>
+</html> 

@@ -1,0 +1,69 @@
+{
+  "welcome": {
+    "title": "Bem-vindo ao Z",
+    "tagline": "Editor rápido e leve para você",
+    "getStarted": "Começar",
+    "newProject": "Novo Projeto",
+    "openProject": "Abrir Projeto",
+    "cloneRepository": "Clonar Repositório",
+    "version": "Z",
+    "loading": "Carregando..."
+  },
+  "editor": {
+    "explorer": "Explorador de arquivos aqui",
+    "container": "Contêiner principal aqui"
+  },
+  "git": {
+    "clone": {
+      "modalTitle": "Clonar Repositório",
+      "repoUrl": "URL do Repositório",
+      "repoUrlPlaceholder": "https://github.com/username/repository.git", 
+      "directory": "Nome do Diretório (opcional)",
+      "directoryPlaceholder": "meu-projeto",
+      "cloneButton": "Clonar Repositório",
+      "cloningButton": "Clonando...",
+      "cancel": "Cancelar",
+      "progress": "Progresso da Clonagem",
+      "urlError": "Por favor, insira uma URL válida de repositório Git",
+      "genericError": "Falha ao clonar repositório",
+      "success": "Repositório clonado com sucesso"
+    }
+  },
+  "analytics": {
+    "title": "Análise",
+    "modalTitle": "Ajude a melhorar o Z",
+    "modalIntro": "Coletamos dados anônimos para melhorar recursos e estabilidade. Você pode escolher o que compartilhar:",
+    "basicInfo": "Informações Básicas",
+    "basicDescription": "Versão do Z, código de compilação, informações do SO, frequência de uso",
+    "systemInfo": "Informações do Sistema",
+    "systemDescription": "Resolução da tela, arquitetura do processador",
+    "privacy": "Nunca coletamos dados pessoais ou conteúdo de arquivos.",
+    "dataPreview": "Visualização de Dados",
+    "dataPreviewDescription": "Apenas dados permitidos serão enviados. Itens desativados (riscados) são excluídos.",
+    "appVersion": "Versão do aplicativo:",
+    "buildCode": "Código de compilação:",
+    "platform": "Plataforma:",
+    "os": "Sistema operacional:",
+    "architecture": "Arquitetura:",
+    "resolution": "Resolução:",
+    "disableAll": "Desativar Tudo",
+    "save": "Salvar",
+    "analyticsDisabled": "Análise desativada, nenhum dado será enviado",
+    "onlyBasic": "Apenas informações básicas serão enviadas",
+    "analyticsEnabled": "Análise ativada, obrigado por ajudar a melhorar o Z"
+  },
+  "language": {
+    "title": "Idioma",
+    "en": "Inglês",
+    "ru": "Russo",
+    "fr": "Francês",
+    "de": "Alemão",
+    "es": "Espanhol",
+    "it": "Italiano",
+    "zh": "Chinês",
+    "ja": "Japonês",
+    "pt": "Português",
+    "ko": "Coreano",
+    "ar": "Árabe"
+  }
+} 

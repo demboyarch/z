@@ -1,0 +1,69 @@
+{
+  "welcome": {
+    "title": "Willkommen bei Z",
+    "tagline": "Schneller, leichter Editor für Sie",
+    "getStarted": "Loslegen",
+    "newProject": "Neues Projekt",
+    "openProject": "Projekt öffnen",
+    "cloneRepository": "Repository klonen",
+    "version": "Z",
+    "loading": "Lädt..."
+  },
+  "editor": {
+    "explorer": "Datei-Explorer wird hier angezeigt",
+    "container": "Hauptcontainer wird hier angezeigt"
+  },
+  "git": {
+    "clone": {
+      "modalTitle": "Repository klonen",
+      "repoUrl": "Repository-URL",
+      "repoUrlPlaceholder": "https://github.com/benutzername/repository.git",
+      "directory": "Verzeichnisname (optional)",
+      "directoryPlaceholder": "mein-projekt",
+      "cloneButton": "Repository klonen",
+      "cloningButton": "Klonen...",
+      "cancel": "Abbrechen",
+      "progress": "Klonfortschritt",
+      "urlError": "Bitte geben Sie eine gültige Git-Repository-URL ein",
+      "genericError": "Repository konnte nicht geklont werden",
+      "success": "Repository erfolgreich geklont"
+    }
+  },
+  "analytics": {
+    "title": "Analytik",
+    "modalTitle": "Helfen Sie, Z zu verbessern",
+    "modalIntro": "Wir sammeln anonyme Daten, um Funktionen und Stabilität zu verbessern. Sie können wählen, was Sie teilen möchten:",
+    "basicInfo": "Grundlegende Informationen",
+    "basicDescription": "Z-Version, Build-Code, Betriebssystem-Info, Nutzungshäufigkeit",
+    "systemInfo": "Systeminformationen",
+    "systemDescription": "Bildschirmauflösung, Prozessorarchitektur",
+    "privacy": "Wir sammeln niemals persönliche Daten oder Dateiinhalte.",
+    "dataPreview": "Datenvorschau",
+    "dataPreviewDescription": "Nur erlaubte Daten werden gesendet. Deaktivierte Elemente (durchgestrichen) werden ausgeschlossen.",
+    "appVersion": "App-Version:",
+    "buildCode": "Build-Code:",
+    "platform": "Plattform:",
+    "os": "Betriebssystem:",
+    "architecture": "Architektur:",
+    "resolution": "Auflösung:",
+    "disableAll": "Alles deaktivieren",
+    "save": "Speichern",
+    "analyticsDisabled": "Analytik deaktiviert, es werden keine Daten gesendet",
+    "onlyBasic": "Es werden nur grundlegende Informationen gesendet",
+    "analyticsEnabled": "Analytik aktiviert, danke für Ihre Hilfe bei der Verbesserung von Z"
+  },
+  "language": {
+    "title": "Sprache",
+    "en": "Englisch",
+    "ru": "Russisch",
+    "fr": "Französisch",
+    "de": "Deutsch",
+    "es": "Spanisch",
+    "it": "Italienisch",
+    "zh": "Chinesisch",
+    "ja": "Japanisch",
+    "pt": "Portugiesisch",
+    "ko": "Koreanisch",
+    "ar": "Arabisch"
+  }
+} 

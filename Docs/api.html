@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Reference - Z Documentation</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/z-logo.svg">
+  <link rel="stylesheet" href="assets/css/docs.css">
+  <meta name="description" content="API reference for Z editor">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <img src="assets/images/z-logo.svg" alt="Z Logo">
+      <span>Z Documentation</span>
+    </div>
+    <div class="header-actions">
+      <div class="sidebar-toggle" id="sidebar-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </div>
+      <a href="https://github.com/z-editor/z" class="header-button" target="_blank">GitHub</a>
+      <div class="theme-toggle" id="theme-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main container -->
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-heading">Getting Started</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a href="index.html" class="sidebar-nav-link">Introduction</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="installation.html" class="sidebar-nav-link">Installation</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="quick-start.html" class="sidebar-nav-link">Quick Start</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-heading">Features</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a href="z-rosetta.html" class="sidebar-nav-link">Z-Rosetta (Multilingual)</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-heading">Reference</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a href="api.html" class="sidebar-nav-link">API Reference</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="configuration.html" class="sidebar-nav-link">Configuration</a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main content -->
+    <main class="content">
+      <h1>API Reference</h1>
+      
+      <p>This page provides comprehensive documentation for Z's public APIs and extension points.</p>
+      
+      <div class="note">
+        <strong>Note:</strong> The Z API is currently in development. This documentation will be expanded as the API stabilizes.
+      </div>
+      
+      <h2>API Overview</h2>
+      
+      <p>Z provides several APIs that you can use to extend and enhance the editor:</p>
+      
+      <ul>
+        <li><strong>IPC API</strong> - For communication between main and renderer processes</li>
+        <li><strong>Plugin API</strong> - For creating plugins that add new functionality</li>
+        <li><strong>Theme API</strong> - For creating custom themes</li>
+        <li><strong>Language API</strong> - For adding support for new programming languages</li>
+      </ul>
+      
+      <h2>IPC API</h2>
+      
+      <p>Z uses the Electron IPC system to communicate between the main process and renderer processes. The following IPC channels are available:</p>
+      
+      <h3>Window Controls</h3>
+      
+      <pre><code>// Minimize the window
+window.windowControls.minimize()
+
+// Maximize/restore the window
+window.windowControls.maximize()
+
+// Close the window
+window.windowControls.close()</code></pre>
+      
+      <h3>Project Management</h3>
+      
+      <pre><code>// Select a directory
+window.project.selectDirectory()
+
+// Open a project
+window.project.openProject(projectPath)
+
+// Register event handler for when a project is loaded
+window.project.onProjectLoaded(callback)
+
+// Get file tree for a project
+window.project.getFileTree(projectPath)</code></pre>
+      
+      <h3>Git Integration</h3>
+      
+      <pre><code>// Clone a repository
+window.git.cloneRepository(url, directory)
+
+// Get clone progress updates
+window.git.getCloneProgress(callback)</code></pre>
+      
+      <h3>Z-Rosetta API</h3>
+      
+      <pre><code>// Get current language and available languages
+window.zRosetta.getLanguage()
+
+// Get translations for current language
+window.zRosetta.getTranslations()
+
+// Set the language
+window.zRosetta.setLanguage(language)</code></pre>
+      
+      <h2>Coming Soon</h2>
+      
+      <p>The following API documentation will be added in future updates:</p>
+      
+      <ul>
+        <li>Detailed Plugin API reference</li>
+        <li>Theme API specification</li>
+        <li>Language Server Protocol integration</li>
+        <li>Custom syntax highlighting rules</li>
+        <li>Extension lifecycle management</li>
+      </ul>
+      
+      <div class="warning">
+        <strong>Important:</strong> The API is subject to change during the development phase. Check for updates regularly if you're building extensions or integrations.
+      </div>
+    </main>
+  </div>
+
+  <script src="assets/js/docs.js"></script>
+</body>
+</html> 

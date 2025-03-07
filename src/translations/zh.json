@@ -1,0 +1,69 @@
+{
+  "welcome": {
+    "title": "欢迎使用 Z",
+    "tagline": "为您提供快速、轻量级的编辑器",
+    "getStarted": "开始使用",
+    "newProject": "新建项目",
+    "openProject": "打开项目",
+    "cloneRepository": "克隆仓库",
+    "version": "Z",
+    "loading": "加载中..."
+  },
+  "editor": {
+    "explorer": "文件资源管理器",
+    "container": "主容器"
+  },
+  "git": {
+    "clone": {
+      "modalTitle": "克隆仓库",
+      "repoUrl": "仓库 URL",
+      "repoUrlPlaceholder": "https://github.com/username/repository.git",
+      "directory": "目录名称（可选）",
+      "directoryPlaceholder": "我的项目",
+      "cloneButton": "克隆仓库",
+      "cloningButton": "正在克隆...",
+      "cancel": "取消",
+      "progress": "克隆进度",
+      "urlError": "请输入有效的 Git 仓库 URL",
+      "genericError": "克隆仓库失败",
+      "success": "仓库克隆成功"
+    }
+  },
+  "analytics": {
+    "title": "分析",
+    "modalTitle": "帮助改进 Z",
+    "modalIntro": "我们收集匿名数据以改进功能和稳定性。您可以选择要共享的内容：",
+    "basicInfo": "基本信息",
+    "basicDescription": "Z 版本、构建代码、操作系统信息、使用频率",
+    "systemInfo": "系统信息",
+    "systemDescription": "屏幕分辨率、处理器架构",
+    "privacy": "我们绝不收集个人数据或文件内容。",
+    "dataPreview": "数据预览",
+    "dataPreviewDescription": "只会发送允许的数据。已禁用的项目（划线）将被排除。",
+    "appVersion": "应用版本：",
+    "buildCode": "构建代码：",
+    "platform": "平台：",
+    "os": "操作系统：",
+    "architecture": "架构：",
+    "resolution": "分辨率：",
+    "disableAll": "全部禁用",
+    "save": "保存",
+    "analyticsDisabled": "分析已禁用，不会发送任何数据",
+    "onlyBasic": "只会发送基本信息",
+    "analyticsEnabled": "分析已启用，感谢您帮助改进 Z"
+  },
+  "language": {
+    "title": "语言",
+    "en": "英语",
+    "ru": "俄语",
+    "fr": "法语",
+    "de": "德语",
+    "es": "西班牙语",
+    "it": "意大利语",
+    "zh": "中文",
+    "ja": "日语",
+    "pt": "葡萄牙语",
+    "ko": "韩语",
+    "ar": "阿拉伯语"
+  }
+} 

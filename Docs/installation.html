@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Installation - Z Documentation</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/z-logo.svg">
+  <link rel="stylesheet" href="assets/css/docs.css">
+  <meta name="description" content="Installation guide for Z editor">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <img src="assets/images/z-logo.svg" alt="Z Logo">
+      <span>Z Documentation</span>
+    </div>
+    <div class="header-actions">
+      <div class="sidebar-toggle" id="sidebar-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </div>
+      <a href="https://github.com/z-editor/z" class="header-button" target="_blank">GitHub</a>
+      <div class="theme-toggle" id="theme-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main container -->
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-heading">Getting Started</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a href="index.html" class="sidebar-nav-link">Introduction</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="installation.html" class="sidebar-nav-link">Installation</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="quick-start.html" class="sidebar-nav-link">Quick Start</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-heading">Features</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a href="z-rosetta.html" class="sidebar-nav-link">Z-Rosetta (Multilingual)</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-heading">Reference</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a href="api.html" class="sidebar-nav-link">API Reference</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="configuration.html" class="sidebar-nav-link">Configuration</a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main content -->
+    <main class="content">
+      <h1>Installing Z</h1>
+      
+      <p>This guide will help you install Z on your system. Z is available for Windows, macOS, and Linux operating systems.</p>
+      
+      <div class="note">
+        <strong>Note:</strong> Z is currently in development. While it's stable for everyday use, you may encounter occasional bugs.
+      </div>
+      
+      <h2>System Requirements</h2>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Operating System</th>
+            <th>Minimum Requirements</th>
+            <th>Recommended</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Windows</td>
+            <td>Windows 10, 4GB RAM</td>
+            <td>Windows 10/11, 8GB RAM</td>
+          </tr>
+          <tr>
+            <td>macOS</td>
+            <td>macOS 10.15 (Catalina), 4GB RAM</td>
+            <td>macOS 12+ (Monterey), 8GB RAM</td>
+          </tr>
+          <tr>
+            <td>Linux</td>
+            <td>Ubuntu 20.04 or equivalent, 4GB RAM</td>
+            <td>Ubuntu 22.04 or equivalent, 8GB RAM</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <h2>Windows Installation</h2>
+      
+      <h3>Using the Installer</h3>
+      <ol>
+        <li>Download the latest Z installer from the <a href="https://github.com/z-editor/z/releases" target="_blank">releases page</a>.</li>
+        <li>Run the <code>Z-Setup-x.y.z.exe</code> file.</li>
+        <li>Follow the installation wizard instructions.</li>
+        <li>Launch Z from the Start menu or desktop shortcut.</li>
+      </ol>
+      
+      <h3>Portable Version</h3>
+      <p>If you prefer a portable installation:</p>
+      <ol>
+        <li>Download the <code>Z-x.y.z-win-portable.zip</code> from the releases page.</li>
+        <li>Extract the ZIP file to your desired location.</li>
+        <li>Run <code>Z.exe</code> to start the editor.</li>
+      </ol>
+      
+      <h2>macOS Installation</h2>
+      
+      <h3>Using the DMG</h3>
+      <ol>
+        <li>Download the latest <code>Z-x.y.z.dmg</code> file from the releases page.</li>
+        <li>Open the DMG file.</li>
+        <li>Drag Z to the Applications folder.</li>
+        <li>Launch Z from Applications or using Spotlight.</li>
+      </ol>
+      
+      <div class="note">
+        <strong>Note for macOS users:</strong> When opening Z for the first time, you may need to right-click the app and select "Open" due to security settings.
+      </div>
+      
+      <h2>Linux Installation</h2>
+      
+      <h3>Using AppImage</h3>
+      <p>The AppImage format is supported on most Linux distributions:</p>
+      <ol>
+        <li>Download the <code>Z-x.y.z.AppImage</code> file from the releases page.</li>
+        <li>Make it executable: <code>chmod +x Z-x.y.z.AppImage</code></li>
+        <li>Run the AppImage: <code>./Z-x.y.z.AppImage</code></li>
+      </ol>
+      
+      <h3>Debian/Ubuntu (DEB package)</h3>
+      <ol>
+        <li>Download the <code>z_x.y.z_amd64.deb</code> file.</li>
+        <li>Install using: <code>sudo dpkg -i z_x.y.z_amd64.deb</code></li>
+        <li>Launch Z from your applications menu or using the <code>z</code> command.</li>
+      </ol>
+      
+      <h3>Fedora/RHEL (RPM package)</h3>
+      <ol>
+        <li>Download the <code>z-x.y.z.x86_64.rpm</code> file.</li>
+        <li>Install using: <code>sudo rpm -i z-x.y.z.x86_64.rpm</code></li>
+        <li>Launch Z from your applications menu or using the <code>z</code> command.</li>
+      </ol>
+      
+      <h2>Building from Source</h2>
+      
+      <p>If you prefer to build Z from source:</p>
+      
+      <ol>
+        <li>Clone the repository: <code>git clone https://github.com/z-editor/z.git</code></li>
+        <li>Navigate to the directory: <code>cd z</code></li>
+        <li>Install dependencies: <code>npm install</code></li>
+        <li>Build the application: <code>npm run build</code></li>
+        <li>Run Z: <code>npm start</code></li>
+      </ol>
+      
+      <h2>Verifying Your Installation</h2>
+      
+      <p>After installing Z, you should see the welcome screen when you first open the application. The welcome screen includes:</p>
+      
+      <ul>
+        <li>Options to create a new project, open an existing project, or clone a repository</li>
+        <li>The current version number and build information</li>
+        <li>The language selector (powered by Z-Rosetta)</li>
+      </ul>
+      
+      <h2>Troubleshooting</h2>
+      
+      <h3>Common Installation Issues</h3>
+      
+      <h4>Windows</h4>
+      <ul>
+        <li><strong>Application doesn't start</strong>: Ensure you have the latest Visual C++ Redistributable installed.</li>
+        <li><strong>SmartScreen warning</strong>: Select "More info" then "Run anyway" if you trust the source.</li>
+      </ul>
+      
+      <h4>macOS</h4>
+      <ul>
+        <li><strong>"App is damaged" message</strong>: Right-click the app, select "Open" from the context menu, then confirm.</li>
+        <li><strong>Permission issues</strong>: Make sure you have proper permissions for the Applications folder.</li>
+      </ul>
+      
+      <h4>Linux</h4>
+      <ul>
+        <li><strong>Missing dependencies</strong>: Install required packages using your distribution's package manager.</li>
+        <li><strong>AppImage not starting</strong>: Check the permissions and ensure it's executable.</li>
+      </ul>
+      
+      <h3>Getting Help</h3>
+      
+      <p>If you encounter issues installing Z:</p>
+      
+      <ul>
+        <li>Check the <a href="https://github.com/z-editor/z/issues" target="_blank">GitHub issues</a> to see if your problem has been reported</li>
+        <li>Join our <a href="#" target="_blank">community Discord</a> for real-time support</li>
+        <li>File a new issue on GitHub with details about your system and the error you're experiencing</li>
+      </ul>
+      
+      <p>After successfully installing Z, check out the <a href="quick-start.html">Quick Start Guide</a> to learn how to use its key features.</p>
+    </main>
+  </div>
+
+  <script src="assets/js/docs.js"></script>
+</body>
+</html> 

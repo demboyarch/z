@@ -1,0 +1,20 @@
+{
+  "name": "fe",
+  "version": "1.0.0",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "A beautiful Electron app with custom titlebar",
+  "devDependencies": {
+    "electron": "^35.0.0"
+  },
+  "dependencies": {
+    "firebase": "^11.4.0",
+    "monaco-editor": "^0.52.2"
+  }
+}
