@@ -1,8 +1,9 @@
 <h1 align="center">Z</h1>
 
-<p align="center">Welcome to Z, a lightweight code editor, focusing on speed and clean design.</p>
+<p align="center">Welcome to Z, a lightweight (maybe) code editor, focusing on speed and clean design.</p>
 
 ---
+
 
 ### Installation
 
@@ -10,9 +11,9 @@ Currently available for:
 - Windows (Dev state)
 - Linux (Dev state)
 
-You can [download Fe directly](https://github.com/femboypig/Z/releases) or install via package managers:
+You can [download Z directly](https://github.com/femboypig/Z/releases) or install via package managers:
 
-### Developing Fe
+### Developing Z
 
 Prerequisites:
 - Node.js 18+

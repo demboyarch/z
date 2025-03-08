@@ -326,19 +326,40 @@ body {
     overflow-y: hidden;
     flex: 1;
     
-    /* Hide scrollbar for Chrome, Safari and Opera */
+    /* Show scrollbar for Chrome, Safari and Opera but make it very subtle */
     &::-webkit-scrollbar {
-        display: none;
+        display: block;
+        height: 3px;
     }
     
-    /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: rgba(203, 213, 224, 0.4);
+        border-radius: 3px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+        background: rgba(160, 174, 192, 0.5);
+    }
+    
+    /* Show scrollbar for Firefox but make it very thin and subtle */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(203, 213, 224, 0.4) transparent;
 }
 
-/* Remove the scrollbar placeholder */
+/* Make sure the scrollbar doesn't affect layout */
 .tabs-container::before {
-    display: none;
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    z-index: 0;
+    pointer-events: none;
 }
 
 .tab {
@@ -377,6 +398,18 @@ body {
     color: #000000;
     border-bottom: none;
     position: relative;
+}
+
+
+/* Индикатор изменённого файла */
+.tab-modified {
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #0088CC;
+    margin-right: 6px;
+    flex-shrink: 0;
 }
 
 .tab.active::after {
@@ -449,8 +482,89 @@ body {
     font-weight: 500;
 }
 
+/* Стили для подсветки синтаксиса в breadcrumb */
+.syntax-highlighted {
+    font-family: 'Zed Mono', monospace;
+    font-size: 14px;
+}
+
+.syntax-highlighted .keyword {
+    color: #0068bf;
+    font-weight: bold;
+}
+
+.syntax-highlighted .function {
+    color: #795e26;
+}
+
+.syntax-highlighted .type {
+    color: #267f99;
+}
+
+.syntax-highlighted .macro {
+    color: #af00db;
+}
+
 .editor-container {
     height: calc(100% - 67px); /* 36px tab-bar + 30px breadcrumb + 1px border */
     position: relative;
     overflow: hidden;
+}
+
+/* Monaco Editor styles */
+#monaco-editor {
+    width: 100%;
+    height: 100%;
+}
+
+/* Editor loading state */
+.editor-loading {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #64748B;
+    font-family: 'Zed Mono', sans-serif;
+    font-size: 16px;
+    gap: 16px;
+}
+
+.editor-loading .spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-top-color: #0088CC;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Editor error state */
+.editor-error {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #EF4444;
+    font-family: 'Zed Mono', sans-serif;
+    font-size: 16px;
+    gap: 8px;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.editor-error .error-details {
+    font-size: 14px;
+    color: #94A3B8;
+    max-width: 80%;
+    word-break: break-word;
 } 

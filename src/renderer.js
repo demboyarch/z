@@ -23,8 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let openTabs = [];
     let activeTab = null;
     
+    // Editor State
+    let monacoInitialized = false;
+    
     // Initialize tabs
     initializeTabEvents();
+    
+    // Initialize Monaco editor
+    initializeMonaco();
     
     // Window control button event listeners
     closeButton.addEventListener('click', () => {
@@ -54,6 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Initialize file explorer with the project files
         currentProjectPath = projectPath;
+        
+        // Делаем путь проекта доступным глобально
+        window.currentProjectPath = projectPath;
+        
         initializeFileTree(projectPath);
         
         // Update window title
@@ -293,7 +303,9 @@ document.addEventListener('DOMContentLoaded', () => {
         updateFileBreadcrumb(filePath);
         
         console.log('File clicked:', filePath);
-        // Here you would normally load the file contents
+        
+        // Load file content
+        loadFileContent(filePath);
     }
     
     // Tab System Functionality
@@ -558,6 +570,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Normalize the path for consistent handling
         const normalizedPath = filePath.replace(/\\/g, '/');
         
+        // If it's already the active tab, do nothing
+        if (activeTab && activeTab.path === normalizedPath) {
+            return;
+        }
+        
         // Deactivate current active tab
         if (activeTab) {
             const currentTab = document.querySelector(`.tab[data-path="${activeTab.path}"]`);
@@ -596,8 +613,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Update breadcrumb
             updateFileBreadcrumb(filePath);
             
-            // Load file content (if needed)
-            // loadFileContent(filePath);
+            // Load file content
+            loadFileContent(filePath);
         }
     }
     
@@ -673,33 +690,146 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Update file breadcrumb
     function updateFileBreadcrumb(filePath) {
-        const breadcrumb = document.querySelector('.file-breadcrumb');
-        if (!breadcrumb) return;
+        const breadcrumbFilePathElement = document.querySelector('.file-path');
+        const breadcrumbContextElement = document.querySelector('.context-info');
         
-        if (!filePath) {
-            breadcrumb.innerHTML = '';
-            return;
+        if (breadcrumbFilePathElement && breadcrumbContextElement) {
+            // Make path relative to project
+            let displayPath = filePath;
+            if (currentProjectPath && filePath.startsWith(currentProjectPath)) {
+                displayPath = filePath.substring(currentProjectPath.length + 1);
+            }
+            
+            breadcrumbFilePathElement.textContent = displayPath;
+            
+            // Store full path as a data attribute
+            breadcrumbFilePathElement.setAttribute('data-full-path', filePath);
+            
+            // Extract file extension for context info
+            const extension = filePath.split('.').pop().toLowerCase();
+            breadcrumbContextElement.textContent = extension;
         }
-        
-        // Get file extension for context info
-        const fileExt = filePath.split('.').pop().toLowerCase();
-        let contextInfo = fileExt;
-        
-        // You could enhance this to show more specific context
-        // For example, detecting classes/methods in code files
-        
-        // Get relative path from project root
-        let relativePath = filePath;
-        if (currentProjectPath && filePath.startsWith(currentProjectPath)) {
-            relativePath = filePath.substring(currentProjectPath.length + 1);
+    }
+
+    // Initialize Monaco Editor
+    async function initializeMonaco() {
+        try {
+            // Replace placeholder with loading indicator
+            const editorContainer = document.querySelector('.editor-container');
+            if (editorContainer) {
+                const loadingEl = document.createElement('div');
+                loadingEl.className = 'editor-loading';
+                loadingEl.innerHTML = '<div class="spinner"></div><div>Initializing editor...</div>';
+                editorContainer.innerHTML = '';
+                editorContainer.appendChild(loadingEl);
+            }
+            
+            // Initialize Monaco
+            await window.initMonaco();
+            monacoInitialized = true;
+            console.log('Monaco editor initialized');
+            
+            // If there's an active file, open it
+            if (activeFile) {
+                loadFileContent(activeFile);
+            }
+        } catch (error) {
+            console.error('Failed to initialize Monaco editor:', error);
+            
+            // Show error message in editor container
+            const editorContainer = document.querySelector('.editor-container');
+            if (editorContainer) {
+                editorContainer.innerHTML = `
+                    <div class="editor-error">
+                        <div>Failed to initialize editor</div>
+                        <div class="error-details">${error.message}</div>
+                    </div>
+                `;
+            }
         }
-        
-        // Update breadcrumb elements
-        breadcrumb.innerHTML = `
-            <span class="file-path">${relativePath}</span>
-            <span class="breadcrumb-separator">›</span>
-            <span class="context-info">${contextInfo}</span>
-        `;
+    }
+    
+    // Load file content
+    async function loadFileContent(filePath) {
+        try {
+            // Check if the file is already loaded in Monaco
+            if (monacoInitialized && window.monacoEditor) {
+                const normalizedPath = filePath.replace(/\\/g, '/');
+                const loadedModels = window.monacoEditor.monaco.editor.getModels();
+                const existingModel = loadedModels.find(model => 
+                    model.uri.path === normalizedPath || 
+                    model.uri.toString().includes(normalizedPath)
+                );
+                
+                // If model already exists, just set it as the active model
+                if (existingModel) {
+                    window.monacoEditor.instance.setModel(existingModel);
+                    // Focus the editor after switching tabs
+                    setTimeout(() => window.monacoEditor.instance.focus(), 50);
+                    return;
+                }
+            }
+            
+            // Show loading indicator in editor
+            if (!monacoInitialized) {
+                const editorContainer = document.querySelector('.editor-container');
+                if (editorContainer) {
+                    const loadingEl = document.createElement('div');
+                    loadingEl.className = 'editor-loading';
+                    loadingEl.innerHTML = '<div class="spinner"></div><div>Loading file...</div>';
+                    editorContainer.innerHTML = '';
+                    editorContainer.appendChild(loadingEl);
+                }
+            } else {
+                // Show loading in editor status bar or use Monaco's built-in loading indicator
+                // This keeps the UI responsive while loading large files
+            }
+            
+            // Get file content from the main process
+            const result = await window.project.getFileContent(filePath);
+            
+            if (!result.success) {
+                throw new Error(result.error || 'Failed to load file content');
+            }
+            
+            // If Monaco is initialized, open the file in the editor
+            if (monacoInitialized && window.monacoEditor) {
+                window.monacoEditor.openFile(filePath, result.content, result.language);
+                
+                // Начинаем отслеживать изменения файла извне
+                startWatchingExternalChanges();
+            } else {
+                console.log('Monaco not ready, will open file when initialized');
+            }
+        } catch (error) {
+            console.error('Error loading file content:', error);
+            
+            // Show error message in editor container
+            if (!monacoInitialized) {
+                const editorContainer = document.querySelector('.editor-container');
+                if (editorContainer) {
+                    editorContainer.innerHTML = `
+                        <div class="editor-error">
+                            <div>Failed to load file</div>
+                            <div class="error-details">${error.message}</div>
+                        </div>
+                    `;
+                }
+            }
+        }
+    }
+
+    // Настраиваем отслеживание внешних изменений в файлах
+    function startWatchingExternalChanges() {
+        // Убедимся, что не дублируем обработчики
+        window.project.onFileChanged((event, { filePath, content }) => {
+            console.log('File changed externally:', filePath);
+            
+            // Обновляем содержимое в редакторе
+            if (monacoInitialized && window.monacoEditor) {
+                window.monacoEditor.updateFileContent(filePath, content);
+            }
+        });
     }
 }); 
 

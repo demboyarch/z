@@ -25,7 +25,10 @@ contextBridge.exposeInMainWorld(
         selectDirectory: () => ipcRenderer.invoke('select-directory'),
         openProject: (projectPath) => ipcRenderer.invoke('open-project', { projectPath }),
         onProjectLoaded: (callback) => ipcRenderer.on('project-loaded', callback),
-        getFileTree: (projectPath) => ipcRenderer.invoke('get-file-tree', { projectPath })
+        getFileTree: (projectPath) => ipcRenderer.invoke('get-file-tree', { projectPath }),
+        getFileContent: (filePath) => ipcRenderer.invoke('get-file-content', { filePath }),
+        saveFile: (filePath, content) => ipcRenderer.invoke('save-file', { filePath, content }),
+        onFileChanged: (callback) => ipcRenderer.on('file-changed', callback)
     }
 );
 

@@ -337,6 +337,9 @@ ipcMain.handle('open-project', async (event, { projectPath }) => {
             throw new Error('Project directory does not exist');
         }
         
+        // Сохраняем путь проекта для использования в других функциях
+        mainWindow.projectPath = projectPath;
+        
         // Load the main editor window with the selected project
         mainWindow.loadFile(path.join(__dirname, 'index.html'));
         
@@ -476,6 +479,229 @@ ipcMain.handle('get-file-tree', async (event, { projectPath }) => {
         };
     }
 });
+
+// Handle getting file content
+ipcMain.handle('get-file-content', async (event, { filePath }) => {
+    try {
+        if (!fs.existsSync(filePath)) {
+            throw new Error('File does not exist');
+        }
+        
+        // Set a reasonable file size limit (10MB)
+        const stats = fs.statSync(filePath);
+        if (stats.size > 10 * 1024 * 1024) {
+            throw new Error('File is too large to open (>10MB)');
+        }
+        
+        const content = fs.readFileSync(filePath, 'utf8');
+        
+        // Начинаем отслеживание изменений файла
+        startWatchingFile(filePath);
+        
+        return { 
+            success: true, 
+            content,
+            language: getLanguageFromPath(filePath)
+        };
+    } catch (error) {
+        console.error('Error reading file:', error);
+        return { 
+            success: false, 
+            error: error.message 
+        };
+    }
+});
+
+// Список файлов, которые мы только что сохранили (чтобы игнорировать их изменения)
+const recentlySavedFiles = new Set();
+const SAVED_FILE_IGNORE_TIME = 2000; // 2 секунды
+
+// Handle saving file content
+ipcMain.handle('save-file', async (event, { filePath, content }) => {
+    try {
+        // Убедимся, что у нас есть корректный абсолютный путь
+        let absolutePath = filePath;
+        
+        // Если путь не абсолютный, преобразуем его
+        if (!path.isAbsolute(absolutePath)) {
+            console.log('Received relative path, trying to convert to absolute');
+            
+            // Пробуем использовать путь относительно текущего проекта
+            if (mainWindow.projectPath) {
+                absolutePath = path.join(mainWindow.projectPath, absolutePath);
+                console.log('Converted to absolute using project path:', absolutePath);
+            } else {
+                // Если нет текущего проекта, используем документы
+                const docsPath = app.getPath('documents');
+                absolutePath = path.join(docsPath, absolutePath);
+                console.log('Converted to absolute using documents folder:', absolutePath);
+            }
+        }
+        
+        // Убедимся, что директория существует
+        const dirPath = path.dirname(absolutePath);
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+            console.log('Created directory:', dirPath);
+        }
+        
+        console.log('Saving file to:', absolutePath);
+        fs.writeFileSync(absolutePath, content, 'utf8');
+        
+        // Сохраняем как полный, так и относительный путь для надежности
+        const relativePath = path.basename(absolutePath);
+        
+        // Добавляем файл в список недавно сохранённых для игнорирования обнаружения изменений
+        recentlySavedFiles.add(absolutePath);
+        recentlySavedFiles.add(relativePath);
+        console.log('Added to recently saved files:', absolutePath, 'and', relativePath);
+        
+        setTimeout(() => {
+            recentlySavedFiles.delete(absolutePath);
+            recentlySavedFiles.delete(relativePath);
+            console.log('Removed from recently saved files:', absolutePath, 'and', relativePath);
+        }, SAVED_FILE_IGNORE_TIME);
+        
+        // Обновляем метаданные файла для отслеживания изменений
+        watchedFiles.set(absolutePath, { 
+            mtime: fs.statSync(absolutePath).mtime.getTime(),
+            content: content
+        });
+        
+        // Также отслеживаем по относительному пути
+        watchedFiles.set(relativePath, { 
+            mtime: fs.statSync(absolutePath).mtime.getTime(),
+            content: content
+        });
+        
+        return { success: true };
+    } catch (error) {
+        console.error('Error saving file:', error);
+        return { success: false, error: error.message };
+    }
+});
+
+// Карта отслеживаемых файлов
+const watchedFiles = new Map();
+const fileWatchers = new Map();
+
+// Начать отслеживание изменений файла
+function startWatchingFile(filePath) {
+    if (fileWatchers.has(filePath)) {
+        return; // Уже отслеживается
+    }
+    
+    try {
+        // Получаем начальное состояние файла
+        const stats = fs.statSync(filePath);
+        const content = fs.readFileSync(filePath, 'utf8');
+        
+        // Сохраняем информацию о файле
+        watchedFiles.set(filePath, {
+            mtime: stats.mtime.getTime(),
+            content: content
+        });
+        
+        // Создаем отслеживание файла
+        const watcher = fs.watch(filePath, (eventType) => {
+            if (eventType === 'change') {
+                checkFileForChanges(filePath);
+            }
+        });
+        
+        // Сохраняем watcher
+        fileWatchers.set(filePath, watcher);
+        
+        console.log(`Started watching file: ${filePath}`);
+    } catch (error) {
+        console.error(`Error setting up file watcher for ${filePath}:`, error);
+    }
+}
+
+// Остановить отслеживание файла
+function stopWatchingFile(filePath) {
+    const watcher = fileWatchers.get(filePath);
+    if (watcher) {
+        watcher.close();
+        fileWatchers.delete(filePath);
+        watchedFiles.delete(filePath);
+        console.log(`Stopped watching file: ${filePath}`);
+    }
+}
+
+// Проверить файл на изменения
+function checkFileForChanges(filePath) {
+    try {
+        // Получаем базовое имя файла для проверки
+        const baseName = path.basename(filePath);
+        
+        // Если файл был недавно сохранён нами, игнорируем изменения
+        if (recentlySavedFiles.has(filePath) || recentlySavedFiles.has(baseName)) {
+            console.log(`Ignoring changes for recently saved file: ${filePath}`);
+            return;
+        }
+        
+        // Получаем текущую информацию о файле
+        const currentStats = fs.statSync(filePath);
+        const currentMtime = currentStats.mtime.getTime();
+        
+        // Получаем сохраненную информацию
+        const fileInfo = watchedFiles.get(filePath) || watchedFiles.get(baseName);
+        
+        // Если время модификации изменилось
+        if (fileInfo && currentMtime !== fileInfo.mtime) {
+            // Читаем текущее содержимое
+            const currentContent = fs.readFileSync(filePath, 'utf8');
+            
+            // Если содержимое изменилось
+            if (currentContent !== fileInfo.content) {
+                console.log(`File changed externally: ${filePath}`);
+                
+                // Обновляем сохраненную информацию
+                watchedFiles.set(filePath, {
+                    mtime: currentMtime,
+                    content: currentContent
+                });
+                
+                // Обновляем также по базовому имени
+                watchedFiles.set(baseName, {
+                    mtime: currentMtime,
+                    content: currentContent
+                });
+                
+                // Отправляем уведомление в renderer
+                if (mainWindow && !mainWindow.isDestroyed()) {
+                    mainWindow.webContents.send('file-changed', {
+                        filePath: filePath,
+                        content: currentContent
+                    });
+                }
+            }
+        }
+    } catch (error) {
+        console.error(`Error checking file changes for ${filePath}:`, error);
+    }
+}
+
+// Helper function to determine language from file extension
+function getLanguageFromPath(filePath) {
+    const extension = path.extname(filePath).toLowerCase();
+    const languageMap = {
+        '.rs': 'rust',
+        '.toml': 'toml',
+        '.json': 'json',
+        '.js': 'javascript',
+        '.ts': 'typescript',
+        '.html': 'html',
+        '.css': 'css',
+        '.md': 'markdown',
+        '.txt': 'plaintext',
+        '.yml': 'yaml',
+        '.yaml': 'yaml'
+    };
+    
+    return languageMap[extension] || 'plaintext';
+}
 
 // This method will be called when Electron has finished initialization
 app.whenReady().then(createWindow);

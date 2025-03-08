@@ -1,5 +1,5 @@
 {
-  "name": "fe",
+  "name": "z",
   "version": "1.0.0",
   "main": "src/main.js",
   "scripts": {
@@ -9,12 +9,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "A beautiful Electron app with custom titlebar",
+  "description": "Fast, lightweight editor for Rust",
   "devDependencies": {
     "electron": "^35.0.0"
   },
   "dependencies": {
     "firebase": "^11.4.0",
-    "monaco-editor": "^0.52.2"
+    "monaco-editor": "^0.52.2",
+    "requirejs": "^2.3.7"
   }
 }
