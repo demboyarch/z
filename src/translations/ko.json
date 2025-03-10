@@ -7,7 +7,10 @@
     "openProject": "프로젝트 열기",
     "cloneRepository": "저장소 복제",
     "version": "Z",
-    "loading": "로딩중..."
+    "loading": "로딩중...",
+    "message": "시작하려면 파일을 열거나 새 파일을 만들어주세요.",
+    "openFile": "파일 열기",
+    "createFile": "파일 만들기"
   },
   "editor": {
     "explorer": "파일 탐색기가 여기에 표시됩니다",

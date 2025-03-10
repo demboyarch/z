@@ -117,6 +117,10 @@ body {
 .main-container {
     flex: 1;
     background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    width: calc(100% - 280px); /* Default width based on sidebar's default width */
 }
 
 .sidebar-placeholder,
@@ -466,6 +470,8 @@ body {
     font-family: 'Zed Mono', sans-serif;
     font-size: 14px;
     color: #64748B;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .file-path {
@@ -487,28 +493,67 @@ body {
     font-family: 'Zed Mono', monospace;
     font-size: 14px;
 }
-
 .syntax-highlighted .keyword {
-    color: #0068bf;
+    color: #D73A49;
     font-weight: bold;
 }
 
 .syntax-highlighted .function {
-    color: #795e26;
+    color: #005CC5;
 }
 
 .syntax-highlighted .type {
-    color: #267f99;
+    color: #6F42C1;
 }
 
 .syntax-highlighted .macro {
-    color: #af00db;
+    color: #CB2431;
+}
+
+.syntax-highlighted .constant {
+    color: #005CC5;
+}
+
+.syntax-highlighted .attribute {
+    color: #0086B3;
+}
+
+.syntax-highlighted .lifetime {
+    color: #D73A49;
+}
+
+.syntax-highlighted .string {
+    color: #0A8744;
+}
+
+.syntax-highlighted .number {
+    color: #005CC5;
+}
+
+.syntax-highlighted .comment {
+    color: #6A737D;
+    font-style: italic;
+}
+
+.syntax-highlighted .operator {
+    color: #D73A49;
+}
+
+.syntax-highlighted .variable {
+    color: #24292E;
+}
+
+.syntax-highlighted .variable.mutable {
+    color: #953800;
+    font-style: italic;
 }
 
 .editor-container {
     height: calc(100% - 67px); /* 36px tab-bar + 30px breadcrumb + 1px border */
     position: relative;
     overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Monaco Editor styles */
@@ -567,4 +612,23 @@ body {
     color: #94A3B8;
     max-width: 80%;
     word-break: break-word;
+}
+
+/* Стили для отображения позиции курсора */
+.cursor-position {
+    display: flex;
+    align-items: center;
+    font-family: 'Zed Mono', monospace;
+    font-size: 12px;
+    color: #64748B;
+    user-select: none;
+}
+
+.cursor-col, .cursor-ln {
+    display: inline-block;
+}
+
+.cursor-separator {
+
+    color: #94A3B8;
 } 

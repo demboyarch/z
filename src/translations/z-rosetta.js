@@ -37,7 +37,7 @@ class ZRosetta {
       }
       
       this.settingsPath = path.join(appDataPath, 'settings.json');
-      
+
       // Load settings or create default
       await this.loadSettings();
       

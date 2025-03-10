@@ -7,7 +7,10 @@
     "openProject": "打开项目",
     "cloneRepository": "克隆仓库",
     "version": "Z",
-    "loading": "加载中..."
+    "loading": "加载中...",
+    "message": "开始使用，打开文件或创建新文件。",
+    "openFile": "打开文件",
+    "createFile": "创建文件"
   },
   "editor": {
     "explorer": "文件资源管理器",

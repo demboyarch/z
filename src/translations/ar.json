@@ -7,7 +7,10 @@
     "openProject": "فتح مشروع",
     "cloneRepository": "استنساخ مستودع",
     "version": "Z",
-    "loading": "جاري التحميل..."
+    "loading": "جاري التحميل...",
+    "message": "للبدء، افتح ملف أو قم بإنشاء ملف جديد.",
+    "openFile": "فتح ملف",
+    "createFile": "إنشاء ملف"
   },
   "editor": {
     "explorer": "مستكشف الملفات هنا",

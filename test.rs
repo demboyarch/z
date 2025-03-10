@@ -10,7 +10,7 @@ enum AppError {
     DatabaseError(String),
     NetworkError(String),
 }
-ы
+
 // Define a struct to represent a user in our system
 #[derive(Debug, Clone)]
 struct User {

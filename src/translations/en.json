@@ -7,7 +7,10 @@
     "openProject": "Open Project",
     "cloneRepository": "Clone Repository",
     "version": "Z",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "message": "To get started, open a file or create a new one.",
+    "openFile": "Open File",
+    "createFile": "Create File"
   },
   "editor": {
     "explorer": "File Explorer goes here",
