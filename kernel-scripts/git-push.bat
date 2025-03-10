@@ -25,8 +25,12 @@ echo Committing with message: %~1
 git commit -m "%~1"
 
 echo.
+echo Adding remote repository...
+git remote add origin https://github.com/femboypig/z.git
+
+echo.
 echo Pushing to remote repository...
-git push
+git push origin main
 
 echo.
 echo ===================================
