@@ -68,5 +68,17 @@
     "pt": "Portugiesisch",
     "ko": "Koreanisch",
     "ar": "Arabisch"
+  },
+  "contributors": {
+    "title": "Mitwirkende",
+    "modalTitle": "Mitwirkende",
+    "coreTeam": "Kernteam",
+    "contributors": "Mitwirkende",
+    "founder": "Gründer",
+    "developer": "Entwickler",
+    "contributor": "Mitwirkender",
+    "communityManager": "Community Manager",
+    "close": "Schließen",
+    "buildMessage": "Die folgenden Personen haben hart an diesem Z-Build gearbeitet:"
   }
 } 

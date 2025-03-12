@@ -269,8 +269,42 @@
             color: var(--subtle-color);
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             width: 100%;
+            padding: 0 16px;
+        }
+        
+        .version-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .version-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .contributors-button {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 2px 6px;
+            border-radius: 12px;
+            transition: all var(--transition-fast);
+            font-size: 12px;
+            color: var(--muted-color);
+        }
+        
+        .contributors-button:hover {
+            background-color: var(--divider-color);
+        }
+        
+        .contributors-button svg {
+            width: 14px;
+            height: 14px;
+            margin-right: 4px;
+            color: var(--muted-color);
         }
         
         .build-code {
@@ -757,6 +791,134 @@
             white-space: pre-wrap;
         }
 
+        /* Contributors modal */
+        .contributors-modal .modal-content {
+            max-width: 580px;
+        }
+
+        .contributors-list {
+            padding: 20px;
+        }
+
+        .contributors-intro {
+            text-align: center;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--bg-color);
+            border-radius: var(--border-radius);
+            color: var(--muted-color);
+        }
+
+        .contributors-intro strong {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .contributor-group {
+            margin-bottom: 24px;
+        }
+
+        .contributor-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .contributor-group-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--muted-color);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--divider-color);
+        }
+
+        .contributor-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .contributor-items::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .contributor-items::-webkit-scrollbar-track {
+            background: var(--bg-color);
+            border-radius: 4px;
+        }
+
+        .contributor-items::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .contributor-items::-webkit-scrollbar-thumb:hover {
+            background: var(--subtle-color);
+        }
+
+        .contributor-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            background: var(--bg-color);
+            transition: all var(--transition-fast);
+        }
+
+        .contributor-item:hover {
+            transform: translateY(-2px);
+            background: var(--action-button-bg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .contributor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .contributor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .contributor-info {
+            flex: 1;
+        }
+
+        .contributor-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 6px;
+        }
+
+        .contributor-roles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .contributor-role {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            white-space: nowrap;
+            background: var(--bg-color);
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+
+        .contributor-role:hover {
+            background: var(--bg-color);
+        }
+
         /* z-rosetta language selector styles */
         .z-rosetta-language-selector {
             display: flex;
@@ -834,6 +996,134 @@
             opacity: 0;
             transition: opacity 0.3s ease-out;
         }
+
+        /* Contributors modal */
+        .contributors-modal .modal-content {
+            max-width: 580px;
+        }
+
+        .contributors-list {
+            padding: 20px;
+        }
+
+        .contributors-intro {
+            text-align: center;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--bg-color);
+            border-radius: var(--border-radius);
+            color: var(--muted-color);
+        }
+
+        .contributors-intro strong {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .contributor-group {
+            margin-bottom: 24px;
+        }
+
+        .contributor-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .contributor-group-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--muted-color);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--divider-color);
+        }
+
+        .contributor-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .contributor-items::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .contributor-items::-webkit-scrollbar-track {
+            background: var(--bg-color);
+            border-radius: 4px;
+        }
+
+        .contributor-items::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .contributor-items::-webkit-scrollbar-thumb:hover {
+            background: var(--subtle-color);
+        }
+
+        .contributor-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            background: var(--bg-color);
+            transition: all var(--transition-fast);
+        }
+
+        .contributor-item:hover {
+            transform: translateY(-2px);
+            background: var(--action-button-bg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .contributor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .contributor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .contributor-info {
+            flex: 1;
+        }
+
+        .contributor-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 6px;
+        }
+
+        .contributor-roles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .contributor-role {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            white-space: nowrap;
+            background: var(--bg-color);
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+
+        .contributor-role:hover {
+            background: var(--bg-color);
+        }
     </style>
 </head>
 <body>
@@ -894,14 +1184,25 @@
             </div>
             
             <div class="version-info">
-                <span data-z-rosetta="welcome.version">Z</span> <span id="full-version">0.1.0-dev</span> • <span id="build-code" class="build-code">loading...</span>
-                
-
-                <div class="analytics-toggle" id="analytics-toggle">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <span data-z-rosetta="analytics.title">Analytics</span>
+                <div class="version-left">
+                    <span data-z-rosetta="welcome.version">Z</span> <span id="full-version">0.1.0-dev</span> • <span id="build-code" class="build-code">loading...</span>
+                </div>
+                <div class="version-right">
+                    <div class="analytics-toggle" id="analytics-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                        <span data-z-rosetta="analytics.title">Analytics</span>
+                    </div>
+                    <div class="contributors-button" id="contributors-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span data-z-rosetta="contributors.title">Contributors</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1060,6 +1361,92 @@
                 <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px; padding: 16px; border-top: 1px solid var(--border-color);">
                     <button class="modal-button modal-button-secondary" id="git-clone-cancel" data-z-rosetta="git.clone.cancel" style="padding: 8px 16px; border: none; border-radius: var(--border-radius); background: var(--action-button-bg); font-size: 14px; cursor: pointer; transition: background var(--transition-fast);">Cancel</button>
                     <button class="modal-button modal-button-primary" id="git-clone-button" data-z-rosetta="git.clone.cloneButton" style="padding: 8px 16px; border: none; border-radius: var(--border-radius); background: var(--accent-color); color: white; font-size: 14px; cursor: pointer; transition: opacity var(--transition-fast);">Clone Repository</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contributors Modal -->
+        <div class="modal-overlay contributors-modal" id="contributors-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    <h3 class="modal-title" data-z-rosetta="contributors.modalTitle">Contributors</h3>
+                </div>
+                
+                <div class="contributors-list">
+                    <!-- Core Team -->
+                    <div class="contributor-group">
+                        <h4 class="contributor-group-title" data-z-rosetta="contributors.coreTeam">Core Team</h4>
+                        <p class="contributor-group-description" data-z-rosetta="contributors.buildMessage" style="margin-bottom: 16px; color: var(--muted-color);">Над этим билдом Z усердно работали:</p>
+                        <div class="contributor-items">
+                            <div class="contributor-item">
+                                <div class="contributor-avatar">
+                                    <img src="https://github.com/femboypig.png" alt="femboypig">
+                                </div>
+                                <div class="contributor-info">
+                                    <div class="contributor-name">femboypig</div>
+                                    <div class="contributor-roles">
+                                        <span class="contributor-role" data-z-rosetta="contributors.founder">Founder</span>
+                                        <span class="contributor-role" data-z-rosetta="contributors.developer">Developer</span>
+                                        <span class="contributor-role" data-z-rosetta="contributors.contributor">Contributor</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="contributor-item">
+                                <div class="contributor-avatar">
+                                    <img src="https://github.com/demboyarch.png" alt="demboyarch">
+                                </div>
+                                <div class="contributor-info">
+                                    <div class="contributor-name">demboyarch</div>
+                                    <div class="contributor-roles">
+                                        <span class="contributor-role" data-z-rosetta="contributors.developer">Developer</span>
+                                        <span class="contributor-role" data-z-rosetta="contributors.contributor">Contributor</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contributors -->
+                    <div class="contributor-group">
+                        <h4 class="contributor-group-title" data-z-rosetta="contributors.contributors">Contributors</h4>
+                        <div class="contributor-items">
+                            <div class="contributor-item">
+                                <div class="contributor-avatar">
+                                    <img src="https://github.com/femboypig.png" alt="femboypig">
+                                </div>
+                                <div class="contributor-info">
+                                    <div class="contributor-name">femboypig</div>
+                                    <div class="contributor-roles">
+                                        <span class="contributor-role" data-z-rosetta="contributors.communityManager">Community Manager</span>
+                                        <span class="contributor-role" data-z-rosetta="contributors.contributor">Contributor</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="contributor-item">
+                                <div class="contributor-avatar">
+                                    <img src="https://github.com/demboyarch.png" alt="demboyarch">
+                                </div>
+                                <div class="contributor-info">
+                                    <div class="contributor-name">demboyarch</div>
+                                    <div class="contributor-roles">
+                                        <span class="contributor-role" data-z-rosetta="contributors.developer">Developer</span>
+                                        <span class="contributor-role" data-z-rosetta="contributors.contributor">Contributor</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="modal-button modal-button-primary" id="contributors-close" data-z-rosetta="contributors.close">Close</button>
                 </div>
             </div>
         </div>
@@ -1676,6 +2063,44 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeGitCloneModal();
+            }
+        });
+
+        // Contributors modal
+        document.getElementById('contributors-toggle').addEventListener('click', () => {
+            const modal = document.getElementById('contributors-modal');
+            modal.classList.add('active');
+            
+            // Add entrance animation for contributor items
+            const items = document.querySelectorAll('.contributor-item');
+            items.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 100 + index * 50);
+            });
+        });
+        
+        document.getElementById('contributors-close').addEventListener('click', () => {
+            const modal = document.getElementById('contributors-modal');
+            modal.classList.remove('active');
+        });
+        
+        // Close modal when clicking outside
+        document.getElementById('contributors-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'contributors-modal') {
+                const modal = document.getElementById('contributors-modal');
+                modal.classList.remove('active');
+            }
+        });
+        
+        // Handle Escape key to close modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('contributors-modal');
+                modal.classList.remove('active');
             }
         });
     </script>

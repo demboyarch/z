@@ -68,5 +68,17 @@
     "pt": "ポルトガル語",
     "ko": "韓国語",
     "ar": "アラビア語"
+  },
+  "contributors": {
+    "title": "貢献者",
+    "modalTitle": "貢献者",
+    "coreTeam": "コアチーム",
+    "contributors": "貢献者",
+    "founder": "創設者",
+    "developer": "開発者",
+    "contributor": "貢献者",
+    "communityManager": "コミュニティマネージャー",
+    "close": "閉じる",
+    "buildMessage": "このZビルドに尽力した人々："
   }
 }

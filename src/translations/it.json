@@ -68,5 +68,17 @@
     "pt": "Portoghese",
     "ko": "Coreano",
     "ar": "Arabo"
+  },
+  "contributors": {
+    "title": "Collaboratori",
+    "modalTitle": "Collaboratori",
+    "coreTeam": "Team Principale",
+    "contributors": "Collaboratori",
+    "founder": "Fondatore",
+    "developer": "Sviluppatore",
+    "contributor": "Collaboratore",
+    "communityManager": "Gestore della Comunità",
+    "close": "Chiudi",
+    "buildMessage": "Le seguenti persone hanno lavorato duramente su questa versione di Z:"
   }
 } 

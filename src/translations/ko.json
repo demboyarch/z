@@ -68,5 +68,17 @@
     "pt": "포르투갈어",
     "ko": "한국어",
     "ar": "아랍어"
+  },
+  "contributors": {
+    "title": "기여자",
+    "modalTitle": "기여자",
+    "coreTeam": "핵심 팀",
+    "contributors": "기여자",
+    "founder": "설립자",
+    "developer": "개발자",
+    "contributor": "기여자",
+    "communityManager": "커뮤니티 매니저",
+    "close": "닫기",
+    "buildMessage": "다음 사람들이 이 Z 빌드를 위해 열심히 일했습니다:"
   }
 } 
