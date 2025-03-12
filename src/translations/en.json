@@ -68,5 +68,19 @@
     "pt": "Portuguese",
     "ko": "Korean",
     "ar": "Arabic"
+  },
+
+  
+  "contributors": {
+    "title": "Contributors",
+    "modalTitle": "Contributors",
+    "coreTeam": "Core Team",
+    "contributors": "Contributors",
+    "founder": "Founder",
+    "developer": "Developer",
+    "contributor": "Contributor",
+    "communityManager": "Community Manager",
+    "close": "Close",
+    "buildMessage": "The following people worked hard on this Z build:"
   }
 }

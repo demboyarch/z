@@ -68,5 +68,17 @@
     "pt": "البرتغالية",
     "ko": "الكورية",
     "ar": "العربية"
+  },
+  "contributors": {
+    "title": "المساهمون",
+    "modalTitle": "المساهمون",
+    "coreTeam": "الفريق الأساسي",
+    "contributors": "المساهمون",
+    "founder": "المؤسس",
+    "developer": "مطور",
+    "contributor": "مساهم",
+    "communityManager": "مدير المجتمع",
+    "close": "إغلاق",
+    "buildMessage": "عمل الأشخاص التاليون بجد على هذا الإصدار من Z:"
   }
 } 

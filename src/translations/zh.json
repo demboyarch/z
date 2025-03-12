@@ -68,5 +68,17 @@
     "pt": "葡萄牙语",
     "ko": "韩语",
     "ar": "阿拉伯语"
+  },
+  "contributors": {
+    "title": "贡献者",
+    "modalTitle": "贡献者",
+    "coreTeam": "核心团队",
+    "contributors": "贡献者",
+    "founder": "创始人",
+    "developer": "开发者",
+    "contributor": "贡献者",
+    "communityManager": "社区经理",
+    "close": "关闭",
+    "buildMessage": "以下人员为这个Z版本付出了努力："
   }
 } 

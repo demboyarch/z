@@ -68,5 +68,17 @@
     "pt": "Português",
     "ko": "Coreano",
     "ar": "Árabe"
+  },
+  "contributors": {
+    "title": "Colaboradores",
+    "modalTitle": "Colaboradores",
+    "coreTeam": "Equipe Principal",
+    "contributors": "Colaboradores",
+    "founder": "Fundador",
+    "developer": "Desenvolvedor",
+    "contributor": "Colaborador",
+    "communityManager": "Gerente de Comunidade",
+    "close": "Fechar",
+    "buildMessage": "As seguintes pessoas trabalharam arduamente nesta versão do Z:"
   }
 } 
