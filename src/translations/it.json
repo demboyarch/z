@@ -1,6 +1,6 @@
 {
   "welcome": {
-    "title": "Benvenuto in Z",
+    "title": "Benvenuto su Z",
     "tagline": "Editor veloce e leggero per te",
     "getStarted": "Inizia",
     "newProject": "Nuovo Progetto",
@@ -8,52 +8,52 @@
     "cloneRepository": "Clona Repository",
     "version": "Z",
     "loading": "Caricamento...",
-    "message": "Per iniziare, apri un file o crea uno nuovo.",
+    "message": "Apri un file o creane uno nuovo per iniziare",
     "openFile": "Apri File",
     "createFile": "Crea File"
   },
   "editor": {
-    "explorer": "Esplora file qui",
-    "container": "Contenitore principale qui"
+    "explorer": "Esplora File",
+    "container": "Contenitore Editor"
   },
   "git": {
     "clone": {
       "modalTitle": "Clona Repository",
-      "repoUrl": "URL Repository",
-      "repoUrlPlaceholder": "https://github.com/username/repository.git",
-      "directory": "Nome Directory (opzionale)",
-      "directoryPlaceholder": "mio-progetto",
-      "cloneButton": "Clona Repository",
-      "cloningButton": "Clonazione in corso...",
+      "repoUrl": "URL del Repository",
+      "repoUrlPlaceholder": "Inserisci l'URL del repository (es: https://github.com/user/repo.git)",
+      "directory": "Nome Directory Locale",
+      "directoryPlaceholder": "Inserisci il nome della directory (opzionale)",
+      "cloneButton": "Clona",
+      "cloningButton": "Clonazione...",
       "cancel": "Annulla",
-      "progress": "Avanzamento Clonazione",
-      "urlError": "Inserisci un URL di repository Git valido",
-      "genericError": "Impossibile clonare il repository",
-      "success": "Repository clonato con successo"
+      "progress": "Progresso Clonazione",
+      "urlError": "URL del repository Git non valido",
+      "genericError": "Impossibile clonare il repository. Riprova.",
+      "success": "Repository clonato con successo!"
     }
   },
   "analytics": {
     "title": "Analisi",
-    "modalTitle": "Aiuta a migliorare Z",
-    "modalIntro": "Raccogliamo dati anonimi per migliorare funzionalità e stabilità. Puoi scegliere cosa condividere:",
-    "basicInfo": "Informazioni di Base",
-    "basicDescription": "Versione Z, codice build, informazioni SO, frequenza di utilizzo",
+    "modalTitle": "Aiuta a Migliorare Z",
+    "modalIntro": "Aiutaci a migliorare Z condividendo dati anonimi sull'utilizzo. Puoi scegliere quali informazioni condividere:",
+    "basicInfo": "Dati di Utilizzo Base",
+    "basicDescription": "Versione dell'applicazione, informazioni di build, sistema operativo e statistiche di utilizzo base",
     "systemInfo": "Informazioni di Sistema",
-    "systemDescription": "Risoluzione schermo, architettura processore",
-    "privacy": "Non raccogliamo mai dati personali o contenuti dei file.",
-    "dataPreview": "Anteprima Dati",
-    "dataPreviewDescription": "Verranno inviati solo i dati consentiti. Gli elementi disabilitati (barrati) sono esclusi.",
-    "appVersion": "Versione app:",
-    "buildCode": "Codice build:",
+    "systemDescription": "Risoluzione dello schermo e architettura CPU",
+    "privacy": "Non raccogliamo né memorizziamo mai informazioni personali o contenuti dei file",
+    "dataPreview": "Anteprima Raccolta Dati",
+    "dataPreviewDescription": "Verranno raccolti solo gli elementi attivati. Gli elementi disattivati non sono inclusi.",
+    "appVersion": "Versione applicazione:",
+    "buildCode": "Numero build:",
     "platform": "Piattaforma:",
     "os": "Sistema operativo:",
     "architecture": "Architettura:",
     "resolution": "Risoluzione:",
-    "disableAll": "Disabilita Tutto",
+    "disableAll": "Disattiva Tutto",
     "save": "Salva",
-    "analyticsDisabled": "Analisi disabilitate, nessun dato verrà inviato",
-    "onlyBasic": "Verranno inviate solo informazioni di base",
-    "analyticsEnabled": "Analisi abilitate, grazie per l'aiuto nel migliorare Z"
+    "analyticsDisabled": "Raccolta dati disattivata",
+    "onlyBasic": "Vengono raccolti solo i dati di utilizzo base",
+    "analyticsEnabled": "Grazie per aiutarci a migliorare Z!"
   },
   "language": {
     "title": "Lingua",

@@ -1,59 +1,59 @@
 {
   "welcome": {
     "title": "Z へようこそ",
-    "tagline": "高速で軽量なエディタ",
+    "tagline": "あなたのための高速で軽量なエディタ",
     "getStarted": "始める",
     "newProject": "新規プロジェクト",
     "openProject": "プロジェクトを開く",
     "cloneRepository": "リポジトリをクローン",
     "version": "Z",
     "loading": "読み込み中...",
-    "message": "開始するには、ファイルを開くか新しいファイルを作成してください。",
+    "message": "ファイルを開くか新規作成して始めましょう",
     "openFile": "ファイルを開く",
     "createFile": "ファイルを作成"
   },
   "editor": {
-    "explorer": "ファイルエクスプローラーがここに表示されます",
-    "container": "メインコンテナがここに表示されます"
+    "explorer": "ファイルエクスプローラー",
+    "container": "エディタコンテナ"
   },
   "git": {
     "clone": {
       "modalTitle": "リポジトリをクローン",
-      "repoUrl": "リポジトリ URL",
-      "repoUrlPlaceholder": "https://github.com/username/repository.git",
-      "directory": "ディレクトリ名（任意）",
-      "directoryPlaceholder": "my-project",
-      "cloneButton": "リポジトリをクローン",
+      "repoUrl": "リポジトリURL",
+      "repoUrlPlaceholder": "リポジトリURLを入力（例：https://github.com/user/repo.git）",
+      "directory": "ローカルディレクトリ名",
+      "directoryPlaceholder": "ディレクトリ名を入力（任意）",
+      "cloneButton": "クローン",
       "cloningButton": "クローン中...",
       "cancel": "キャンセル",
       "progress": "クローン進捗",
-      "urlError": "有効な Git リポジトリ URL を入力してください",
-      "genericError": "リポジトリのクローンに失敗しました",
-      "success": "リポジトリのクローンに成功しました"
+      "urlError": "無効なGitリポジトリURLです",
+      "genericError": "リポジトリのクローンに失敗しました。もう一度お試しください。",
+      "success": "リポジトリのクローンに成功しました！"
     }
   },
   "analytics": {
     "title": "分析",
-    "modalTitle": "Z の改善にご協力ください",
-    "modalIntro": "機能と安定性を向上させるために匿名データを収集しています。共有する内容を選択できます：",
-    "basicInfo": "基本情報",
-    "basicDescription": "Z バージョン、ビルドコード、OS 情報、使用頻度",
+    "modalTitle": "Zの改善にご協力ください",
+    "modalIntro": "匿名の使用データを共有してZの改善にご協力ください。共有する情報を選択できます：",
+    "basicInfo": "基本的な使用データ",
+    "basicDescription": "アプリバージョン、ビルド情報、OS、基本的な使用統計",
     "systemInfo": "システム情報",
-    "systemDescription": "画面解像度、プロセッサアーキテクチャ",
-    "privacy": "個人データやファイルの内容は収集しません。",
-    "dataPreview": "データプレビュー",
-    "dataPreviewDescription": "許可されたデータのみが送信されます。無効化された項目（取り消し線）は除外されます。",
+    "systemDescription": "画面解像度とCPUアーキテクチャ",
+    "privacy": "個人情報やファイルの内容は一切収集・保存しません",
+    "dataPreview": "データ収集プレビュー",
+    "dataPreviewDescription": "有効化された項目のみ収集されます。無効化された項目は含まれません。",
     "appVersion": "アプリバージョン：",
-    "buildCode": "ビルドコード：",
+    "buildCode": "ビルド番号：",
     "platform": "プラットフォーム：",
     "os": "OS：",
     "architecture": "アーキテクチャ：",
     "resolution": "解像度：",
     "disableAll": "すべて無効化",
     "save": "保存",
-    "analyticsDisabled": "分析が無効化されました。データは送信されません",
-    "onlyBasic": "基本情報のみ送信されます",
-    "analyticsEnabled": "分析が有効化されました。Z の改善にご協力いただきありがとうございます"
+    "analyticsDisabled": "データ収集が無効化されています",
+    "onlyBasic": "基本的な使用データのみ収集しています",
+    "analyticsEnabled": "Zの改善にご協力ありがとうございます！"
   },
   "language": {
     "title": "言語",
