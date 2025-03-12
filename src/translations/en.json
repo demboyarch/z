@@ -3,62 +3,62 @@
     "title": "Welcome to Z",
     "tagline": "Fast, lightweight editor for you",
     "getStarted": "Get Started",
-    "newProject": "New Project",
+    "newProject": "New Project", 
     "openProject": "Open Project",
     "cloneRepository": "Clone Repository",
     "version": "Z",
     "loading": "Loading...",
-    "message": "To get started, open a file or create a new one.",
+    "message": "Open a file or create a new one to get started",
     "openFile": "Open File",
     "createFile": "Create File"
   },
   "editor": {
-    "explorer": "File Explorer goes here",
-    "container": "Main Container goes here"
+    "explorer": "File Explorer",
+    "container": "Editor Container" 
   },
   "git": {
     "clone": {
       "modalTitle": "Clone Repository",
       "repoUrl": "Repository URL",
-      "repoUrlPlaceholder": "https://github.com/username/repository.git",
-      "directory": "Directory Name (optional)",
-      "directoryPlaceholder": "my-project",
-      "cloneButton": "Clone Repository",
+      "repoUrlPlaceholder": "Enter repository URL (e.g. https://github.com/user/repo.git)",
+      "directory": "Local Directory Name",
+      "directoryPlaceholder": "Enter directory name (optional)",
+      "cloneButton": "Clone",
       "cloningButton": "Cloning...",
       "cancel": "Cancel",
-      "progress": "Cloning Progress",
-      "urlError": "Please enter a valid Git repository URL",
-      "genericError": "Failed to clone repository",
-      "success": "Repository cloned successfully"
+      "progress": "Clone Progress",
+      "urlError": "Invalid Git repository URL",
+      "genericError": "Failed to clone repository. Please try again.",
+      "success": "Repository cloned successfully!"
     }
   },
   "analytics": {
     "title": "Analytics",
-    "modalTitle": "Help improve Z",
-    "modalIntro": "We collect anonymous data to improve features and stability. You can choose what to share:",
-    "basicInfo": "Basic Information",
-    "basicDescription": "Z version, build code, OS info, usage frequency",
-    "systemInfo": "System Information",
-    "systemDescription": "Screen resolution, processor architecture",
-    "privacy": "We never collect personal data or file contents.",
-    "dataPreview": "Data Preview",
-    "dataPreviewDescription": "Only allowed data will be sent. Disabled items (strikethrough) are excluded.",
-    "appVersion": "App version:",
-    "buildCode": "Build code:",
+    "modalTitle": "Help Improve Z",
+    "modalIntro": "Help us make Z better by sharing anonymous usage data. You can choose what information to share:",
+    "basicInfo": "Basic Usage Data",
+    "basicDescription": "App version, build info, operating system, and basic usage statistics",
+    "systemInfo": "System Information", 
+    "systemDescription": "Display resolution and CPU architecture",
+    "privacy": "We never collect or store personal information or file contents",
+    "dataPreview": "Data Collection Preview",
+    "dataPreviewDescription": "Only enabled items will be collected. Disabled items are not included.",
+    "appVersion": "Application Version:",
+    "buildCode": "Build Number:",
     "platform": "Platform:",
     "os": "OS:",
     "architecture": "Architecture:",
     "resolution": "Resolution:",
     "disableAll": "Disable All",
     "save": "Save",
-    "analyticsDisabled": "Analytics disabled, no data will be sent",
-    "onlyBasic": "Only basic information will be sent",
-    "analyticsEnabled": "Analytics enabled, thank you for helping improve Z"
+    "analyticsDisabled": "Analytics collection is disabled",
+    "onlyBasic": "Only collecting basic usage data",
+    "analyticsEnabled": "Thank you for helping improve Z!"
   },
   "language": {
     "title": "Language",
     "en": "English",
-    "ru": "Russian",
+    "ru": "Russian", 
     "fr": "French",
     "de": "German",
     "es": "Spanish",
@@ -69,4 +69,4 @@
     "ko": "Korean",
     "ar": "Arabic"
   }
-} 
+}

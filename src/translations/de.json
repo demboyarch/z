@@ -1,59 +1,59 @@
 {
   "welcome": {
     "title": "Willkommen bei Z",
-    "tagline": "Schneller, leichter Editor für Sie",
+    "tagline": "Schneller, leichtgewichtiger Editor für Sie",
     "getStarted": "Loslegen",
     "newProject": "Neues Projekt",
     "openProject": "Projekt öffnen",
     "cloneRepository": "Repository klonen",
     "version": "Z",
     "loading": "Lädt...",
-    "message": "Um loszulegen, öffnen Sie eine Datei oder erstellen Sie eine neue.",
+    "message": "Öffnen Sie eine Datei oder erstellen Sie eine neue, um zu beginnen",
     "openFile": "Datei öffnen",
     "createFile": "Datei erstellen"
   },
   "editor": {
-    "explorer": "Datei-Explorer wird hier angezeigt",
-    "container": "Hauptcontainer wird hier angezeigt"
+    "explorer": "Datei-Explorer",
+    "container": "Editor-Container"
   },
   "git": {
     "clone": {
       "modalTitle": "Repository klonen",
       "repoUrl": "Repository-URL",
-      "repoUrlPlaceholder": "https://github.com/benutzername/repository.git",
-      "directory": "Verzeichnisname (optional)",
-      "directoryPlaceholder": "mein-projekt",
-      "cloneButton": "Repository klonen",
+      "repoUrlPlaceholder": "Geben Sie die Repository-URL ein (z.B. https://github.com/user/repo.git)",
+      "directory": "Lokaler Verzeichnisname",
+      "directoryPlaceholder": "Geben Sie den Verzeichnisnamen ein (optional)",
+      "cloneButton": "Klonen",
       "cloningButton": "Klonen...",
       "cancel": "Abbrechen",
       "progress": "Klonfortschritt",
-      "urlError": "Bitte geben Sie eine gültige Git-Repository-URL ein",
-      "genericError": "Repository konnte nicht geklont werden",
-      "success": "Repository erfolgreich geklont"
+      "urlError": "Ungültige Git-Repository-URL",
+      "genericError": "Repository konnte nicht geklont werden. Bitte versuchen Sie es erneut.",
+      "success": "Repository erfolgreich geklont!"
     }
   },
   "analytics": {
     "title": "Analytik",
-    "modalTitle": "Helfen Sie, Z zu verbessern",
-    "modalIntro": "Wir sammeln anonyme Daten, um Funktionen und Stabilität zu verbessern. Sie können wählen, was Sie teilen möchten:",
-    "basicInfo": "Grundlegende Informationen",
-    "basicDescription": "Z-Version, Build-Code, Betriebssystem-Info, Nutzungshäufigkeit",
+    "modalTitle": "Helfen Sie Z zu verbessern",
+    "modalIntro": "Helfen Sie uns, Z zu verbessern, indem Sie anonyme Nutzungsdaten teilen. Sie können wählen, welche Informationen Sie teilen möchten:",
+    "basicInfo": "Grundlegende Nutzungsdaten",
+    "basicDescription": "App-Version, Build-Informationen, Betriebssystem und grundlegende Nutzungsstatistiken",
     "systemInfo": "Systeminformationen",
-    "systemDescription": "Bildschirmauflösung, Prozessorarchitektur",
-    "privacy": "Wir sammeln niemals persönliche Daten oder Dateiinhalte.",
-    "dataPreview": "Datenvorschau",
-    "dataPreviewDescription": "Nur erlaubte Daten werden gesendet. Deaktivierte Elemente (durchgestrichen) werden ausgeschlossen.",
+    "systemDescription": "Bildschirmauflösung und CPU-Architektur",
+    "privacy": "Wir sammeln oder speichern niemals persönliche Informationen oder Dateiinhalte",
+    "dataPreview": "Datenerfassungsvorschau",
+    "dataPreviewDescription": "Nur aktivierte Elemente werden erfasst. Deaktivierte Elemente werden nicht einbezogen.",
     "appVersion": "App-Version:",
-    "buildCode": "Build-Code:",
+    "buildCode": "Build-Nummer:",
     "platform": "Plattform:",
     "os": "Betriebssystem:",
     "architecture": "Architektur:",
     "resolution": "Auflösung:",
     "disableAll": "Alles deaktivieren",
     "save": "Speichern",
-    "analyticsDisabled": "Analytik deaktiviert, es werden keine Daten gesendet",
-    "onlyBasic": "Es werden nur grundlegende Informationen gesendet",
-    "analyticsEnabled": "Analytik aktiviert, danke für Ihre Hilfe bei der Verbesserung von Z"
+    "analyticsDisabled": "Datenerfassung deaktiviert",
+    "onlyBasic": "Nur grundlegende Nutzungsdaten werden erfasst",
+    "analyticsEnabled": "Danke, dass Sie helfen, Z zu verbessern!"
   },
   "language": {
     "title": "Sprache",

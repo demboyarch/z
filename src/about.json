@@ -2,14 +2,15 @@
   "version": "0.1.0",
   "channel": "dev",
   "fullVersion": "0.1.0-dev",
-  "buildCode": "0.1.0-dev+win64.20250305.49ypxq",
-  "buildDate": "2025-03-05",
+  "buildCode": "0.1.0-dev+linux64.20250312.vg7ycg",
+  "buildDate": "2025-03-12",
   "os": {
-    "windows": true,
+    "windows": false,
     "macos": false,
-    "linux": false
+    "linux": true,
+    "linuxDistro": "Arch Linux"
   },
-  "currentOS": "Windows",
+  "currentOS": "Arch Linux",
   "architecture": "x64",
   "contributors": [
     "Z Team"
