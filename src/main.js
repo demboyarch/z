@@ -9,6 +9,16 @@ const zRosetta = require('./translations/z-rosetta');
 
 let mainWindow;
 
+// Force regeneration of about.json on startup
+if (fs.existsSync(path.join(__dirname, 'about.json'))) {
+    try {
+        fs.unlinkSync(path.join(__dirname, 'about.json'));
+        console.log('Removed existing about.json to regenerate with updated OS detection');
+    } catch (error) {
+        console.error('Error removing about.json:', error);
+    }
+}
+
 // Generate about.json with current system information
 function generateAboutJson() {
     const aboutPath = path.join(__dirname, 'about.json');
@@ -43,6 +53,54 @@ function generateAboutJson() {
     const platform = `${osCode}${archCode}`;
     const buildCode = `${version}-${channel}+${platform}.${dateFormatted}.${randomHash}`;
     
+    // Function to detect specific Linux distribution
+    function getLinuxDistro() {
+        try {
+            if (process.platform !== 'linux') return null;
+            
+            // Try to read os-release file which exists on most modern Linux distributions
+            if (fs.existsSync('/etc/os-release')) {
+                const osRelease = fs.readFileSync('/etc/os-release', 'utf8');
+                
+                // Look for NAME, ID and VERSION_ID in the os-release file
+                const nameMatch = osRelease.match(/^NAME="?([^"\n]+)"?/m);
+                const idMatch = osRelease.match(/^ID="?([^"\n]+)"?/m);
+                const versionMatch = osRelease.match(/^VERSION_ID="?([^"\n]+)"?/m);
+                
+                const name = nameMatch ? nameMatch[1] : null;
+                const id = idMatch ? idMatch[1] : null;
+                const version = versionMatch ? versionMatch[1] : null;
+                
+                // Format the distribution name
+                if (name) {
+                    return version ? `${name} ${version}` : name;
+                } else if (id) {
+                    return id.charAt(0).toUpperCase() + id.slice(1);
+                }
+            }
+            
+            // Try other distribution-specific files
+            if (fs.existsSync('/etc/arch-release')) return 'Arch Linux';
+            if (fs.existsSync('/etc/debian_version')) return 'Debian';
+            if (fs.existsSync('/etc/fedora-release')) return 'Fedora';
+            if (fs.existsSync('/etc/redhat-release')) return 'Red Hat';
+            if (fs.existsSync('/etc/SuSE-release')) return 'SuSE';
+            
+            // Fallback to using command line
+            try {
+                const lsbRelease = execSync('lsb_release -ds 2>/dev/null').toString().trim();
+                if (lsbRelease) return lsbRelease;
+            } catch (e) {
+                // Ignore command errors
+            }
+            
+            return 'Linux';
+        } catch (error) {
+            console.error('Error detecting Linux distribution:', error);
+            return 'Linux';
+        }
+    }
+
     const aboutData = {
         version: version,
         channel: channel,
@@ -52,11 +110,13 @@ function generateAboutJson() {
         os: {
             windows: process.platform === 'win32',
             macos: process.platform === 'darwin',
-            linux: process.platform === 'linux'
+            linux: process.platform === 'linux',
+            // Add more detailed Linux distribution info when on Linux
+            ...(process.platform === 'linux' ? { linuxDistro: getLinuxDistro() } : {})
         },
         currentOS: process.platform === 'win32' ? 'Windows' : 
                   process.platform === 'darwin' ? 'macOS' : 
-                  process.platform === 'linux' ? 'Linux' : 
+                  process.platform === 'linux' ? getLinuxDistro() : 
                   'Unknown',
         architecture: process.arch,
         contributors: ["Z Team"],
