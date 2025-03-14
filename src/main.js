@@ -525,11 +525,30 @@ function getFileTree(dirPath, projectRoot) {
 // Handle getting file tree
 ipcMain.handle('get-file-tree', async (event, { projectPath }) => {
     try {
-        if (!fs.existsSync(projectPath)) {
-            throw new Error('Project directory does not exist');
+        // Убедимся, что у нас есть корректный абсолютный путь
+        let absolutePath = projectPath;
+        
+        // Если путь не абсолютный, преобразуем его
+        if (!path.isAbsolute(absolutePath)) {
+            console.log('Received relative project path, trying to convert to absolute');
+            
+            // Пробуем использовать путь относительно текущего проекта
+            if (mainWindow.projectPath) {
+                absolutePath = path.join(mainWindow.projectPath, absolutePath);
+                console.log('Converted to absolute using project path:', absolutePath);
+            } else {
+                // Если нет текущего проекта, используем документы
+                const docsPath = app.getPath('documents');
+                absolutePath = path.join(docsPath, absolutePath);
+                console.log('Converted to absolute using documents folder:', absolutePath);
+            }
         }
         
-        const fileTree = getFileTree(projectPath, projectPath);
+        if (!fs.existsSync(absolutePath)) {
+            throw new Error('Project directory does not exist: ' + absolutePath);
+        }
+        
+        const fileTree = getFileTree(absolutePath, absolutePath);
         return { success: true, fileTree };
     } catch (error) {
         console.error('Error getting file tree:', error);
@@ -543,25 +562,44 @@ ipcMain.handle('get-file-tree', async (event, { projectPath }) => {
 // Handle getting file content
 ipcMain.handle('get-file-content', async (event, { filePath }) => {
     try {
-        if (!fs.existsSync(filePath)) {
-            throw new Error('File does not exist');
+        // Убедимся, что у нас есть корректный абсолютный путь
+        let absolutePath = filePath;
+        
+        // Если путь не абсолютный, преобразуем его
+        if (!path.isAbsolute(absolutePath)) {
+            console.log('Received relative path, trying to convert to absolute');
+            
+            // Пробуем использовать путь относительно текущего проекта
+            if (mainWindow.projectPath) {
+                absolutePath = path.join(mainWindow.projectPath, absolutePath);
+                console.log('Converted to absolute using project path:', absolutePath);
+            } else {
+                // Если нет текущего проекта, используем документы
+                const docsPath = app.getPath('documents');
+                absolutePath = path.join(docsPath, absolutePath);
+                console.log('Converted to absolute using documents folder:', absolutePath);
+            }
+        }
+        
+        if (!fs.existsSync(absolutePath)) {
+            throw new Error('File does not exist: ' + absolutePath);
         }
         
         // Set a reasonable file size limit (10MB)
-        const stats = fs.statSync(filePath);
+        const stats = fs.statSync(absolutePath);
         if (stats.size > 10 * 1024 * 1024) {
             throw new Error('File is too large to open (>10MB)');
         }
         
-        const content = fs.readFileSync(filePath, 'utf8');
+        const content = fs.readFileSync(absolutePath, 'utf8');
         
         // Начинаем отслеживание изменений файла
-        startWatchingFile(filePath);
+        startWatchingFile(absolutePath);
         
         return { 
             success: true, 
             content,
-            language: getLanguageFromPath(filePath)
+            language: getLanguageFromPath(absolutePath)
         };
     } catch (error) {
         console.error('Error reading file:', error);
@@ -652,39 +690,84 @@ function startWatchingFile(filePath) {
     }
     
     try {
+        // Убедимся, что у нас есть корректный абсолютный путь
+        let absolutePath = filePath;
+        
+        // Если путь не абсолютный, преобразуем его
+        if (!path.isAbsolute(absolutePath)) {
+            console.log('startWatchingFile: Received relative path, trying to convert to absolute');
+            
+            // Пробуем использовать путь относительно текущего проекта
+            if (mainWindow.projectPath) {
+                absolutePath = path.join(mainWindow.projectPath, absolutePath);
+                console.log('startWatchingFile: Converted to absolute using project path:', absolutePath);
+            } else {
+                // Если нет текущего проекта, используем документы
+                const docsPath = app.getPath('documents');
+                absolutePath = path.join(docsPath, absolutePath);
+                console.log('startWatchingFile: Converted to absolute using documents folder:', absolutePath);
+            }
+        }
+        
+        // Если файл уже отслеживается по абсолютному пути, просто добавляем отслеживание по относительному пути
+        if (fileWatchers.has(absolutePath)) {
+            watchedFiles.set(filePath, watchedFiles.get(absolutePath));
+            return;
+        }
+        
         // Получаем начальное состояние файла
-        const stats = fs.statSync(filePath);
-        const content = fs.readFileSync(filePath, 'utf8');
+        const stats = fs.statSync(absolutePath);
+        const content = fs.readFileSync(absolutePath, 'utf8');
         
         // Сохраняем информацию о файле
-        watchedFiles.set(filePath, {
+        watchedFiles.set(absolutePath, {
             mtime: stats.mtime.getTime(),
             content: content
         });
         
-        // Создаем отслеживание файла
-        const watcher = fs.watch(filePath, (eventType) => {
+        // Также отслеживаем по относительному пути, если он отличается
+        if (absolutePath !== filePath) {
+            watchedFiles.set(filePath, {
+                mtime: stats.mtime.getTime(),
+                content: content
+            });
+        }
+        
+        // Создаем файловый вотчер
+        const watcher = fs.watch(absolutePath, (eventType) => {
             if (eventType === 'change') {
-                checkFileForChanges(filePath);
+                checkFileForChanges(absolutePath);
             }
         });
         
-        // Сохраняем watcher
-        fileWatchers.set(filePath, watcher);
+        fileWatchers.set(absolutePath, watcher);
+        if (absolutePath !== filePath) {
+            fileWatchers.set(filePath, watcher);
+        }
         
-        console.log(`Started watching file: ${filePath}`);
+        console.log('Started watching file:', absolutePath);
     } catch (error) {
-        console.error(`Error setting up file watcher for ${filePath}:`, error);
+        console.error('Error starting file watcher:', error);
     }
 }
 
 // Остановить отслеживание файла
 function stopWatchingFile(filePath) {
-    const watcher = fileWatchers.get(filePath);
+    // Убедимся, что у нас есть корректный абсолютный путь
+    let absolutePath = filePath;
+    
+    // Если путь не абсолютный, преобразуем его
+    if (!path.isAbsolute(absolutePath) && mainWindow.projectPath) {
+        absolutePath = path.join(mainWindow.projectPath, absolutePath);
+    }
+    
+    const watcher = fileWatchers.get(filePath) || fileWatchers.get(absolutePath);
     if (watcher) {
         watcher.close();
         fileWatchers.delete(filePath);
+        fileWatchers.delete(absolutePath);
         watchedFiles.delete(filePath);
+        watchedFiles.delete(absolutePath);
         console.log(`Stopped watching file: ${filePath}`);
     }
 }
@@ -692,47 +775,55 @@ function stopWatchingFile(filePath) {
 // Проверить файл на изменения
 function checkFileForChanges(filePath) {
     try {
+        // Убедимся, что у нас есть корректный абсолютный путь
+        let absolutePath = filePath;
+        
+        // Если путь не абсолютный, преобразуем его
+        if (!path.isAbsolute(absolutePath) && mainWindow.projectPath) {
+            absolutePath = path.join(mainWindow.projectPath, absolutePath);
+        }
+        
         // Получаем базовое имя файла для проверки
-        const baseName = path.basename(filePath);
+        const baseName = path.basename(absolutePath);
         
         // Если файл был недавно сохранён нами, игнорируем изменения
-        if (recentlySavedFiles.has(filePath) || recentlySavedFiles.has(baseName)) {
+        if (recentlySavedFiles.has(filePath) || recentlySavedFiles.has(absolutePath) || recentlySavedFiles.has(baseName)) {
             console.log(`Ignoring changes for recently saved file: ${filePath}`);
             return;
         }
         
         // Получаем текущую информацию о файле
-        const currentStats = fs.statSync(filePath);
+        const currentStats = fs.statSync(absolutePath);
         const currentMtime = currentStats.mtime.getTime();
         
-        // Получаем сохраненную информацию
-        const fileInfo = watchedFiles.get(filePath) || watchedFiles.get(baseName);
+        // Получаем сохраненную информацию - проверяем все возможные пути
+        const fileInfo = watchedFiles.get(filePath) || watchedFiles.get(absolutePath) || watchedFiles.get(baseName);
         
         // Если время модификации изменилось
         if (fileInfo && currentMtime !== fileInfo.mtime) {
             // Читаем текущее содержимое
-            const currentContent = fs.readFileSync(filePath, 'utf8');
+            const currentContent = fs.readFileSync(absolutePath, 'utf8');
             
             // Если содержимое изменилось
             if (currentContent !== fileInfo.content) {
-                console.log(`File changed externally: ${filePath}`);
+                console.log(`File changed externally: ${absolutePath}`);
                 
-                // Обновляем сохраненную информацию
-                watchedFiles.set(filePath, {
+                // Обновляем сохраненную информацию для всех путей
+                const fileData = {
                     mtime: currentMtime,
                     content: currentContent
-                });
+                };
                 
-                // Обновляем также по базовому имени
-                watchedFiles.set(baseName, {
-                    mtime: currentMtime,
-                    content: currentContent
-                });
+                watchedFiles.set(filePath, fileData);
+                watchedFiles.set(absolutePath, fileData);
+                watchedFiles.set(baseName, fileData);
                 
                 // Отправляем уведомление в renderer
                 if (mainWindow && !mainWindow.isDestroyed()) {
                     mainWindow.webContents.send('file-changed', {
                         filePath: filePath,
+                        absolutePath: absolutePath,
+                        baseName: baseName,
                         content: currentContent
                     });
                 }
