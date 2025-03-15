@@ -1,4 +1,4 @@
-<h1 align="center">Z</h1>
+<h1 align="center">z</h1>
 
 <p align="center">Welcome to Z, a lightweight (maybe) code editor, focusing on speed and clean design.</p>
 
@@ -10,14 +10,12 @@
 Currently available for:
 - Windows (Dev state)
 - Linux (Dev state)
-
-You can [download Z directly](https://github.com/femboypig/Z/releases) or install via package managers:
-
+- 
 ### Developing Z
 
 Prerequisites:
 - Node.js 18+
-- npm or yarn
+- npm
 - Git
 
 ```bash
@@ -39,10 +37,3 @@ We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guideline
 ### License
 
 MIT License - see [LICENSE](./LICENSE) for details.
-
----
-
-<div align="center">
-  <sub>Built with ⚡️ using Electron</sub>
-</div>
-```
