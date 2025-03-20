@@ -119,7 +119,7 @@ function generateAboutJson() {
                   process.platform === 'linux' ? getLinuxDistro() : 
                   'Unknown',
         architecture: process.arch,
-        contributors: ["Z Team"],
+        contributors: ["Zen Team"],
         repository: "https://github.com/z-editor/z",
         license: "MIT"
     };
@@ -283,11 +283,11 @@ ipcMain.handle('git-clone', async (event, { url, directory }) => {
 
         return new Promise((resolve, reject) => {
             const targetDir = directory || path.basename(url, '.git');
-            const fullPath = path.join(app.getPath('documents'), 'Z-Projects', targetDir);
+            const fullPath = path.join(app.getPath('documents'), 'Zen-Projects', targetDir);
             console.log('Target directory:', fullPath);
 
             // Create projects directory if it doesn't exist
-            const projectsDir = path.join(app.getPath('documents'), 'Z-Projects');
+            const projectsDir = path.join(app.getPath('documents'), 'Zen-Projects');
             if (!fs.existsSync(projectsDir)) {
                 console.log('Creating projects directory:', projectsDir);
                 fs.mkdirSync(projectsDir, { recursive: true });

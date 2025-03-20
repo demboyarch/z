@@ -5,11 +5,13 @@ use std::time::{Duration, Instant};
 // Define error types for our application
 #[derive(Debug)]
 enum AppError {
-    InvalidInput(String),
+    InvalidInput(S tring),
     ProcessingFailed(String),
     DatabaseError(String),
     NetworkError(String),
 }
+
+// Picun F6
 
 // Define a struct to represent a user in our system
 #[derive(Debug, Clone)]

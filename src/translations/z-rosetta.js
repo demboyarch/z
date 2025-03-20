@@ -1,6 +1,6 @@
 /**
- * z-rosetta.js - Multilingual support module for Z applications
- * © 2024 Z Team
+ * z-rosetta.js - Multilingual support module for Zen applications
+ * © 2024 Zen Team
  * 
  * This module handles loading, managing and applying translations across the application.
  */
@@ -26,10 +26,10 @@ class ZRosetta {
     if (this.initialized) return;
     
     try {
-      // Set up settings path in AppData/Local/Z/settings.json
+      // Set up settings path in AppData/Local/Zen/settings.json
       const appDataPath = path.join(process.env.APPDATA || 
         (process.platform === 'darwin' ? path.join(process.env.HOME, 'Library', 'Application Support') : 
-        path.join(process.env.HOME, '.local', 'share')), 'Z');
+        path.join(process.env.HOME, '.local', 'share')), 'Zen');
       
       // Ensure the directory exists
       if (!fs.existsSync(appDataPath)) {

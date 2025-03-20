@@ -1,6 +1,6 @@
 /**
- * z-rosetta-client.js - Client-side multilingual support for Z applications
- * © 2024 Z Team
+ * z-rosetta-client.js - Client-side multilingual support for Zen applications
+ * © 2024 Zen Team
  * 
  * This module handles translations in the renderer process.
  */

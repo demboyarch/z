@@ -346,7 +346,7 @@ function initMonaco() {
                 fontSize: 14,
                 fontFamily: "'Zed Mono', Consolas, 'Courier New', monospace",
                 minimap: {
-                    enabled: true,
+                    enabled: false,
                     maxColumn: 100, // Ограничиваем для производительности
                     renderCharacters: false // Отключаем рендер символов для повышения производительности
                 },
@@ -2023,11 +2023,11 @@ function updateFileContent(filePath, content, forceFocus = false) {
  */
 function setupCursorPositionTracking() {
     // Находим элементы для отображения позиции курсора
-    const cursorColElement = document.querySelector('.cursor-col');
+
     const cursorLnElement = document.querySelector('.cursor-ln');
     
-    if (!cursorColElement || !cursorLnElement) {
-        console.error('Cursor position elements not found');
+    if (!cursorLnElement) {
+        console.error('Cursor position not found');
         return;
     }
     
@@ -2046,8 +2046,8 @@ function setupCursorPositionTracking() {
      * @param {number} lineNumber - Номер строки (начиная с 1)
      */
     function updateCursorPosition(column, lineNumber) {
-        cursorLnElement.textContent = lineNumber;
-        cursorColElement.textContent = column;
+        cursorLnElement.textContent = `${lineNumber},${column}`;
+
     }
 }
 

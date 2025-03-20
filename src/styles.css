@@ -619,8 +619,8 @@ body {
     display: flex;
     align-items: center;
     font-family: 'Zed Mono', monospace;
-    font-size: 12px;
-    color: #64748B;
+    font-size: 14px;
+    color: #000000b5;
     user-select: none;
 }
 
@@ -629,6 +629,133 @@ body {
 }
 
 .cursor-separator {
+    color: #000000;
+}
 
-    color: #94A3B8;
+.status-indicators {
+    display: flex;
+    margin-left: 12px;
+    align-items: center;
+    font-size: 14px;
+    ;
+}
+
+.checkmark-indicator {
+    display: none;
+    background-color: rgb(0 0 0 / 0%);
+
+}
+
+.checkmark-indicator:hover {
+    background-color: rgb(0 0 0 / 0%);
+}
+
+.DUO-indicators {
+    display: none;
+    align-items: center;
+    background-color: rgb(255 0 0 / 10%);
+    padding: 0px 3px;
+    border: 1px solid #ff000024;
+    border-radius: 4px;
+}
+
+.DUO-indicators:hover {
+    background-color: rgb(255 0 0 / 18%);
+}
+
+/* When there are no issues, show checkmark and hide indicators */
+.status-indicators.has-no-issues .checkmark-indicator {
+    display: flex;
+}
+
+.status-indicators.has-no-issues .DUO-indicators {
+    display: none;
+}
+
+/* When there are issues, hide checkmark and show indicators */
+.status-indicators:not(.has-no-issues) .checkmark-indicator {
+    display: none;
+}
+
+.status-indicators:not(.has-no-issues) .DUO-indicators {
+    display: flex;
+}
+
+.error-icon, .warning-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    margin-right: 2px;
+}
+
+.error-count {
+    font-family: 'Zed Mono', monospace;
+    color: #1e1e1e;
+    margin-right: 2px;
+}
+
+.warning-count {
+    font-family: 'Zed Mono', monospace;
+    color: #1e1e1e;
+}
+
+.status-message {
+    font-family: 'Zed Mono', monospace;
+    font-size: 14px;
+    color: #1e1e1e;
+    margin-left: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+}
+
+/* Error details tab styles */
+.tab[data-path$="-error-details"] .tab-name,
+.tab[data-path$="-warning-details"] .tab-name,
+.virtual-tab.virtual-error-tab .tab-name {
+    color: var(--error-text-color, #e53e3e);
+    font-weight: bold;
+}
+
+.tab[data-path$="-warning-details"] .tab-name,
+.virtual-tab.virtual-warning-tab .tab-name {
+    color: var(--warning-text-color, #dd6b20);
+}
+
+/* Virtual tab styles */
+.virtual-tab {
+    position: relative;
+}
+
+.virtual-tab::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.1), transparent);
+}
+
+.virtual-tab.virtual-error-tab::before {
+    background: linear-gradient(to right, transparent, rgba(229, 62, 62, 0.5), transparent);
+}
+
+.virtual-tab.virtual-warning-tab::before {
+    background: linear-gradient(to right, transparent, rgba(221, 107, 32, 0.5), transparent);
+}
+
+.virtual-tab.active::before {
+    background: linear-gradient(to right, transparent, rgba(0, 136, 204, 0.5), transparent);
+}
+
+.virtual-tab.virtual-error-tab.active::before {
+    background: linear-gradient(to right, transparent, rgba(229, 62, 62, 0.7), transparent);
+}
+
+.virtual-tab.virtual-warning-tab.active::before {
+    background: linear-gradient(to right, transparent, rgba(221, 107, 32, 0.7), transparent);
 } 

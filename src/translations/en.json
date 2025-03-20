@@ -1,12 +1,12 @@
 {
   "welcome": {
-    "title": "Welcome to Z",
+    "title": "Welcome to Zen",
     "tagline": "Fast, lightweight editor for you",
     "getStarted": "Get Started",
     "newProject": "New Project", 
     "openProject": "Open Project",
     "cloneRepository": "Clone Repository",
-    "version": "Z",
+    "version": "Zen",
     "loading": "Loading...",
     "message": "Open a file or create a new one to get started",
     "openFile": "Open File",
@@ -34,8 +34,8 @@
   },
   "analytics": {
     "title": "Analytics",
-    "modalTitle": "Help Improve Z",
-    "modalIntro": "Help us make Z better by sharing anonymous usage data. You can choose what information to share:",
+    "modalTitle": "Help Improve Zen",
+    "modalIntro": "Help us make Zen better by sharing anonymous usage data. You can choose what information to share:",
     "basicInfo": "Basic Usage Data",
     "basicDescription": "App version, build info, operating system, and basic usage statistics",
     "systemInfo": "System Information", 
@@ -53,7 +53,7 @@
     "save": "Save",
     "analyticsDisabled": "Analytics collection is disabled",
     "onlyBasic": "Only collecting basic usage data",
-    "analyticsEnabled": "Thank you for helping improve Z!"
+    "analyticsEnabled": "Thank you for helping improve Zen!"
   },
   "language": {
     "title": "Language",
@@ -81,6 +81,6 @@
     "contributor": "Contributor",
     "communityManager": "Community Manager",
     "close": "Close",
-    "buildMessage": "The following people worked hard on this Z build:"
+    "buildMessage": "The following people worked hard on this Zen build:"
   }
 }
