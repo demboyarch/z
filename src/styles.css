@@ -1,3 +1,6 @@
+@import './variables.css';
+@import './styles/monaco-theme-vars.css';
+
 @font-face {
     font-family: 'Zed Mono';
     src: url('./assets/fonts/zed-mono-extended.ttf') format('truetype');
@@ -13,8 +16,8 @@
 
 body {
     font-family: 'Zed Mono', sans-serif;
-    background: #ffffff;
-    color: #2C3E50;
+    background: var(--body-background);
+    color: var(--body-primary-text);
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -22,13 +25,13 @@ body {
 
 .titlebar {
     height: 38px;
-    background: #F8FAFC;
+    background: var(--titlebar-background);
     -webkit-app-region: drag;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 16px;
-    border-bottom: 1px solid #E2E8F0;
+    border-bottom: var(--titlebar-border-bottom);
 }
 
 .titlebar-left {
@@ -52,22 +55,22 @@ body {
 }
 
 .close {
-    background: #FF4757;
+    background: var(--close-action-bg);
 }
 
 .minimize {
-    background: #FDCB6E;
+    background: var(--minimize-action-bg);
 }
 
 .maximize {
-    background: #2ECC71;
+    background: var(--maximize-action-bg);
 }
 
 .project-name {
     font-family: 'Zed Mono', monospace;
     font-size: 14px;
     font-weight: 500;
-    color: #2C3E50;
+    color: var(--project-name-text);
     margin-left: 2px;
 }
 
@@ -81,8 +84,8 @@ body {
     width: 280px;
     min-width: 200px;
     max-width: 600px;
-    background: #F8FAFC;
-    border-right: 1px solid #E2E8F0;
+    background: var(--sidebar-background);
+    border-right: var(--sidebar-border-right);
     display: block;
     overflow-y: auto;
     overflow-x: hidden;
@@ -90,7 +93,7 @@ body {
     
     /* Ð¡Ñ‚Ð¸Ð»Ð¸ Ð´Ð»Ñ Firefox */
     scrollbar-width: thin;
-    scrollbar-color: #CBD5E0 #F8FAFC;
+    scrollbar-color: var(--sidebar-scrollbar-thumb);
 }
 
 /* Ð¡Ñ‚Ð¸Ð»Ð¸ Ð´Ð»Ñ Webkit (Chrome, Safari, Edge, Electron) */
@@ -99,11 +102,11 @@ body {
 }
 
 .sidebar::-webkit-scrollbar-track {
-    background: #F8FAFC;
+    background: var(--sidebar-scrollbar-track-bg);
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-    background-color: #CBD5E0;
+    background-color: var(--sidebar-scrollbar-thumb-bg);
     border-radius: 4px;
     border: 2px solid #F8FAFC;
 }
@@ -116,7 +119,7 @@ body {
 
 .main-container {
     flex: 1;
-    background: #ffffff;
+    background: var(--main-container-bg);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -129,7 +132,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #94A3B8;
+    color: var(--placeholder-secondary-text);
     font-size: 18px;
     font-family: 'Zed Mono', monospace;
     font-weight: 500;
@@ -148,22 +151,23 @@ body {
 }
 
 .file-tree-toggle:hover {
-    background-color: rgb(0 0 0 / 10%);
+    background-color: var(--file-tree-toggle-hover-bg);
 }
 
 .file-tree-toggle img {
     width: 20px;
     height: 20px;
+    filter: brightness(0) saturate(100%) invert(var(--file-tree-icon-invert, 0));
 }
 
 .file-tree-toggle.active {
-    background-color: rgb(0 0 0 / 22%);
+    background-color: var(--file-tree-toggle-active-bg);
 }
 
 .downbar {
     height: 28px;
-    background: #F8FAFC;
-    border-top: 1px solid #E2E8F0;
+    background: var(--downbar-background);
+    border-top: var(--downbar-border-top);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -192,7 +196,7 @@ body {
 
 .resizer:hover,
 .resizer.resizing {
-    background: #E2E8F0;
+    background: var(--resizer-interaction-bg);
 }
 
 .resizer::before {
@@ -224,12 +228,12 @@ body {
 }
 
 .file-tree-item:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: var(--file-tree-item-hover-bg);
 }
 
 .file-tree-item.active {
-    background-color: rgb(0 0 0 / 15%);
-    color: black;
+    background-color: var(--file-tree-item-active-bg);
+    color: var(--file-tree-active-text);
 }
 
 .file-tree-item-name {
@@ -273,12 +277,12 @@ body {
 
 .sidebar-error {
     padding: 16px;
-    color: #e53e3e;
+    color: var(--sidebar-error-text);
     font-size: 14px;
 }
 
 .empty-folder {
-    color: #718096;
+    color: var(--empty-folder-text);
     font-style: italic;
     font-size: 12px;
     padding-left: 16px;
@@ -289,7 +293,7 @@ body {
     display: grid;
     grid-template-columns: auto 1fr;
     height: 30px;
-    background-color: #f5f5f5;
+    background-color: var(--tab-bar-bg);
     user-select: none;
     overflow: hidden;
 }
@@ -298,7 +302,7 @@ body {
     display: flex;
     align-items: center;
     padding: 0 4px;
-    border-right: 1px solid #E2E8F0;
+    border-right: var(--tab-navigation-border-right);
 }
 
 .tab-arrow {
@@ -311,17 +315,17 @@ body {
     height: 24px;
     border-radius: 4px;
     cursor: pointer;
-    color: #64748B;
+    color: var(--tab-arrow-icon);
     transition: background-color 0.1s ease;
 }
 
 .tab-arrow:hover {
-    background-color: rgba(0, 0, 0, 0.06);
-    color: #475569;
+    background-color: var(--tab-arrow-hover-bg);
+    color: var(--tab-arrow-hover-icon);
 }
 
 .tab-arrow:active {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: var(--tab-arrow-active-bg);
 }
 
 .tabs-container {
@@ -341,17 +345,17 @@ body {
     }
     
     &::-webkit-scrollbar-thumb {
-        background: rgba(203, 213, 224, 0.4);
+        background: var(--global-scrollbar-thumb);
         border-radius: 3px;
     }
     
     &::-webkit-scrollbar-thumb:hover {
-        background: rgba(160, 174, 192, 0.5);
+        background: var(--global-scrollbar-thumb-hover);
     }
     
     /* Show scrollbar for Firefox but make it very thin and subtle */
     scrollbar-width: thin;
-    scrollbar-color: rgba(203, 213, 224, 0.4) transparent;
+    scrollbar-color: var(--tabs-container-scrollbar-color);
 }
 
 /* Make sure the scrollbar doesn't affect layout */
@@ -373,33 +377,33 @@ body {
     max-width: 200px;
     padding: 0 10px;
     height: 30px;
-    background-color: #F1F5F9;
-    border-right: 1px solid #E2E8F0;
+    background-color: var(--tab-inactive-bg);
+    border-right: var(--tab-border-right);
     cursor: grab;
     position: relative;
     transition: background-color 0.1s ease;
     font-family: 'Zed Mono', sans-serif;
     font-size: 14px;
-    color: #64748B;
+    color: var(--tab-inactive-text);
     user-select: none;
 }
 
 /* Style for tab being dragged */
 .tab.dragging {
     opacity: 0.7;
-    background-color: #CBD5E0;
+    background-color: var(--tab-dragging-bg);
     z-index: 10;
     cursor: grabbing;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .tab:hover {
-    background-color: #e6ecf3;
+    background-color: var(--tab-hover-bg);
 }
 
 .tab.active {
-    background-color: #FFFFFF;
-    color: #000000;
+    background-color: var(--tab-active-bg);
+    color: var(--tab-active-text);
     border-bottom: none;
     position: relative;
 }
@@ -411,7 +415,7 @@ body {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background-color: #0088CC;
+    background-color: var(--tab-modified-indicator);
     margin-right: 6px;
     flex-shrink: 0;
 }
@@ -423,7 +427,7 @@ body {
     left: 0;
     right: 0;
     height: 1px;
-    background-color: #FFFFFF;
+    background-color: var(--tab-active-border);
     z-index: 1;
 }
 
@@ -446,7 +450,7 @@ body {
     background: transparent;
     cursor: pointer;
     opacity: 0.6;
-    color: #64748B;
+    color: var(--tab-close-icon);
     transition: all 0.1s ease;
 }
 
@@ -455,8 +459,8 @@ body {
 }
 
 .tab-close:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-    color: #475569;
+    background-color: var(--tab-close-hover-bg);
+    color: var(--tab-close-hover-icon);
 }
 
 /* File Breadcrumb Styles */
@@ -465,26 +469,26 @@ body {
     align-items: center;
     height: 30px;
     padding: 0 16px;
-    background-color: #FFFFFF;
-    border-bottom: 1px solid #E2E8F0;
+    background-color: var(--breadcrumb-bg);
+    border-bottom: var(--breadcrumb-border-bottom);
     font-family: 'Zed Mono', sans-serif;
     font-size: 14px;
-    color: #64748B;
+    color: var(--breadcrumb-text);
     width: 100%;
     box-sizing: border-box;
 }
 
 .file-path {
-    color: #64748B;
+    color: var(--file-path-text);
 }
 
 .breadcrumb-separator {
     margin: 0 8px;
-    color: #94A3B8;
+    color: var(--breadcrumb-separator);
 }
 
 .context-info {
-    color: #2C3E50;
+    color: var(--context-info-text);
     font-weight: 500;
 }
 
@@ -494,57 +498,57 @@ body {
     font-size: 14px;
 }
 .syntax-highlighted .keyword {
-    color: #D73A49;
+    color: var(--syntax-keyword);
     font-weight: bold;
 }
 
 .syntax-highlighted .function {
-    color: #005CC5;
+    color: var(--syntax-function);
 }
 
 .syntax-highlighted .type {
-    color: #6F42C1;
+    color: var(--syntax-type);
 }
 
 .syntax-highlighted .macro {
-    color: #CB2431;
+    color: var(--syntax-macro);
 }
 
 .syntax-highlighted .constant {
-    color: #005CC5;
+    color: var(--syntax-constant);
 }
 
 .syntax-highlighted .attribute {
-    color: #0086B3;
+    color: var(--syntax-attribute);
 }
 
 .syntax-highlighted .lifetime {
-    color: #D73A49;
+    color: var(--syntax-lifetime);
 }
 
 .syntax-highlighted .string {
-    color: #0A8744;
+    color: var(--syntax-string);
 }
 
 .syntax-highlighted .number {
-    color: #005CC5;
+    color: var(--syntax-number);
 }
 
 .syntax-highlighted .comment {
-    color: #6A737D;
+    color: var(--syntax-comment);
     font-style: italic;
 }
 
 .syntax-highlighted .operator {
-    color: #D73A49;
+    color: var(--syntax-operator);
 }
 
 .syntax-highlighted .variable {
-    color: #24292E;
+    color: var(--syntax-variable);
 }
 
 .syntax-highlighted .variable.mutable {
-    color: #953800;
+    color: var(--syntax-mutable-variable);
     font-style: italic;
 }
 
@@ -570,7 +574,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #64748B;
+    color: var(--editor-loading-text);
     font-family: 'Zed Mono', sans-serif;
     font-size: 16px;
     gap: 16px;
@@ -579,8 +583,8 @@ body {
 .editor-loading .spinner {
     width: 36px;
     height: 36px;
-    border: 3px solid rgba(0, 0, 0, 0.1);
-    border-top-color: #0088CC;
+    border: var(--editor-loading-spinner-border);
+    border-top-color: var(--editor-loading-spinner-border-top-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -599,7 +603,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #EF4444;
+    color: var(--editor-error-text);
     font-family: 'Zed Mono', sans-serif;
     font-size: 16px;
     gap: 8px;
@@ -620,7 +624,7 @@ body {
     align-items: center;
     font-family: 'Zed Mono', monospace;
     font-size: 14px;
-    color: #000000b5;
+    color: var(--cursor-position-text);
     user-select: none;
 }
 
@@ -629,7 +633,7 @@ body {
 }
 
 .cursor-separator {
-    color: #000000;
+    color: var(--cursor-separator);
 }
 
 .status-indicators {
@@ -642,25 +646,25 @@ body {
 
 .checkmark-indicator {
     display: none;
-    background-color: rgb(0 0 0 / 0%);
+    background-color: var(--checkmark-indicator-bg);
 
 }
 
 .checkmark-indicator:hover {
-    background-color: rgb(0 0 0 / 0%);
+    background-color: var(--checkmark-indicator-hover-bg);
 }
 
 .DUO-indicators {
     display: none;
     align-items: center;
-    background-color: rgb(255 0 0 / 10%);
+    background-color: var(--duo-indicator-bg);
     padding: 0px 3px;
-    border: 1px solid #ff000024;
+    border: var(--duo-indicators-border);
     border-radius: 4px;
 }
 
 .DUO-indicators:hover {
-    background-color: rgb(255 0 0 / 18%);
+    background-color: var(--duo-indicator-hover-bg);
 }
 
 /* When there are no issues, show checkmark and hide indicators */
@@ -692,19 +696,19 @@ body {
 
 .error-count {
     font-family: 'Zed Mono', monospace;
-    color: #1e1e1e;
+    color: var(--error-count-text);
     margin-right: 2px;
 }
 
 .warning-count {
     font-family: 'Zed Mono', monospace;
-    color: #1e1e1e;
+    color: var(--warning-count-text);
 }
 
 .status-message {
     font-family: 'Zed Mono', monospace;
     font-size: 14px;
-    color: #1e1e1e;
+    color: var(--status-message-text);
     margin-left: 12px;
     white-space: nowrap;
     overflow: hidden;
@@ -737,25 +741,25 @@ body {
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.1), transparent);
+    background: var(--virtual-tab-glow);
 }
 
 .virtual-tab.virtual-error-tab::before {
-    background: linear-gradient(to right, transparent, rgba(229, 62, 62, 0.5), transparent);
+    background: var(--virtual-error-tab-glow);
 }
 
 .virtual-tab.virtual-warning-tab::before {
-    background: linear-gradient(to right, transparent, rgba(221, 107, 32, 0.5), transparent);
+    background: var(--virtual-warning-tab-glow);
 }
 
 .virtual-tab.active::before {
-    background: linear-gradient(to right, transparent, rgba(0, 136, 204, 0.5), transparent);
+    background: var(--virtual-active-tab-glow);
 }
 
 .virtual-tab.virtual-error-tab.active::before {
-    background: linear-gradient(to right, transparent, rgba(229, 62, 62, 0.7), transparent);
+    background: var(--virtual-error-tab-active-glow);
 }
 
 .virtual-tab.virtual-warning-tab.active::before {
-    background: linear-gradient(to right, transparent, rgba(221, 107, 32, 0.7), transparent);
+    background: var(--virtual-warning-tab-active-glow);
 } 

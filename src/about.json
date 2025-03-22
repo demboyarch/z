@@ -2,8 +2,8 @@
   "version": "0.1.0",
   "channel": "dev",
   "fullVersion": "0.1.0-dev",
-  "buildCode": "0.1.0-dev+linux64.20250320.nocmzk",
-  "buildDate": "2025-03-20",
+  "buildCode": "0.1.0-dev+linux64.20250322.icrjt9",
+  "buildDate": "2025-03-22",
   "os": {
     "windows": false,
     "macos": false,

@@ -49,13 +49,30 @@ contextBridge.exposeInMainWorld(
     }
 );
 
-// Expose z-rosetta translation API
+// Expose z-rosetta translation & theme API
 contextBridge.exposeInMainWorld(
     'zRosetta',
     {
+        // Language functions
         getLanguage: () => ipcRenderer.invoke('z-rosetta-get-language'),
         getTranslations: () => ipcRenderer.invoke('z-rosetta-get-translations'),
         setLanguage: (language) => ipcRenderer.invoke('z-rosetta-set-language', language),
-        onLanguageChanged: (callback) => ipcRenderer.on('z-rosetta-language-changed', callback)
+        onLanguageChanged: (callback) => ipcRenderer.on('z-rosetta-language-changed', callback),
+        
+        // Theme functions
+        getTheme: () => ipcRenderer.invoke('z-rosetta-get-theme'),
+        getThemeData: () => ipcRenderer.invoke('z-rosetta-get-theme-data'),
+        setTheme: (theme) => ipcRenderer.invoke('z-rosetta-set-theme', theme),
+        getAvailableThemes: () => ipcRenderer.invoke('z-rosetta-get-available-themes')
+    }
+);
+
+// Expose general IPC for events
+contextBridge.exposeInMainWorld(
+    'ipc',
+    {
+        on: (channel, callback) => ipcRenderer.on(channel, callback),
+        invoke: (channel, args) => ipcRenderer.invoke(channel, args),
+        send: (channel, args) => ipcRenderer.send(channel, args)
     }
 ); 
