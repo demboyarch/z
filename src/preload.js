@@ -28,7 +28,10 @@ contextBridge.exposeInMainWorld(
         getFileTree: (projectPath) => ipcRenderer.invoke('get-file-tree', { projectPath }),
         getFileContent: (filePath) => ipcRenderer.invoke('get-file-content', { filePath }),
         saveFile: (filePath, content) => ipcRenderer.invoke('save-file', { filePath, content }),
-        onFileChanged: (callback) => ipcRenderer.on('file-changed', callback)
+        onFileChanged: (callback) => ipcRenderer.on('file-changed', callback),
+        createItem: (options) => ipcRenderer.invoke('create-item', options),
+        getFolderContents: (folderPath) => ipcRenderer.invoke('get-folder-contents', { folderPath }),
+        deleteItem: (options) => ipcRenderer.invoke('delete-item', options)
     }
 );
 

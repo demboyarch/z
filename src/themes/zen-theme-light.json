@@ -33,6 +33,16 @@
     "file-tree-active-text": "black",
     "empty-folder-text": "#718096",
     
+    "context-menu-bg": "#FFFFFF",
+    "context-menu-border": "1px solid #E2E8F0",
+    "context-menu-shadow": "0 2px 10px rgba(0, 0, 0, 0.1)",
+    "context-menu-text-color": "#2C3E50",
+    "context-menu-item-hover-bg": "rgba(0, 0, 0, 0.05)",
+    "context-menu-separator-color": "#E2E8F0",
+    "context-menu-border-radius": "4px",
+    "context-menu-item-padding": "8px 12px",
+    "context-menu-item-font-size": "13px",
+    
     "downbar-background": "#F8FAFC",
     "downbar-border-top": "1px solid #E2E8F0",
     
@@ -67,20 +77,6 @@
     "file-path-text": "#64748B",
     "breadcrumb-separator": "#94A3B8",
     "context-info-text": "#2C3E50",
-    
-    "syntax-keyword": "#D73A49",
-    "syntax-function": "#005CC5",
-    "syntax-type": "#6F42C1",
-    "syntax-macro": "#CB2431",
-    "syntax-constant": "#005CC5",
-    "syntax-attribute": "#0086B3",
-    "syntax-lifetime": "#D73A49",
-    "syntax-string": "#0A8744",
-    "syntax-number": "#005CC5",
-    "syntax-comment": "#6A737D",
-    "syntax-operator": "#D73A49",
-    "syntax-variable": "#24292E",
-    "syntax-mutable-variable": "#953800",
     
     "editor-loading-text": "#64748B",
     "spinner-accent": "#0088CC",
@@ -122,46 +118,6 @@
     "monaco-editor-line-number-active": "#333333",
     "monaco-editor-indent-guide": "#e0e0e0",
     "monaco-editor-indent-guide-active": "#c0c0c0",
-    
-    "monaco-syntax-keyword": "#D73A49",
-    "monaco-syntax-control": "#D73A49",
-    "monaco-syntax-unsafe": "#CB2431",
-    
-    "monaco-syntax-string": "#0A8744",
-    "monaco-syntax-character": "#0A8744",
-    "monaco-syntax-escape": "#E36209",
-    
-    "monaco-syntax-number": "#005CC5",
-    
-    "monaco-syntax-comment": "#6A737D",
-    "monaco-syntax-doc-comment": "#5C6370",
-    "monaco-syntax-doc-tag": "#85632E",
-    
-    "monaco-syntax-type": "#6F42C1",
-    "monaco-syntax-struct-field": "#24292E",
-    
-    "monaco-syntax-variable": "#24292E",
-    "monaco-syntax-mutable": "#953800",
-    "monaco-syntax-parameter": "#953800",
-    
-    "monaco-syntax-function": "#005CC5",
-    "monaco-syntax-method": "#005CC5",
-    "monaco-syntax-self": "#953800",
-    
-    "monaco-syntax-macro": "#CB2431",
-    "monaco-syntax-attribute": "#0086B3",
-    
-    "monaco-syntax-lifetime": "#D73A49",
-    
-    "monaco-syntax-constant": "#005CC5",
-    
-    "monaco-syntax-operator": "#D73A49",
-    "monaco-syntax-delimiter": "#24292E",
-    
-    "monaco-syntax-error": "#B31D28",
-    "monaco-syntax-regexp": "#032F62",
-    "monaco-syntax-namespace": "#6F42C1",
-    "monaco-syntax-tag": "#22863A",
     
     "bg-color": "#fafafa",
     "surface-color": "#ffffff",
