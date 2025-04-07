@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell, Menu } = require('electron');
 const path = require('path');
 const { exec, execSync } = require('child_process');
 const fs = require('fs');
@@ -6,18 +6,10 @@ const os = require('os');
 const { trackBuildInFirebase } = require('./firebase-config');
 // Import z-rosetta language module
 const zRosetta = require('./translations/z-rosetta');
+const fsExtra = require('fs-extra');
+const url = require('url');
 
 let mainWindow;
-
-// Force regeneration of about.json on startup
-if (fs.existsSync(path.join(__dirname, 'about.json'))) {
-    try {
-        fs.unlinkSync(path.join(__dirname, 'about.json'));
-        console.log('Removed existing about.json to regenerate with updated OS detection');
-    } catch (error) {
-        console.error('Error removing about.json:', error);
-    }
-}
 
 // Generate about.json with current system information
 function generateAboutJson() {
@@ -119,7 +111,7 @@ function generateAboutJson() {
                   process.platform === 'linux' ? getLinuxDistro() : 
                   'Unknown',
         architecture: process.arch,
-        contributors: ["Z Team"],
+        contributors: ["Zen Team"],
         repository: "https://github.com/z-editor/z",
         license: "MIT"
     };
@@ -283,11 +275,11 @@ ipcMain.handle('git-clone', async (event, { url, directory }) => {
 
         return new Promise((resolve, reject) => {
             const targetDir = directory || path.basename(url, '.git');
-            const fullPath = path.join(app.getPath('documents'), 'Z-Projects', targetDir);
+            const fullPath = path.join(app.getPath('documents'), 'Zen-Projects', targetDir);
             console.log('Target directory:', fullPath);
 
             // Create projects directory if it doesn't exist
-            const projectsDir = path.join(app.getPath('documents'), 'Z-Projects');
+            const projectsDir = path.join(app.getPath('documents'), 'Zen-Projects');
             if (!fs.existsSync(projectsDir)) {
                 console.log('Creating projects directory:', projectsDir);
                 fs.mkdirSync(projectsDir, { recursive: true });
@@ -436,6 +428,243 @@ ipcMain.handle('get-build-info', async (event) => {
             fullVersion: '0.1.0-dev',
             buildCode: 'dev-build',
             buildDate: new Date().toISOString().split('T')[0]
+        };
+    }
+});
+
+// Handle showing item in folder
+ipcMain.on('shell:show-item-in-folder', (event, itemPath) => {
+    try {
+        // Убедимся, что у нас есть корректный абсолютный путь
+        let absolutePath = itemPath;
+        
+        // Если путь не абсолютный, преобразуем его
+        if (!path.isAbsolute(absolutePath)) {
+            console.log('Received relative path for revealing in folder, converting to absolute');
+            
+            // Пробуем использовать путь относительно текущего проекта
+            if (mainWindow.projectPath) {
+                absolutePath = path.join(mainWindow.projectPath, absolutePath);
+                console.log('Converted to absolute using project path:', absolutePath);
+            } else {
+                // Если нет текущего проекта, используем документы
+                const docsPath = app.getPath('documents');
+                absolutePath = path.join(docsPath, absolutePath);
+                console.log('Converted to absolute using documents folder:', absolutePath);
+            }
+        }
+        
+        // Проверяем, существует ли файл/папка
+        if (!fs.existsSync(absolutePath)) {
+            console.error('Cannot reveal item in folder, path does not exist:', absolutePath);
+            return;
+        }
+        
+        // Показываем файл в папке с помощью shell
+        shell.showItemInFolder(absolutePath);
+    } catch (error) {
+        console.error('Error showing item in folder:', error);
+    }
+});
+
+// Handle creating new files and folders
+ipcMain.handle('create-item', async (event, { path: itemPath, type }) => {
+    try {
+        // Убедимся, что у нас есть корректный абсолютный путь
+        let absolutePath = itemPath;
+        
+        // Если путь не абсолютный, преобразуем его
+        if (!path.isAbsolute(absolutePath)) {
+            console.log('Received relative path for new item, converting to absolute');
+            
+            // Пробуем использовать путь относительно текущего проекта
+            if (mainWindow.projectPath) {
+                absolutePath = path.join(mainWindow.projectPath, absolutePath);
+                console.log('Converted to absolute using project path:', absolutePath);
+            } else {
+                throw new Error('Cannot determine absolute path for creating item');
+            }
+        }
+        
+        // Проверяем, не существует ли уже файл/папка с таким именем
+        if (fs.existsSync(absolutePath)) {
+            throw new Error(`Item already exists: ${path.basename(absolutePath)}`);
+        }
+        
+        if (type === 'file') {
+            // Создаем пустой файл
+            fs.writeFileSync(absolutePath, '', 'utf8');
+        } else if (type === 'directory') {
+            // Создаем папку
+            fs.mkdirSync(absolutePath, { recursive: true });
+        } else {
+            throw new Error(`Unknown item type: ${type}`);
+        }
+        
+        return { success: true };
+    } catch (error) {
+        console.error('Error creating item:', error);
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+});
+
+// Handle getting folder contents
+ipcMain.handle('get-folder-contents', async (event, { folderPath }) => {
+    try {
+        // Убедимся, что у нас есть корректный абсолютный путь
+        let absolutePath = folderPath;
+        
+        // Если путь не абсолютный, преобразуем его
+        if (!path.isAbsolute(absolutePath)) {
+            console.log('Received relative path for folder contents, converting to absolute');
+            
+            // Пробуем использовать путь относительно текущего проекта
+            if (mainWindow.projectPath) {
+                absolutePath = path.join(mainWindow.projectPath, absolutePath);
+                console.log('Converted to absolute using project path:', absolutePath);
+            } else {
+                throw new Error('Cannot determine absolute path for folder contents');
+            }
+        }
+        
+        if (!fs.existsSync(absolutePath)) {
+            throw new Error('Folder does not exist: ' + absolutePath);
+        }
+        
+        const stats = fs.statSync(absolutePath);
+        if (!stats.isDirectory()) {
+            throw new Error('Path is not a directory: ' + absolutePath);
+        }
+        
+        // Получаем содержимое папки
+        const items = fs.readdirSync(absolutePath, { withFileTypes: true });
+        
+        // Преобразуем в нужный формат
+        const contents = items.map(item => {
+            const itemPath = path.join(folderPath, item.name);
+            
+            return {
+                name: item.name,
+                path: itemPath,
+                type: item.isDirectory() ? 'directory' : 'file'
+            };
+        });
+        
+        return {
+            success: true,
+            contents
+        };
+    } catch (error) {
+        console.error('Error getting folder contents:', error);
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+});
+
+// Handle deleting files and folders
+ipcMain.handle('delete-item', async (event, { path: itemPath, type }) => {
+    try {
+        // Убедимся, что у нас есть корректный абсолютный путь
+        let absolutePath = itemPath;
+        
+        // Если путь не абсолютный, преобразуем его
+        if (!path.isAbsolute(absolutePath)) {
+            console.log('Received relative path for deletion, converting to absolute');
+            
+            // Пробуем использовать путь относительно текущего проекта
+            if (mainWindow.projectPath) {
+                absolutePath = path.join(mainWindow.projectPath, absolutePath);
+                console.log('Converted to absolute using project path:', absolutePath);
+            } else {
+                throw new Error('Cannot determine absolute path for deletion');
+            }
+        }
+        
+        // Проверяем существование файла/папки
+        if (!fs.existsSync(absolutePath)) {
+            throw new Error('Item does not exist: ' + absolutePath);
+        }
+        
+        // Проверяем тип (файл или папка) и удаляем соответственно
+        const stats = fs.statSync(absolutePath);
+        
+        if (type === 'directory' && stats.isDirectory()) {
+            // Если это директория, нужно остановить наблюдение за всеми файлами внутри неё
+            try {
+                // Рекурсивно получаем все файлы в директории
+                const getAllFiles = (dirPath, arrayOfFiles = []) => {
+                    const files = fs.readdirSync(dirPath);
+                    
+                    files.forEach(file => {
+                        const filePath = path.join(dirPath, file);
+                        if (fs.statSync(filePath).isDirectory()) {
+                            arrayOfFiles = getAllFiles(filePath, arrayOfFiles);
+                        } else {
+                            arrayOfFiles.push(filePath);
+                        }
+                    });
+                    
+                    return arrayOfFiles;
+                };
+                
+                // Получаем список всех файлов в директории
+                const allFiles = getAllFiles(absolutePath);
+                console.log(`Stopping watchers for ${allFiles.length} files in directory ${absolutePath}`);
+                
+                // Останавливаем наблюдение за каждым файлом
+                allFiles.forEach(file => {
+                    stopWatchingFile(file);
+                });
+            } catch (error) {
+                console.error('Error stopping directory watchers:', error);
+                // Продолжаем процесс удаления даже если не удалось остановить некоторые наблюдатели
+            }
+            
+            // Используем fs-extra.remove для рекурсивного удаления
+            await fsExtra.remove(absolutePath);
+            
+            console.log(`Directory deleted: ${absolutePath}`);
+        } else if (type === 'file' && stats.isFile()) {
+            // Останавливаем наблюдение за файлом перед удалением
+            stopWatchingFile(absolutePath);
+            stopWatchingFile(itemPath); // Также пробуем остановить по относительному пути
+            
+            // Если это файл, просто удаляем
+            fs.unlinkSync(absolutePath);
+            
+            console.log(`File deleted: ${absolutePath}`);
+        } else {
+            throw new Error(`Type mismatch: Expected ${type}, but got ${stats.isDirectory() ? 'directory' : 'file'}`);
+        }
+        
+        return { success: true };
+    } catch (error) {
+        console.error('Error deleting item:', error);
+        
+        // Обработка специфических ошибок
+        let errorMessage = error.message;
+        
+        // Ошибка доступа (EACCES)
+        if (error.code === 'EACCES') {
+            errorMessage = 'Permission denied. You do not have the necessary permissions.';
+        }
+        // Файл используется другим процессом (EBUSY)
+        else if (error.code === 'EBUSY') {
+            errorMessage = 'File is being used by another process. Close all programs that might be using it.';
+        }
+        // Папка не пуста (ENOTEMPTY)
+        else if (error.code === 'ENOTEMPTY') {
+            errorMessage = 'The directory is not empty.';
+        }
+        
+        return {
+            success: false,
+            error: errorMessage
         };
     }
 });
@@ -753,22 +982,34 @@ function startWatchingFile(filePath) {
 
 // Остановить отслеживание файла
 function stopWatchingFile(filePath) {
-    // Убедимся, что у нас есть корректный абсолютный путь
-    let absolutePath = filePath;
-    
-    // Если путь не абсолютный, преобразуем его
-    if (!path.isAbsolute(absolutePath) && mainWindow.projectPath) {
-        absolutePath = path.join(mainWindow.projectPath, absolutePath);
-    }
-    
-    const watcher = fileWatchers.get(filePath) || fileWatchers.get(absolutePath);
-    if (watcher) {
-        watcher.close();
-        fileWatchers.delete(filePath);
-        fileWatchers.delete(absolutePath);
-        watchedFiles.delete(filePath);
-        watchedFiles.delete(absolutePath);
-        console.log(`Stopped watching file: ${filePath}`);
+    try {
+        // Убедимся, что у нас есть корректный абсолютный путь
+        let absolutePath = filePath;
+        
+        // Если путь не абсолютный, преобразуем его
+        if (!path.isAbsolute(absolutePath) && mainWindow.projectPath) {
+            absolutePath = path.join(mainWindow.projectPath, absolutePath);
+        }
+        
+        // Проверяем каждый возможный путь к файлу (относительный, абсолютный, базовое имя)
+        const baseName = path.basename(absolutePath);
+        
+        const watcher = fileWatchers.get(filePath) || fileWatchers.get(absolutePath) || fileWatchers.get(baseName);
+        if (watcher) {
+            watcher.close();
+            // Очищаем все варианты путей
+            fileWatchers.delete(filePath);
+            fileWatchers.delete(absolutePath);
+            fileWatchers.delete(baseName);
+            watchedFiles.delete(filePath);
+            watchedFiles.delete(absolutePath);
+            watchedFiles.delete(baseName);
+            console.log(`Stopped watching file: ${filePath} (${absolutePath})`);
+        } else {
+            console.log(`No watcher found for file: ${filePath} (${absolutePath})`);
+        }
+    } catch (error) {
+        console.error('Error stopping file watcher:', error);
     }
 }
 

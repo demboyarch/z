@@ -1,21 +1,57 @@
 {
-  "name": "z",
+  "name": "zen",
   "version": "1.0.0",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "electron-builder",
+    "build:linux": "electron-builder --linux",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac"
   },
   "keywords": [],
-  "author": "",
+  "author": "Zen Team <zen@example.com>",
   "license": "ISC",
   "description": "Fast, lightweight editor for Rust",
   "devDependencies": {
-    "electron": "^35.0.0"
+    "electron": "^35.0.0",
+    "electron-builder": "^25.1.8"
   },
   "dependencies": {
     "firebase": "^11.4.0",
+    "fs-extra": "^11.3.0",
     "monaco-editor": "^0.52.2",
     "requirejs": "^2.3.7"
+  },
+  "build": {
+    "appId": "com.zen.editor",
+    "productName": "Zen Editor",
+    "asar": false,
+    "icon": "src/assets/Z-dev-logo.svg",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Development",
+      "maintainer": "Zen Team <harimassaa@gmail.com>",
+      "icon": "src/assets/Z-dev-logo.svg"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "src/assets/Z-dev-logo.svg"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "src/assets/Z-dev-logo.svg"
+    }
   }
 }

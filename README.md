@@ -1,6 +1,6 @@
-<h1 align="center">z</h1>
+<h1 align="center">zen</h1>
 
-<p align="center">Welcome to Z, a lightweight (maybe) code editor, focusing on speed and clean design.</p>
+<p align="center">Welcome to zen, a lightweight (maybe) code editor, focusing on speed and clean design.</p>
 
 ---
 
@@ -8,10 +8,9 @@
 ### Installation
 
 Currently available for:
-- Windows (Dev state)
-- Linux (Dev state)
-- 
-### Developing Z
+- Windows (Dev state) (unfocus 12.03.2025)
+- Linux (Dev state) (focused now)
+### Developing Zen
 
 Prerequisites:
 - Node.js 18+
@@ -20,10 +19,10 @@ Prerequisites:
 
 ```bash
 # Clone the repository
-git clone https://github.com/femboypig/Z.git
+git clone https://github.com/femboypig/z.git
 
 # Install dependencies
-cd Z
+cd z
 npm install
 
 # Start development

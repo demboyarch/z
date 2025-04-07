@@ -1,16 +1,17 @@
-use std::collections::{HashMap, HashSet};
+duse std::collections::{HashMap, HashSet};
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::{Duration, Instant};
 // Define error types for our application
 #[derive(Debug)]
 enum AppError {
-    InvalidInput(String),
+    InvalidInput(S tring),d
     ProcessingFailed(String),
     DatabaseError(String),
     NetworkError(String),
 }
 
+// Picun F6sddd
 // Define a struct to represent a user in our system
 #[derive(Debug, Clone)]
 struct User {

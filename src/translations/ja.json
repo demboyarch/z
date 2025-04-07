@@ -1,12 +1,12 @@
 {
   "welcome": {
-    "title": "Z へようこそ",
+    "title": "Zen へようこそ",
     "tagline": "あなたのための高速で軽量なエディタ",
     "getStarted": "始める",
     "newProject": "新規プロジェクト",
     "openProject": "プロジェクトを開く",
     "cloneRepository": "リポジトリをクローン",
-    "version": "Z",
+    "version": "Zen",
     "loading": "読み込み中...",
     "message": "ファイルを開くか新規作成して始めましょう",
     "openFile": "ファイルを開く",
@@ -34,8 +34,8 @@
   },
   "analytics": {
     "title": "分析",
-    "modalTitle": "Zの改善にご協力ください",
-    "modalIntro": "匿名の使用データを共有してZの改善にご協力ください。共有する情報を選択できます：",
+    "modalTitle": "Zenの改善にご協力ください",
+    "modalIntro": "匿名の使用データを共有してZenの改善にご協力ください。共有する情報を選択できます：",
     "basicInfo": "基本的な使用データ",
     "basicDescription": "アプリバージョン、ビルド情報、OS、基本的な使用統計",
     "systemInfo": "システム情報",
@@ -53,7 +53,7 @@
     "save": "保存",
     "analyticsDisabled": "データ収集が無効化されています",
     "onlyBasic": "基本的な使用データのみ収集しています",
-    "analyticsEnabled": "Zの改善にご協力ありがとうございます！"
+    "analyticsEnabled": "Zenの改善にご協力ありがとうございます！"
   },
   "language": {
     "title": "言語",
@@ -79,6 +79,6 @@
     "contributor": "貢献者",
     "communityManager": "コミュニティマネージャー",
     "close": "閉じる",
-    "buildMessage": "このZビルドに尽力した人々："
+    "buildMessage": "このZenビルドに尽力した人々："
   }
 }

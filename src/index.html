@@ -1,15 +1,184 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Z - The Z Editor</title>
+    <title>Zen - The Zen Editor</title>
     <link rel="stylesheet" href="styles.css">
     <!-- Add z-rosetta client script -->
     <script src="translations/z-rosetta-client.js"></script>
     <!-- Monaco Editor scripts -->
     <script src="monaco-editor/vs/loader.js"></script>
     <script src="monaco-init.js"></script>
+    <style>
+        /* Loading overlay styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color, #ffffff);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+        }
+        
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        /* Zen-inspired loading animation */
+        .zen-loader {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            perspective: 800px;
+        }
+        
+        .zen-loader-square {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: zen-rotate 3s ease-in-out infinite;
+        }
+        
+        .zen-loader-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--accent-color, #007acc);
+            background-color: rgba(0, 122, 204, 0.05);
+            box-sizing: border-box;
+            opacity: 0.7;
+            transition: all 0.3s;
+        }
+        
+        .zen-loader-face:nth-child(1) {
+            transform: translateZ(40px);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .zen-loader-face:nth-child(2) {
+            transform: rotateY(180deg) translateZ(40px);
+            animation: pulse 2s ease-in-out infinite 0.4s;
+        }
+        
+        .zen-loader-face:nth-child(3) {
+            transform: rotateY(90deg) translateZ(40px);
+            animation: pulse 2s ease-in-out infinite 0.8s;
+        }
+        
+        .zen-loader-face:nth-child(4) {
+            transform: rotateY(-90deg) translateZ(40px);
+            animation: pulse 2s ease-in-out infinite 1.2s;
+        }
+        
+        .zen-loader-face:nth-child(5) {
+            transform: rotateX(90deg) translateZ(40px);
+            animation: pulse 2s ease-in-out infinite 1.6s;
+        }
+        
+        .zen-loader-face:nth-child(6) {
+            transform: rotateX(-90deg) translateZ(40px);
+            animation: pulse 2s ease-in-out infinite 2s;
+        }
+        
+        .zen-loader-inner {
+            position: absolute;
+            top: 25%;
+            left: 25%;
+            width: 50%;
+            height: 50%;
+            background-color: var(--accent-color, #007acc);
+            opacity: 0.8;
+            animation: zen-inner-pulse 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes zen-rotate {
+            0% {
+                transform: rotateX(0deg) rotateY(0deg);
+            }
+            25% {
+                transform: rotateX(90deg) rotateY(45deg);
+            }
+            50% {
+                transform: rotateX(180deg) rotateY(90deg);
+            }
+            75% {
+                transform: rotateX(270deg) rotateY(135deg);
+            }
+            100% {
+                transform: rotateX(360deg) rotateY(180deg);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.2;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+        
+        @keyframes zen-inner-pulse {
+            0% {
+                transform: scale(0.6);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+        }
+        
+        .loading-text {
+            font-size: 16px;
+            color: var(--text-color, #333333);
+            font-family: 'Zed Mono', monospace;
+            opacity: 0.8;
+            letter-spacing: 2px;
+            animation: text-pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes text-pulse {
+            0%, 100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+        
+        /* Hide main content initially */
+        .main-layout.loading {
+            visibility: hidden;
+        }
+    </style>
 </head>
 <body>
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="zen-loader">
+            <div class="zen-loader-square">
+                <div class="zen-loader-face"></div>
+                <div class="zen-loader-face"></div>
+                <div class="zen-loader-face"></div>
+                <div class="zen-loader-face"></div>
+                <div class="zen-loader-face"></div>
+                <div class="zen-loader-face"></div>
+                <div class="zen-loader-inner"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="titlebar">
         <div class="titlebar-left">
             <div class="window-controls">
@@ -20,7 +189,7 @@
             <div class="project-name">Project Name</div>
         </div>
     </div>
-    <div class="main-layout">
+    <div class="main-layout loading">
         <div id="sidebar" class="sidebar">
             <div class="sidebar-placeholder" data-z-rosetta="editor.explorer">File Explorer goes here</div>
         </div>
@@ -49,13 +218,31 @@
             <button class="file-tree-toggle">
                 <img src="assets/file_tree.svg" alt="Toggle File Tree">
             </button>
+            <div class="status-indicators has-no-issues">
+                <div class="checkmark-indicator">
+                    <svg width="18" height="18" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.5 10.5L2.5 7.5L3.5 6.5L5.5 8.5L10.5 3.5L11.5 4.5L5.5 10.5Z" fill="var(--checkmark-icon-fill)"/>
+                    </svg>
+                </div>
+                <div class="DUO-indicators">
+                    <span class="error-icon">
+                        <svg class="x-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11.375 3.71875L10.2812 2.625L7 5.90625L3.71875 2.625L2.625 3.71875L5.90625 7L2.625 10.2812L3.71875 11.375L7 8.09375L10.2812 11.375L11.375 10.2812L8.09375 7L11.375 3.71875Z" fill="#e53e3e"/>
+                        </svg>
+                    </span>
+                    <span class="error-count">0</span>
+                    <span class="warning-icon">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 2C6.44772 2 6 2.44772 6 3V8C6 8.55228 6.44772 9 7 9C7.55228 9 8 8.55228 8 8V3C8 2.44772 7.55228 2 7 2ZM7 10C6.44772 10 6 10.4477 6 11C6 11.5523 6.44772 12 7 12C7.55228 12 8 11.5523 8 11C8 10.4477 7.55228 10 7 10Z" fill="#dd6b20"/>
+                        </svg>
+                    </span>
+                    <span class="warning-count">0</span>
+                </div>
+            </div>
         </div>
         <div class="downbar-right">
             <div class="cursor-position">
-                <span class="cursor-ln">1</span>
-
-                <span class="cursor-separator">:</span>
-                <span class="cursor-col">1</span>
+                <span class="cursor-ln cursor-pos">1,1</span>
             </div>
         </div>
     </div>

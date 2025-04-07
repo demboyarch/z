@@ -3,38 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Z</title>
+    <title>Zen</title>
     <!-- Add z-rosetta client script -->
     <script src="translations/z-rosetta-client.js"></script>
+    <!-- Подключаем общие переменные CSS -->
+    <link rel="stylesheet" href="variables.css">
     <style>
+        /* Dimensions */
         :root {
-            /* Core colors */
-            --bg-color: #fafafa;
-            --surface-color: #ffffff;
-            --primary-color: #161616;
-            --accent-color: #1A73E8;
-            --muted-color: rgba(0, 0, 0, 0.64);
-            --subtle-color: rgba(0, 0, 0, 0.38);
-            --border-color: rgba(0, 0, 0, 0.12);
-            --divider-color: rgba(0, 0, 0, 0.08);
-            
-            /* Shadows */
-            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.05);
-            
-            /* Dimensions */
-            --header-height: 38px;
-            --border-radius: 6px;
-            
-            /* Animation */
-            --transition-fast: 120ms ease;
-
-            /* Action buttons */
-            --action-button-bg: rgba(0, 0, 0, 0.04);
-            --action-button-hover-bg: rgba(0, 0, 0, 0.06);
-            --action-button-active-bg: rgba(0, 0, 0, 0.08);
+              --header-height: 38px;
+              --border-radius: 6px;
+              
+              /* Animation */
+              --transition-fast: 120ms ease;
         }
-
         * {
             margin: 0;
             padding: 0;
@@ -88,15 +70,15 @@
         }
 
         .control-close {
-            background-color: #F44336;
+            background-color: var(--control-close-bg);
         }
 
         .control-minimize {
-            background-color: #FFEB3B;
+            background-color: var(--control-minimize-bg);
         }
 
         .control-maximize {
-            background-color: #4CAF50;
+            background-color: var(--control-maximize-bg);
         }
 
         /* Main content */
@@ -196,7 +178,7 @@
             border-radius: 8px;
             padding: 12px 20px;
             cursor: pointer;
-            transition: all 180ms cubic-bezier(0.33, 1, 0.68, 1);
+            transition: background-color 180ms ease;
             display: flex;
             align-items: center;
             flex: 1;
@@ -206,7 +188,6 @@
             box-shadow: none;
             position: relative;
             overflow: hidden;
-            backdrop-filter: blur(4px);
         }
 
         .action-button::before {
@@ -216,30 +197,23 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, 
-                        rgba(255, 255, 255, 0.1) 0%, 
-                        rgba(255, 255, 255, 0.05) 50%, 
-                        rgba(0, 0, 0, 0.02) 100%);
+            background: var(--analytics-preview-bg);
             opacity: 0;
-            transition: opacity 200ms ease, transform 200ms ease;
-            transform: translateY(4px);
+            transition: opacity 180ms ease;
         }
 
         .action-button:hover {
             background-color: var(--action-button-hover-bg);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .action-button:hover::before {
             opacity: 1;
-            transform: translateY(0);
         }
 
         .action-button:active {
-            transform: translateY(0);
             background-color: var(--action-button-active-bg);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            box-shadow: none;
             transition-duration: 100ms;
         }
 
@@ -248,11 +222,9 @@
             height: 18px;
             margin-right: 10px;
             color: var(--accent-color);
-            transition: transform 180ms ease;
         }
 
         .action-button:hover svg {
-            transform: scale(1.1);
         }
 
         .action-button-text {
@@ -341,15 +313,14 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: var(--modal-overlay-bg);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.2s ease;
-            backdrop-filter: blur(4px);
+            transition: opacity 0.15s linear;
         }
         
         .modal-overlay.active {
@@ -360,12 +331,12 @@
         .modal-content {
             background-color: var(--surface-color);
             border-radius: var(--border-radius);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16);
+            box-shadow: var(--modal-shadow);
             width: 580px;
             max-width: 95%;
             padding: 0;
             transform: translateY(10px) scale(0.98);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.2s ease-out;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -380,7 +351,7 @@
             align-items: center;
             padding: 14px 20px;
             background-color: var(--accent-color);
-            color: white;
+            color: var(--modal-header-color);
             margin-bottom: 0;
         }
         
@@ -395,7 +366,7 @@
             font-size: 16px;
             font-weight: 600;
             letter-spacing: -0.01em;
-            color: white;
+            color: var(--modal-header-color);
         }
         
         .modal-body {
@@ -422,7 +393,7 @@
             gap: 12px;
             padding: 10px 20px;
             border-top: 1px solid var(--divider-color);
-            background-color: rgba(0, 0, 0, 0.02);
+            background-color: var(--modal-footer-bg);
         }
         
         /* Improved checkbox options */
@@ -436,7 +407,7 @@
             margin-bottom: 10px;
             padding: 12px;
             border-radius: var(--border-radius);
-            transition: all 0.3s ease-in-out;
+            transition: all 0.2s ease-out;
             position: relative;
             overflow: hidden;
             border: 1px solid var(--border-color);
@@ -448,7 +419,7 @@
         
         .analytics-option.active {
             border-color: var(--accent-color);
-            background-color: rgba(26, 115, 232, 0.05);
+            background-color: var(--analytics-option-active-bg);
         }
         
         /* Improved toast style */
@@ -457,7 +428,7 @@
             bottom: 24px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: rgba(33, 33, 33, 0.95);
+            background-color: var(--toast-bg-default);
             color: white;
             padding: 12px 20px;
             border-radius: 8px;
@@ -472,15 +443,15 @@
         }
         
         .toast-message.success {
-            background-color: rgba(46, 125, 50, 0.95);
+            background-color: var(--toast-bg-success);
         }
         
         .toast-message.warning {
-            background-color: rgba(245, 124, 0, 0.95);
+            background-color: var(--toast-bg-warning);
         }
         
         .toast-message.error {
-            background-color: rgba(211, 47, 47, 0.95);
+            background-color: var(--toast-bg-error);
         }
         
         .toast-message svg {
@@ -502,7 +473,7 @@
 
         /* Additional styles for data preview */
         .analytics-preview {
-            background-color: rgba(0,0,0,0.03);
+            background-color: var(--analytics-preview-bg);
             border-radius: var(--border-radius);
             padding: 12px;
             margin-top: 10px;
@@ -563,7 +534,7 @@
         
         /* Animation for checkboxes and analytics options */
         .analytics-option {
-            transition: all 0.3s ease-in-out;
+            transition: all 0.2s ease-out;
             position: relative;
             overflow: hidden;
         }
@@ -577,7 +548,7 @@
             bottom: 0;
             background-color: var(--accent-color);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.2s ease;
             z-index: -1;
         }
         
@@ -624,7 +595,7 @@
             left: 50%;
             width: 5px;
             height: 5px;
-            background: rgba(255, 255, 255, 0.5);
+            background: var(--button-hover-light);
             opacity: 0;
             border-radius: 100%;
             transform: scale(1, 1) translate(-50%);
@@ -632,7 +603,7 @@
         }
         
         .modal-button:focus:not(:active)::after {
-            animation: ripple 1s ease-out;
+            animation: ripple 0.8s ease-out;
         }
         
         @keyframes ripple {
@@ -640,13 +611,9 @@
                 transform: scale(0, 0);
                 opacity: 0.5;
             }
-            20% {
-                transform: scale(25, 25);
-                opacity: 0.3;
-            }
             100% {
                 opacity: 0;
-                transform: scale(40, 40);
+                transform: scale(20, 20);
             }
         }
         
@@ -667,9 +634,9 @@
         }
         
         .modal-button-primary:hover {
-            background-color: #0d64c9;
+            background-color: var(--modal-accent-hover);
             transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-md);
         }
         
         .analytics-label h4 {
@@ -743,7 +710,7 @@
         }
 
         .error-message {
-            color: #e53935;
+            color: var(--error-message-color);
             font-size: 12px;
             margin-top: 6px;
             display: none;
@@ -869,7 +836,6 @@
         }
 
         .contributor-item:hover {
-            transform: translateY(-2px);
             background: var(--action-button-bg);
             box-shadow: var(--shadow-sm);
         }
@@ -1075,7 +1041,6 @@
         }
 
         .contributor-item:hover {
-            transform: translateY(-2px);
             background: var(--action-button-bg);
             box-shadow: var(--shadow-sm);
         }
@@ -1142,14 +1107,14 @@
                 <div class="window-control control-minimize" id="minimize-btn"></div>
                 <div class="window-control control-maximize" id="maximize-btn"></div>
             </div>
-            <div class="window-title">Z</div>
+            <div class="window-title">Zen</div>
         </div>
 
         <!-- Main Content -->
         <div class="content">
             <div class="welcome-container">
-                <img src="assets/Z-dev-logo.svg" alt="Z Logo" class="logo">
-                <h1 class="welcome-title" data-z-rosetta="welcome.title">Welcome to Z</h1>
+                <img src="assets/Z-dev-logo.svg" alt="Zen Logo" class="logo">
+                <h1 class="welcome-title" data-z-rosetta="welcome.title">Welcome to Zen</h1>
                 <p class="welcome-tagline" data-z-rosetta="welcome.tagline">Fast, lightweight editor for you</p>
                 
                 <div class="action-buttons-container">
@@ -1185,7 +1150,7 @@
             
             <div class="version-info">
                 <div class="version-left">
-                    <span data-z-rosetta="welcome.version">Z</span> <span id="full-version">0.1.0-dev</span> • <span id="build-code" class="build-code">loading...</span>
+                    <span data-z-rosetta="welcome.version">Zen</span> <span id="full-version">0.1.0-dev</span> • <span id="build-code" class="build-code">loading...</span>
                 </div>
                 <div class="version-right">
                     <div class="analytics-toggle" id="analytics-toggle">
@@ -1215,7 +1180,7 @@
                         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
                     </svg>
-                    <h3 class="modal-title" data-z-rosetta="analytics.modalTitle">Help improve Z</h3>
+                    <h3 class="modal-title" data-z-rosetta="analytics.modalTitle">Help improve Zen</h3>
                 </div>
                 <div class="modal-body">
                     <!-- Left Column -->
@@ -1229,7 +1194,7 @@
                                 <input type="checkbox" id="analytics-basic" class="analytics-checkbox" checked>
                                 <div class="analytics-label">
                                     <h4 data-z-rosetta="analytics.basicInfo">Basic Information</h4>
-                                    <p data-z-rosetta="analytics.basicDescription">Z version, build code, OS info, usage frequency</p>
+                                    <p data-z-rosetta="analytics.basicDescription">Zen version, build code, OS info, usage frequency</p>
                                 </div>
                             </div>
                             
@@ -1382,7 +1347,7 @@
                     <!-- Core Team -->
                     <div class="contributor-group">
                         <h4 class="contributor-group-title" data-z-rosetta="contributors.coreTeam">Core Team</h4>
-                        <p class="contributor-group-description" data-z-rosetta="contributors.buildMessage" style="margin-bottom: 16px; color: var(--muted-color);">Над этим билдом Z усердно работали:</p>
+                        <p class="contributor-group-description" data-z-rosetta="contributors.buildMessage" style="margin-bottom: 16px; color: var(--muted-color);">Над этим билдом Zen усердно работали:</p>
                         <div class="contributor-items">
                             <div class="contributor-item">
                                 <div class="contributor-avatar">
@@ -1632,13 +1597,13 @@
                 
             if (!analyticsBasicCheckbox.checked) {
                 feedbackText.textContent = 'No data will be sent';
-                feedbackText.style.color = '#F44336';
+                feedbackText.style.color = 'var(--toast-bg-error)';
             } else if (!analyticsSystemCheckbox.checked) {
                 feedbackText.textContent = 'Only basic information will be sent';
-                feedbackText.style.color = '#FF9800';
+                feedbackText.style.color = 'var(--toast-bg-warning)';
             } else {
                 feedbackText.textContent = 'All information will be sent';
-                feedbackText.style.color = '#4CAF50';
+                feedbackText.style.color = 'var(--toast-bg-success)';
             }
         }
         
@@ -1694,8 +1659,7 @@
                     document.getElementById('preview-os').textContent = buildInfo.currentOS || 'Unknown';
                     document.getElementById('preview-arch').textContent = buildInfo.architecture || 'Unknown';
                     
-                    // Set a placeholder for screen resolution
-                    // In a real app, you would get actual screen resolution
+
                     const screenWidth = window.screen.width;
                     const screenHeight = window.screen.height;
                     document.getElementById('preview-resolution').textContent = `${screenWidth}x${screenHeight}`;
@@ -2101,6 +2065,71 @@
             if (e.key === 'Escape') {
                 const modal = document.getElementById('contributors-modal');
                 modal.classList.remove('active');
+            }
+        });
+
+        // ... existing code ...
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // ... existing code ...
+            
+            // Обновление переменных темы в localStorage
+            function updateThemeVariables() {
+                const currentTheme = localStorage.getItem('zen-selected-theme') || 'zen-theme-light';
+                
+                // Получаем текущие переменные темы из localStorage
+                let themeData = JSON.parse(localStorage.getItem(currentTheme) || '{}');
+                
+                // Проверяем, есть ли у нас новые переменные
+                const newVariables = {
+                    'modal-overlay-bg': currentTheme.includes('dark') ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.5)',
+                    'modal-shadow': currentTheme.includes('dark') ? '0 4px 16px rgba(0, 0, 0, 0.4)' : '0 4px 16px rgba(0, 0, 0, 0.16)',
+                    'modal-accent-hover': currentTheme.includes('dark') ? '#4d8eef' : '#0d64c9',
+                    'modal-header-color': 'white',
+                    'toast-bg-default': currentTheme.includes('dark') ? 'rgba(66, 66, 66, 0.95)' : 'rgba(33, 33, 33, 0.95)',
+                    'toast-bg-success': currentTheme.includes('dark') ? 'rgba(67, 160, 71, 0.95)' : 'rgba(46, 125, 50, 0.95)',
+                    'toast-bg-warning': currentTheme.includes('dark') ? 'rgba(255, 152, 0, 0.95)' : 'rgba(245, 124, 0, 0.95)',
+                    'toast-bg-error': currentTheme.includes('dark') ? 'rgba(229, 57, 53, 0.95)' : 'rgba(211, 47, 47, 0.95)',
+                    'analytics-preview-bg': currentTheme.includes('dark') ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
+                    'analytics-option-active-bg': currentTheme.includes('dark') ? 'rgba(77, 142, 239, 0.15)' : 'rgba(26, 115, 232, 0.05)',
+                    'button-hover-light': currentTheme.includes('dark') ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.5)',
+                    'error-message-color': currentTheme.includes('dark') ? '#ef5350' : '#e53935'
+                };
+                
+                // Добавляем новые переменные в тему, если их нет
+                let updated = false;
+                if (themeData.variables) {
+                    for (const [key, value] of Object.entries(newVariables)) {
+                        if (!themeData.variables[key]) {
+                            themeData.variables[key] = value;
+                            updated = true;
+                        }
+                    }
+                    
+                    // Сохраняем обновленные переменные, если были изменения
+                    if (updated) {
+                        localStorage.setItem(currentTheme, JSON.stringify(themeData));
+                        console.log('Theme variables updated with new modal and toast variables');
+                    }
+                }
+            }
+            
+            // Вызываем функцию обновления переменных темы
+            updateThemeVariables();
+            
+            // ... existing code ...
+            
+            // Обновляем цвет обратной связи в зависимости от надежности пароля
+            function updateFeedbackColor(strength) {
+                const feedbackText = document.getElementById('password-feedback');
+                
+                if (strength === 'weak') {
+                    feedbackText.style.color = 'var(--toast-bg-error)';
+                } else if (strength === 'medium') {
+                    feedbackText.style.color = 'var(--toast-bg-warning)';
+                } else {
+                    feedbackText.style.color = 'var(--toast-bg-success)';
+                }
             }
         });
     </script>

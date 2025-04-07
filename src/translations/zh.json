@@ -1,12 +1,12 @@
 {
   "welcome": {
-    "title": "欢迎使用 Z",
+    "title": "欢迎使用 Zen",
     "tagline": "为您提供快速、轻量级的编辑器",
     "getStarted": "开始使用",
     "newProject": "新建项目",
     "openProject": "打开项目",
     "cloneRepository": "克隆仓库",
-    "version": "Z",
+    "version": "Zen",
     "loading": "加载中...",
     "message": "打开或创建一个文件以开始使用",
     "openFile": "打开文件",
@@ -34,8 +34,8 @@
   },
   "analytics": {
     "title": "数据分析",
-    "modalTitle": "帮助改进 Z",
-    "modalIntro": "通过分享匿名使用数据来帮助我们改进 Z。您可以选择要分享的信息：",
+    "modalTitle": "帮助改进 Zen",
+    "modalIntro": "通过共享匿名使用数据来帮助我们改进 Zen。您可以选择要共享的信息：",
     "basicInfo": "基础使用数据",
     "basicDescription": "应用版本、构建信息、操作系统和基本使用统计",
     "systemInfo": "系统信息",
@@ -53,7 +53,7 @@
     "save": "保存",
     "analyticsDisabled": "数据收集已禁用",
     "onlyBasic": "仅收集基础使用数据",
-    "analyticsEnabled": "感谢您帮助改进 Z！"
+    "analyticsEnabled": "感谢您帮助改进 Zen！"
   },
   "language": {
     "title": "语言",
@@ -79,6 +79,6 @@
     "contributor": "贡献者",
     "communityManager": "社区经理",
     "close": "关闭",
-    "buildMessage": "以下人员为这个Z版本付出了努力："
+    "buildMessage": "以下人员为这个 Zen 版本付出了努力："
   }
 } 

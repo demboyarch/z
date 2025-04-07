@@ -1,12 +1,12 @@
 {
   "welcome": {
-    "title": "Z에 오신 것을 환영합니다",
+    "title": "Zen에 오신 것을 환영합니다",
     "tagline": "당신을 위한 빠르고 가벼운 에디터",
     "getStarted": "시작하기",
     "newProject": "새 프로젝트",
     "openProject": "프로젝트 열기",
     "cloneRepository": "저장소 복제",
-    "version": "Z",
+    "version": "Zen",
     "loading": "로딩 중...",
     "message": "파일을 열거나 새로 만들어 시작하세요",
     "openFile": "파일 열기",
@@ -34,8 +34,8 @@
   },
   "analytics": {
     "title": "분석",
-    "modalTitle": "Z 개선에 도움을 주세요",
-    "modalIntro": "익명의 사용 데이터를 공유하여 Z를 개선하는 데 도움을 주세요. 공유할 정보를 선택할 수 있습니다:",
+    "modalTitle": "Zen 개선에 도움 주기",
+    "modalIntro": "익명 사용 데이터를 공유하여 Zen 개선에 도움을 주세요. 공유할 정보를 선택할 수 있습니다:",
     "basicInfo": "기본 사용 데이터",
     "basicDescription": "앱 버전, 빌드 정보, 운영체제 및 기본 사용 통계",
     "systemInfo": "시스템 정보",
@@ -53,7 +53,7 @@
     "save": "저장",
     "analyticsDisabled": "데이터 수집이 비활성화되었습니다",
     "onlyBasic": "기본 사용 데이터만 수집됩니다",
-    "analyticsEnabled": "Z 개선에 도움을 주셔서 감사합니다!"
+    "analyticsEnabled": "Zen 개선에 도움을 주셔서 감사합니다!"
   },
   "language": {
     "title": "언어",
@@ -79,6 +79,6 @@
     "contributor": "기여자",
     "communityManager": "커뮤니티 매니저",
     "close": "닫기",
-    "buildMessage": "다음 사람들이 이 Z 빌드를 위해 열심히 일했습니다:"
+    "buildMessage": "다음 사람들이 이 Zen 빌드를 위해 열심히 노력했습니다:"
   }
 } 

@@ -9,6 +9,52 @@ let editorContainer = null;
 let monaco = null;
 let modelCache = new Map(); // Кэш для моделей файлов
 
+// Функция для получения значения CSS-переменной
+function getCssVariable(variableName, fallback) {
+    try {
+        const value = getComputedStyle(document.documentElement).getPropertyValue(`--${variableName}`).trim();
+        return value || fallback;
+    } catch (error) {
+        console.warn(`[monaco-init] Ошибка при получении CSS переменной --${variableName}:`, error);
+        return fallback;
+    }
+}
+
+// Функция для определения, предпочитает ли пользователь темную тему
+function prefersDarkMode() {
+    // Проверяем текущее значение body-background
+    const bgColor = getCssVariable('body-background', '#ffffff');
+    
+    // Преобразуем цвет в RGB и проверяем его яркость
+    // Простая эвристика: если цвет темный (R+G+B < 384), то это темная тема
+    let r = 255, g = 255, b = 255;
+    
+    // Парсим HEX цвет
+    if (bgColor.startsWith('#')) {
+        if (bgColor.length === 4) { // #RGB
+            r = parseInt(bgColor[1] + bgColor[1], 16);
+            g = parseInt(bgColor[2] + bgColor[2], 16);
+            b = parseInt(bgColor[3] + bgColor[3], 16);
+        } else if (bgColor.length === 7) { // #RRGGBB
+            r = parseInt(bgColor.substring(1, 3), 16);
+            g = parseInt(bgColor.substring(3, 5), 16);
+            b = parseInt(bgColor.substring(5, 7), 16);
+        }
+    } else if (bgColor.startsWith('rgb')) {
+        // Парсим RGB(A) формат
+        const match = bgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/);
+        if (match) {
+            r = parseInt(match[1], 10);
+            g = parseInt(match[2], 10);
+            b = parseInt(match[3], 10);
+        }
+    }
+    
+    // Вычисляем яркость (простой метод)
+    const brightness = r + g + b;
+    return brightness < 384; // Если яркость ниже порога, считаем это темной темой
+}
+
 // Theme configuration for the editor
 const themes = {
     light: {
@@ -16,273 +62,287 @@ const themes = {
         inherit: false, // Отключаем наследование, чтобы полностью переопределить тему
         rules: [
             // Базовые токены с цветами, подходящими для Rust
-            { token: 'keyword', foreground: '#D73A49' },       // Красно-оранжевый для ключевых слов (let, fn, pub)
-            { token: 'keyword.control', foreground: '#D73A49' }, // Красно-оранжевый для управляющих конструкций (if, else, match)
-            { token: 'keyword.control.conditional', foreground: '#D73A49' }, // Красно-оранжевый для if/else
-            { token: 'keyword.control.loop', foreground: '#D73A49' }, // Красно-оранжевый для циклов
-            { token: 'keyword.control.flow', foreground: '#D73A49' }, // Красно-оранжевый для flow control
-            { token: 'keyword.operator', foreground: '#D73A49' }, // Красно-оранжевый для операторных ключевых слов
-            { token: 'keyword.other', foreground: '#D73A49' }, // Красно-оранжевый для других ключевых слов
-            { token: 'keyword.declaration', foreground: '#D73A49' }, // Красно-оранжевый для деклараций (fn, struct, etc)
-            { token: 'keyword.unsafe', foreground: '#CB2431', fontStyle: 'bold' }, // Выделение для unsafe
+            { token: 'keyword', foreground: getCssVariable('keyword-color', '#D73A49') },       // Красно-оранжевый для ключевых слов (let, fn, pub)
+            { token: 'keyword.control', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для управляющих конструкций (if, else, match)
+            { token: 'keyword.control.conditional', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для if/else
+            { token: 'keyword.control.loop', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для циклов
+            { token: 'keyword.control.flow', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для flow control
+            { token: 'keyword.operator', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для операторных ключевых слов
+            { token: 'keyword.other', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для других ключевых слов
+            { token: 'keyword.declaration', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для деклараций (fn, struct, etc)
+            { token: 'keyword.unsafe', foreground: getCssVariable('unsafe-color', '#CB2431'), fontStyle: 'bold' }, // Выделение для unsafe
             
             // Строки и символы
-            { token: 'string', foreground: '#0A8744' },        // Зеленый для строк
-            { token: 'string.quote', foreground: '#0A8744' },  // Зеленый для кавычек
-            { token: 'string.raw', foreground: '#0A8744' },    // Зеленый для raw строк
-            { token: 'string.escape', foreground: '#E36209' }, // Оранжевый для escape-последовательностей
-            { token: 'character', foreground: '#0A8744' },     // Зеленый для символов
-            { token: 'character.escape', foreground: '#E36209' }, // Оранжевый для escape в символах
+            { token: 'string', foreground: getCssVariable('string-color', '#0A8744') },        // Зеленый для строк
+            { token: 'string.quote', foreground: getCssVariable('string-color', '#0A8744') },  // Зеленый для кавычек
+            { token: 'string.raw', foreground: getCssVariable('string-color', '#0A8744') },    // Зеленый для raw строк
+            { token: 'string.escape', foreground: getCssVariable('escape-color', '#E36209') }, // Оранжевый для escape-последовательностей
+            { token: 'character', foreground: getCssVariable('string-color', '#0A8744') },     // Зеленый для символов
+            { token: 'character.escape', foreground: getCssVariable('escape-color', '#E36209') }, // Оранжевый для escape в символах
             
             // Числа
-            { token: 'number', foreground: '#005CC5' },        // Синий для чисел
-            { token: 'number.float', foreground: '#005CC5' },  // Синий для чисел с плавающей запятой
-            { token: 'number.hex', foreground: '#005CC5' },    // Синий для hex
-            { token: 'number.octal', foreground: '#005CC5' },  // Синий для octal
-            { token: 'number.binary', foreground: '#005CC5' }, // Синий для binary
+            { token: 'number', foreground: getCssVariable('number-color', '#005CC5') },        // Синий для чисел
+            { token: 'number.float', foreground: getCssVariable('number-color', '#005CC5') },  // Синий для чисел с плавающей запятой
+            { token: 'number.hex', foreground: getCssVariable('number-color', '#005CC5') },    // Синий для hex
+            { token: 'number.octal', foreground: getCssVariable('number-color', '#005CC5') },  // Синий для octal
+            { token: 'number.binary', foreground: getCssVariable('number-color', '#005CC5') }, // Синий для binary
             
             // Комментарии
-            { token: 'comment', foreground: '#6A737D', fontStyle: 'italic' }, // Серый для комментариев
-            { token: 'comment.doc', foreground: '#5C6370', fontStyle: 'italic' }, // Документационные комментарии
-            { token: 'comment.line', foreground: '#6A737D', fontStyle: 'italic' }, // Однострочные комментарии
-            { token: 'comment.block', foreground: '#6A737D', fontStyle: 'italic' }, // Многострочные комментарии
-            { token: 'comment.doc.tag', foreground: '#85632E', fontStyle: 'italic' }, // Теги в документационных комментариях
+            { token: 'comment', foreground: getCssVariable('comment-color', '#6A737D'), fontStyle: 'italic' }, // Серый для комментариев
+            { token: 'comment.doc', foreground: getCssVariable('comment-doc-color', '#5C6370'), fontStyle: 'italic' }, // Документационные комментарии
+            { token: 'comment.line', foreground: getCssVariable('comment-color', '#6A737D'), fontStyle: 'italic' }, // Однострочные комментарии
+            { token: 'comment.block', foreground: getCssVariable('comment-color', '#6A737D'), fontStyle: 'italic' }, // Многострочные комментарии
+            { token: 'comment.doc.tag', foreground: getCssVariable('comment-tag-color', '#85632E'), fontStyle: 'italic' }, // Теги в документационных комментариях
             
             // Rust-специфичные токены с преобладанием "ржавого" цвета
-            { token: 'type', foreground: '#6F42C1' },          // Фиолетовый для типов (i32, String)
-            { token: 'type.builtin', foreground: '#6F42C1' },  // Фиолетовый для встроенных типов
-            { token: 'type.identifier', foreground: '#6F42C1' }, // Фиолетовый для пользовательских типов
-            { token: 'type.parameter', foreground: '#6F42C1' }, // Фиолетовый для параметров типа
-            { token: 'type.primitive', foreground: '#6F42C1' }, // Фиолетовый для примитивных типов
-            { token: 'struct', foreground: '#6F42C1' },        // Фиолетовый для структур
-            { token: 'struct.field', foreground: '#24292E' },  // Темный для полей структур
-            { token: 'enum', foreground: '#6F42C1' },          // Фиолетовый для перечислений
-            { token: 'enum.variant', foreground: '#24292E' },  // Темный для вариантов enum
-            { token: 'trait', foreground: '#6F42C1' },         // Фиолетовый для трейтов
-            { token: 'interface', foreground: '#6F42C1' },     // Фиолетовый для интерфейсов
-            { token: 'typeAlias', foreground: '#6F42C1' },     // Фиолетовый для type aliases
+            { token: 'type', foreground: getCssVariable('type-color', '#6F42C1') },          // Фиолетовый для типов (i32, String)
+            { token: 'type.builtin', foreground: getCssVariable('type-color', '#6F42C1') },  // Фиолетовый для встроенных типов
+            { token: 'type.identifier', foreground: getCssVariable('type-color', '#6F42C1') }, // Фиолетовый для пользовательских типов
+            { token: 'type.parameter', foreground: getCssVariable('type-color', '#6F42C1') }, // Фиолетовый для параметров типа
+            { token: 'type.primitive', foreground: getCssVariable('type-color', '#6F42C1') }, // Фиолетовый для примитивных типов
+            { token: 'struct', foreground: getCssVariable('type-color', '#6F42C1') },        // Фиолетовый для структур
+            { token: 'struct.field', foreground: getCssVariable('text-color', '#24292E') },  // Темный для полей структур
+            { token: 'enum', foreground: getCssVariable('type-color', '#6F42C1') },          // Фиолетовый для перечислений
+            { token: 'enum.variant', foreground: getCssVariable('text-color', '#24292E') },  // Темный для вариантов enum
+            { token: 'trait', foreground: getCssVariable('type-color', '#6F42C1') },         // Фиолетовый для трейтов
+            { token: 'interface', foreground: getCssVariable('type-color', '#6F42C1') },     // Фиолетовый для интерфейсов
+            { token: 'typeAlias', foreground: getCssVariable('type-color', '#6F42C1') },     // Фиолетовый для type aliases
             
             // Идентификаторы, переменные и функции
-            { token: 'identifier', foreground: '#24292E' },    // Темный для идентификаторов
-            { token: 'variable', foreground: '#24292E' },      // Темный для переменных
-            { token: 'variable.readonly', foreground: '#24292E' }, // Темный для неизменяемых переменных
-            { token: 'variable.mutable', foreground: '#953800', fontStyle: 'italic' }, // Курсив для изменяемых переменных
-            { token: 'variable.parameter', foreground: '#953800' }, // Темно-оранжевый для параметров
-            { token: 'variable.other', foreground: '#24292E' }, // Темный для других переменных
-            { token: 'function', foreground: '#005CC5' },      // Синий для функций
-            { token: 'function.declaration', foreground: '#005CC5' }, // Синий для деклараций функций
-            { token: 'function.call', foreground: '#005CC5' }, // Синий для вызовов функций
-            { token: 'function.method', foreground: '#005CC5' }, // Синий для методов
-            { token: 'function.method.call', foreground: '#005CC5' }, // Синий для вызовов методов
-            { token: 'function.self', foreground: '#953800' }, // Темно-оранжевый для self
-            { token: 'function.parameter', foreground: '#953800' }, // Темно-оранжевый для параметров функций
+            { token: 'identifier', foreground: getCssVariable('text-color', '#24292E') },    // Темный для идентификаторов
+            { token: 'variable', foreground: getCssVariable('text-color', '#24292E') },      // Темный для переменных
+            { token: 'variable.readonly', foreground: getCssVariable('text-color', '#24292E') }, // Темный для неизменяемых переменных
+            { token: 'variable.mutable', foreground: getCssVariable('variable-mutable-color', '#953800'), fontStyle: 'italic' }, // Курсив для изменяемых переменных
+            { token: 'variable.parameter', foreground: getCssVariable('parameter-color', '#953800') }, // Темно-оранжевый для параметров
+            { token: 'variable.other', foreground: getCssVariable('text-color', '#24292E') }, // Темный для других переменных
+            { token: 'function', foreground: getCssVariable('function-color', '#005CC5') },      // Синий для функций
+            { token: 'function.declaration', foreground: getCssVariable('function-color', '#005CC5') }, // Синий для деклараций функций
+            { token: 'function.call', foreground: getCssVariable('function-color', '#005CC5') }, // Синий для вызовов функций
+            { token: 'function.method', foreground: getCssVariable('function-color', '#005CC5') }, // Синий для методов
+            { token: 'function.method.call', foreground: getCssVariable('function-color', '#005CC5') }, // Синий для вызовов методов
+            { token: 'function.self', foreground: getCssVariable('parameter-color', '#953800') }, // Темно-оранжевый для self
+            { token: 'function.parameter', foreground: getCssVariable('parameter-color', '#953800') }, // Темно-оранжевый для параметров функций
             
             // Макросы и процедурные макросы
-            { token: 'function.macro', foreground: '#CB2431' }, // Красный для макросов
-            { token: 'macro', foreground: '#CB2431' },         // Красный для макросов (альтернативный токен)
-            { token: 'macro.attribute', foreground: '#CB2431' }, // Красный для атрибутивных макросов
-            { token: 'macro.derive', foreground: '#CB2431' },  // Красный для derive макросов
+            { token: 'function.macro', foreground: getCssVariable('macro-color', '#CB2431') }, // Красный для макросов
+            { token: 'macro', foreground: getCssVariable('macro-color', '#CB2431') },         // Красный для макросов (альтернативный токен)
+            { token: 'macro.attribute', foreground: getCssVariable('macro-color', '#CB2431') }, // Красный для атрибутивных макросов
+            { token: 'macro.derive', foreground: getCssVariable('macro-color', '#CB2431') },  // Красный для derive макросов
             
             // Лайфтаймы и атрибуты
-            { token: 'lifetime', foreground: '#D73A49' },      // Красно-оранжевый для lifetime параметров
-            { token: 'lifetime.declaration', foreground: '#D73A49' }, // Красно-оранжевый для декларации лайфтаймов
-            { token: 'attribute', foreground: '#0086B3' },     // Голубой для атрибутов
-            { token: 'attribute.bracket', foreground: '#0086B3' }, // Голубой для скобок атрибутов
-            { token: 'attribute.name', foreground: '#0086B3' }, // Голубой для имен атрибутов
+            { token: 'lifetime', foreground: getCssVariable('keyword-color', '#D73A49') },      // Красно-оранжевый для lifetime параметров
+            { token: 'lifetime.declaration', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для декларации лайфтаймов
+            { token: 'attribute', foreground: getCssVariable('attribute-color', '#0086B3') },     // Голубой для атрибутов
+            { token: 'attribute.bracket', foreground: getCssVariable('attribute-color', '#0086B3') }, // Голубой для скобок атрибутов
+            { token: 'attribute.name', foreground: getCssVariable('attribute-color', '#0086B3') }, // Голубой для имен атрибутов
             
             // Константы и статические переменные
-            { token: 'constant', foreground: '#005CC5' },      // Синий для констант
-            { token: 'constant.language', foreground: '#005CC5' }, // Синий для встроенных констант
-            { token: 'constant.numeric', foreground: '#005CC5' }, // Синий для числовых констант
-            { token: 'constant.character', foreground: '#0A8744' }, // Зеленый для символьных констант
-            { token: 'constant.other', foreground: '#005CC5' }, // Синий для других констант
-            { token: 'static', foreground: '#005CC5' },        // Синий для статических переменных
+            { token: 'constant', foreground: getCssVariable('constant-color', '#005CC5') },      // Синий для констант
+            { token: 'constant.language', foreground: getCssVariable('constant-color', '#005CC5') }, // Синий для встроенных констант
+            { token: 'constant.numeric', foreground: getCssVariable('number-color', '#005CC5') }, // Синий для числовых констант
+            { token: 'constant.character', foreground: getCssVariable('string-color', '#0A8744') }, // Зеленый для символьных констант
+            { token: 'constant.other', foreground: getCssVariable('constant-color', '#005CC5') }, // Синий для других констант
+            { token: 'static', foreground: getCssVariable('constant-color', '#005CC5') },        // Синий для статических переменных
             
             // Операторы и разделители
-            { token: 'operator', foreground: '#D73A49' },      // Красно-оранжевый для операторов
-            { token: 'operator.assignment', foreground: '#D73A49' }, // Красно-оранжевый для операторов присваивания
-            { token: 'operator.arithmetic', foreground: '#D73A49' }, // Красно-оранжевый для арифметических операторов
-            { token: 'operator.logical', foreground: '#D73A49' }, // Красно-оранжевый для логических операторов
-            { token: 'operator.comparison', foreground: '#D73A49' }, // Красно-оранжевый для операторов сравнения
-            { token: 'operator.range', foreground: '#D73A49' }, // Красно-оранжевый для операторов диапазона
-            { token: 'delimiter', foreground: '#24292E' },     // Темный для разделителей
-            { token: 'delimiter.bracket', foreground: '#24292E' }, // Темный для скобок
-            { token: 'delimiter.parenthesis', foreground: '#24292E' }, // Темный для круглых скобок
-            { token: 'delimiter.square', foreground: '#24292E' }, // Темный для квадратных скобок
-            { token: 'delimiter.angle', foreground: '#24292E' }, // Темный для угловых скобок
-            { token: 'delimiter.curly', foreground: '#24292E' }, // Темный для фигурных скобок
-            { token: 'punctuation', foreground: '#24292E' },    // Темный для пунктуации
+            { token: 'operator', foreground: getCssVariable('keyword-color', '#D73A49') },      // Красно-оранжевый для операторов
+            { token: 'operator.assignment', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для операторов присваивания
+            { token: 'operator.arithmetic', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для арифметических операторов
+            { token: 'operator.logical', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для логических операторов
+            { token: 'operator.comparison', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для операторов сравнения
+            { token: 'operator.range', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для операторов диапазона
+            { token: 'delimiter', foreground: getCssVariable('text-color', '#24292E') },     // Темный для разделителей
+            { token: 'delimiter.bracket', foreground: getCssVariable('text-color', '#24292E') }, // Темный для скобок
+            { token: 'delimiter.parenthesis', foreground: getCssVariable('text-color', '#24292E') }, // Темный для круглых скобок
+            { token: 'delimiter.square', foreground: getCssVariable('text-color', '#24292E') }, // Темный для квадратных скобок
+            { token: 'delimiter.angle', foreground: getCssVariable('text-color', '#24292E') }, // Темный для угловых скобок
+            { token: 'delimiter.curly', foreground: getCssVariable('text-color', '#24292E') }, // Темный для фигурных скобок
+            { token: 'punctuation', foreground: getCssVariable('text-color', '#24292E') },    // Темный для пунктуации
             
             // Особые случаи и специфика Rust
-            { token: 'custom-error', foreground: '#B31D28' },  // Ярко-красный для ошибок синтаксиса
-            { token: 'invalid', foreground: '#B31D28' },       // Ярко-красный для недопустимого синтаксиса
-            { token: 'regexp', foreground: '#032F62' },        // Темно-синий для регулярных выражений
-            { token: 'storage', foreground: '#D73A49' },       // Красно-оранжевый для storage keywords
-            { token: 'storage.type', foreground: '#D73A49' },  // Красно-оранжевый для типов хранения
-            { token: 'storage.modifier', foreground: '#D73A49' }, // Красно-оранжевый для модификаторов хранения
-            { token: 'annotation', foreground: '#CB2431' },    // Красный для аннотаций
-            { token: 'modifier', foreground: '#D73A49' },      // Красно-оранжевый для модификаторов
-            { token: 'entity.name.namespace', foreground: '#6F42C1' },  // Фиолетовый для пространств имен
-            { token: 'entity.name.type', foreground: '#6F42C1' }, // Фиолетовый для имен типов
-            { token: 'entity.name.function', foreground: '#005CC5' }, // Синий для имен функций
-            { token: 'entity.name.tag', foreground: '#22863A' }, // Зеленый для тегов
-            { token: 'entity.other.attribute-name', foreground: '#6F42C1' }, // Фиолетовый для имен атрибутов
-            { token: 'meta.tag', foreground: '#22863A' },     // Зеленый для метатегов
-            { token: 'meta.preprocessor', foreground: '#CB2431' }, // Красный для препроцессора
-            { token: 'meta.preprocessor.string', foreground: '#0A8744' }, // Зеленый для строк препроцессора
-            { token: 'meta.preprocessor.numeric', foreground: '#005CC5' }, // Синий для чисел препроцессора
-            { token: 'meta.structure.tuple', foreground: '#24292E' }, // Темный для структуры кортежей
-            { token: 'meta.parameter', foreground: '#953800' }, // Темно-оранжевый для параметров
-            { token: 'meta.return-type', foreground: '#6F42C1' }, // Фиолетовый для возвращаемых типов
-            { token: 'meta.impl', foreground: '#6F42C1' },    // Фиолетовый для impl блоков
-            { token: 'meta.trait', foreground: '#6F42C1' },   // Фиолетовый для trait блоков
-            { token: 'meta.directive', foreground: '#CB2431' }, // Красный для директив
-            { token: 'meta.path', foreground: '#24292E' },    // Темный для путей
-            { token: 'meta.use', foreground: '#D73A49' },     // Красно-оранжевый для use директив
+            { token: 'custom-error', foreground: getCssVariable('error-color', '#B31D28') },  // Ярко-красный для ошибок синтаксиса
+            { token: 'invalid', foreground: getCssVariable('error-color', '#B31D28') },       // Ярко-красный для недопустимого синтаксиса
+            { token: 'regexp', foreground: getCssVariable('regexp-color', '#032F62') },        // Темно-синий для регулярных выражений
+            { token: 'storage', foreground: getCssVariable('keyword-color', '#D73A49') },       // Красно-оранжевый для storage keywords
+            { token: 'storage.type', foreground: getCssVariable('keyword-color', '#D73A49') },  // Красно-оранжевый для типов хранения
+            { token: 'storage.modifier', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для модификаторов хранения
+            { token: 'annotation', foreground: getCssVariable('macro-color', '#CB2431') },    // Красный для аннотаций
+            { token: 'modifier', foreground: getCssVariable('keyword-color', '#D73A49') },      // Красно-оранжевый для модификаторов
+            { token: 'entity.name.namespace', foreground: getCssVariable('type-color', '#6F42C1') },  // Фиолетовый для пространств имен
+            { token: 'entity.name.type', foreground: getCssVariable('type-color', '#6F42C1') }, // Фиолетовый для имен типов
+            { token: 'entity.name.function', foreground: getCssVariable('function-color', '#005CC5') }, // Синий для имен функций
+            { token: 'entity.name.tag', foreground: getCssVariable('tag-color', '#22863A') }, // Зеленый для тегов
+            { token: 'entity.other.attribute-name', foreground: getCssVariable('type-color', '#6F42C1') }, // Фиолетовый для имен атрибутов
+            { token: 'meta.tag', foreground: getCssVariable('tag-color', '#22863A') },     // Зеленый для метатегов
+            { token: 'meta.preprocessor', foreground: getCssVariable('macro-color', '#CB2431') }, // Красный для препроцессора
+            { token: 'meta.preprocessor.string', foreground: getCssVariable('string-color', '#0A8744') }, // Зеленый для строк препроцессора
+            { token: 'meta.preprocessor.numeric', foreground: getCssVariable('number-color', '#005CC5') }, // Синий для чисел препроцессора
+            { token: 'meta.structure.tuple', foreground: getCssVariable('text-color', '#24292E') }, // Темный для структуры кортежей
+            { token: 'meta.parameter', foreground: getCssVariable('parameter-color', '#953800') }, // Темно-оранжевый для параметров
+            { token: 'meta.return-type', foreground: getCssVariable('type-color', '#6F42C1') }, // Фиолетовый для возвращаемых типов
+            { token: 'meta.impl', foreground: getCssVariable('type-color', '#6F42C1') },    // Фиолетовый для impl блоков
+            { token: 'meta.trait', foreground: getCssVariable('type-color', '#6F42C1') },   // Фиолетовый для trait блоков
+            { token: 'meta.directive', foreground: getCssVariable('macro-color', '#CB2431') }, // Красный для директив
+            { token: 'meta.path', foreground: getCssVariable('text-color', '#24292E') },    // Темный для путей
+            { token: 'meta.use', foreground: getCssVariable('keyword-color', '#D73A49') },     // Красно-оранжевый для use директив
         ],
         colors: {
-            'editor.foreground': '#000000',
-            'editor.background': '#ffffff',
-            'editor.lineHighlightBackground': '#f0f0f0',
-            'editorCursor.foreground': '#000000',
-            'editor.selectionBackground': '#e3f2fd'
+            'editor.foreground': getCssVariable('body-primary-text', '#000000'),
+            'editor.background': getCssVariable('body-background', '#ffffff'),
+            'editor.lineHighlightBackground': getCssVariable('tab-hover-bg', '#f0f0f0'),
+            'editorCursor.foreground': getCssVariable('cursor-separator', '#000000'),
+            'editor.selectionBackground': getCssVariable('tab-modified-indicator', '#e3f2fd'),
+            'editor.selectionHighlightBackground': getCssVariable('editor-selection-highlight', 'rgba(173, 214, 255, 0.15)'),
+            'editor.wordHighlightBackground': getCssVariable('editor-word-highlight', 'rgba(87, 108, 188, 0.1)'),
+            'editorLineNumber.foreground': getCssVariable('editor-line-number', '#999999'),
+            'editorLineNumber.activeForeground': getCssVariable('editor-line-number-active', '#333333'),
+            'editorIndentGuide.background': getCssVariable('editor-indent-guide', '#e0e0e0'),
+            'editorIndentGuide.activeBackground': getCssVariable('editor-indent-guide-active', '#c0c0c0')
         }
     },
     dark: {
         base: 'vs-dark',
         inherit: false, // Отключаем наследование, чтобы полностью переопределить тему
         rules: [
+
+        
             // Базовые токены с цветами, подходящими для Rust в темной теме
-            { token: 'keyword', foreground: '#FF6B8B' },       // Яркий красно-розовый для ключевых слов (let, fn, pub)
-            { token: 'keyword.control', foreground: '#FF6B8B' }, // Яркий красно-розовый для управляющих конструкций
-            { token: 'keyword.control.conditional', foreground: '#FF6B8B' }, // Яркий красно-розовый для if/else
-            { token: 'keyword.control.loop', foreground: '#FF6B8B' }, // Яркий красно-розовый для циклов
-            { token: 'keyword.control.flow', foreground: '#FF6B8B' }, // Яркий красно-розовый для flow control
-            { token: 'keyword.operator', foreground: '#FF6B8B' }, // Яркий красно-розовый для операторных ключевых слов
-            { token: 'keyword.other', foreground: '#FF6B8B' }, // Яркий красно-розовый для других ключевых слов
-            { token: 'keyword.declaration', foreground: '#FF6B8B' }, // Яркий красно-розовый для деклараций
-            { token: 'keyword.unsafe', foreground: '#FF3333', fontStyle: 'bold' }, // Выделение для unsafe
+            { token: 'keyword', foreground: getCssVariable('keyword-color-dark', '#FF6B8B') },       // Яркий красно-розовый для ключевых слов (let, fn, pub)
+            { token: 'keyword.control', foreground: getCssVariable('keyword-color-dark', '#FF6B8B') }, // Яркий красно-розовый для управляющих конструкций
+            { token: 'keyword.control.conditional', foreground: getCssVariable('keyword-color-dark', '#FF6B8B') }, // Яркий красно-розовый для if/else
+            { token: 'keyword.control.loop', foreground: getCssVariable('keyword-color-dark', '#FF6B8B') }, // Яркий красно-розовый для циклов
+            { token: 'keyword.control.flow', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для flow control
+            { token: 'keyword.operator', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для операторных ключевых слов
+            { token: 'keyword.other', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для других ключевых слов
+            { token: 'keyword.declaration', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для деклараций
+            { token: 'keyword.unsafe', foreground: getCssVariable('unsafe-color', '#CB2431'), fontStyle: 'bold' }, // Выделение для unsafe
             
             // Строки и символы
-            { token: 'string', foreground: '#7EEAB4' },        // Яркий зеленый для строк
-            { token: 'string.quote', foreground: '#7EEAB4' },  // Яркий зеленый для кавычек
-            { token: 'string.raw', foreground: '#7EEAB4' },    // Яркий зеленый для raw строк
-            { token: 'string.escape', foreground: '#FFAB70' }, // Оранжевый для escape-последовательностей
-            { token: 'character', foreground: '#7EEAB4' },     // Яркий зеленый для символов
-            { token: 'character.escape', foreground: '#FFAB70' }, // Оранжевый для escape в символах
+            { token: 'string', foreground: getCssVariable('string-color', '#0A8744') },        // Зеленый для строк
+            { token: 'string.quote', foreground: getCssVariable('string-color', '#0A8744') },  // Зеленый для кавычек
+            { token: 'string.raw', foreground: getCssVariable('string-color', '#0A8744') },    // Зеленый для raw строк
+            { token: 'string.escape', foreground: getCssVariable('escape-color', '#E36209') }, // Оранжевый для escape-последовательностей
+            { token: 'character', foreground: getCssVariable('string-color', '#0A8744') },     // Зеленый для символов
+            { token: 'character.escape', foreground: getCssVariable('escape-color', '#E36209') }, // Оранжевый для escape в символах
             
             // Числа
-            { token: 'number', foreground: '#79B8FF' },        // Яркий синий для чисел
-            { token: 'number.float', foreground: '#79B8FF' },  // Яркий синий для чисел с плавающей запятой
-            { token: 'number.hex', foreground: '#79B8FF' },    // Яркий синий для hex
-            { token: 'number.octal', foreground: '#79B8FF' },  // Яркий синий для octal
-            { token: 'number.binary', foreground: '#79B8FF' }, // Яркий синий для binary
+            { token: 'number', foreground: getCssVariable('number-color', '#005CC5') },        // Синий для чисел
+            { token: 'number.float', foreground: getCssVariable('number-color', '#005CC5') },  // Синий для чисел с плавающей запятой
+            { token: 'number.hex', foreground: getCssVariable('number-color', '#005CC5') },    // Синий для hex
+            { token: 'number.octal', foreground: getCssVariable('number-color', '#005CC5') },  // Синий для octal
+            { token: 'number.binary', foreground: getCssVariable('number-color', '#005CC5') }, // Синий для binary
             
             // Комментарии
-            { token: 'comment', foreground: '#8B949E', fontStyle: 'italic' }, // Серый для комментариев
-            { token: 'comment.doc', foreground: '#959DA5', fontStyle: 'italic' }, // Документационные комментарии
-            { token: 'comment.line', foreground: '#8B949E', fontStyle: 'italic' }, // Однострочные комментарии
-            { token: 'comment.block', foreground: '#8B949E', fontStyle: 'italic' }, // Многострочные комментарии
-            { token: 'comment.doc.tag', foreground: '#FFDF9E', fontStyle: 'italic' }, // Теги в док. комментариях - светло-янтарный
+            { token: 'comment', foreground: getCssVariable('comment-color', '#6A737D'), fontStyle: 'italic' }, // Серый для комментариев
+            { token: 'comment.doc', foreground: getCssVariable('comment-doc-color', '#5C6370'), fontStyle: 'italic' }, // Документационные комментарии
+            { token: 'comment.line', foreground: getCssVariable('comment-color', '#6A737D'), fontStyle: 'italic' }, // Однострочные комментарии
+            { token: 'comment.block', foreground: getCssVariable('comment-color', '#6A737D'), fontStyle: 'italic' }, // Многострочные комментарии
+            { token: 'comment.doc.tag', foreground: getCssVariable('comment-tag-color', '#85632E'), fontStyle: 'italic' }, // Теги в документационных комментариях
             
             // Rust-специфичные токены в темной теме
-            { token: 'type', foreground: '#D2A8FF' },          // Светло-фиолетовый для типов
-            { token: 'type.builtin', foreground: '#D2A8FF' },  // Светло-фиолетовый для встроенных типов
-            { token: 'type.identifier', foreground: '#D2A8FF' }, // Светло-фиолетовый для пользовательских типов
-            { token: 'type.parameter', foreground: '#D2A8FF' }, // Светло-фиолетовый для параметров типа
-            { token: 'type.primitive', foreground: '#D2A8FF' }, // Светло-фиолетовый для примитивных типов
-            { token: 'struct', foreground: '#D2A8FF' },        // Светло-фиолетовый для структур
-            { token: 'struct.field', foreground: '#E1E4E8' },  // Светлый для полей структур
-            { token: 'enum', foreground: '#D2A8FF' },          // Светло-фиолетовый для перечислений
-            { token: 'enum.variant', foreground: '#E1E4E8' },  // Светлый для вариантов enum
-            { token: 'trait', foreground: '#D2A8FF' },         // Светло-фиолетовый для трейтов
-            { token: 'interface', foreground: '#D2A8FF' },     // Светло-фиолетовый для интерфейсов
-            { token: 'typeAlias', foreground: '#D2A8FF' },     // Светло-фиолетовый для type aliases
+            { token: 'type', foreground: getCssVariable('type-color', '#6F42C1') },          // Фиолетовый для типов (i32, String)
+            { token: 'type.builtin', foreground: getCssVariable('type-color', '#6F42C1') },  // Фиолетовый для встроенных типов
+            { token: 'type.identifier', foreground: getCssVariable('type-color', '#6F42C1') }, // Светло-фиолетовый для пользовательских типов
+            { token: 'type.parameter', foreground: getCssVariable('type-color', '#6F42C1') }, // Светло-фиолетовый для параметров типа
+            { token: 'type.primitive', foreground: getCssVariable('type-color', '#6F42C1') }, // Светло-фиолетовый для примитивных типов
+            { token: 'struct', foreground: getCssVariable('type-color', '#6F42C1') },        // Светло-фиолетовый для структур
+            { token: 'struct.field', foreground: getCssVariable('text-color', '#24292E') },  // Светлый для полей структур
+            { token: 'enum', foreground: getCssVariable('type-color', '#6F42C1') },          // Светло-фиолетовый для перечислений
+            { token: 'enum.variant', foreground: getCssVariable('text-color', '#24292E') },  // Светлый для вариантов enum
+            { token: 'trait', foreground: getCssVariable('type-color', '#6F42C1') },         // Светло-фиолетовый для трейтов
+            { token: 'interface', foreground: getCssVariable('type-color', '#6F42C1') },     // Светло-фиолетовый для интерфейсов
+            { token: 'typeAlias', foreground: getCssVariable('type-color', '#6F42C1') },     // Светло-фиолетовый для type aliases
             
             // Идентификаторы, переменные и функции
-            { token: 'identifier', foreground: '#E1E4E8' },    // Светлый для идентификаторов
-            { token: 'variable', foreground: '#E1E4E8' },      // Светлый для переменных
-            { token: 'variable.readonly', foreground: '#E1E4E8' }, // Светлый для неизменяемых переменных
-            { token: 'variable.mutable', foreground: '#FFAB70', fontStyle: 'italic' }, // Курсив для изменяемых переменных, оранжевый
-            { token: 'variable.parameter', foreground: '#FFAB70' }, // Оранжевый для параметров
-            { token: 'variable.other', foreground: '#E1E4E8' }, // Светлый для других переменных
-            { token: 'function', foreground: '#79B8FF' },      // Яркий синий для функций
-            { token: 'function.declaration', foreground: '#79B8FF' }, // Яркий синий для деклараций функций
-            { token: 'function.call', foreground: '#79B8FF' }, // Яркий синий для вызовов функций
-            { token: 'function.method', foreground: '#79B8FF' }, // Яркий синий для методов
-            { token: 'function.method.call', foreground: '#79B8FF' }, // Яркий синий для вызовов методов
-            { token: 'function.self', foreground: '#FFAB70' }, // Оранжевый для self
-            { token: 'function.parameter', foreground: '#FFAB70' }, // Оранжевый для параметров функций
+            { token: 'identifier', foreground: getCssVariable('text-color', '#24292E') },    // Темный для идентификаторов
+            { token: 'variable', foreground: getCssVariable('text-color', '#24292E') },      // Темный для переменных
+            { token: 'variable.readonly', foreground: getCssVariable('text-color', '#24292E') }, // Светлый для неизменяемых переменных
+            { token: 'variable.mutable', foreground: getCssVariable('variable-mutable-color', '#953800'), fontStyle: 'italic' }, // Курсив для изменяемых переменных, оранжевый
+            { token: 'variable.parameter', foreground: getCssVariable('parameter-color', '#953800') }, // Оранжевый для параметров
+            { token: 'variable.other', foreground: getCssVariable('text-color', '#24292E') }, // Светлый для других переменных
+            { token: 'function', foreground: getCssVariable('function-color', '#005CC5') },      // Синий для функций
+            { token: 'function.declaration', foreground: getCssVariable('function-color', '#005CC5') }, // Синий для деклараций функций
+            { token: 'function.call', foreground: getCssVariable('function-color', '#005CC5') }, // Синий для вызовов функций
+            { token: 'function.method', foreground: getCssVariable('function-color', '#005CC5') }, // Синий для методов
+            { token: 'function.method.call', foreground: getCssVariable('function-color', '#005CC5') }, // Синий для вызовов методов
+            { token: 'function.self', foreground: getCssVariable('parameter-color', '#953800') }, // Темно-оранжевый для self
+            { token: 'function.parameter', foreground: getCssVariable('parameter-color', '#953800') }, // Темно-оранжевый для параметров функций
             
             // Макросы и процедурные макросы
-            { token: 'function.macro', foreground: '#FF6B8B' }, // Яркий красно-розовый для макросов
-            { token: 'macro', foreground: '#FF6B8B' },         // Яркий красно-розовый для макросов
-            { token: 'macro.attribute', foreground: '#FF6B8B' }, // Яркий красно-розовый для атрибутивных макросов
-            { token: 'macro.derive', foreground: '#FF6B8B' },  // Яркий красно-розовый для derive макросов
+            { token: 'function.macro', foreground: getCssVariable('macro-color', '#CB2431') }, // Красный для макросов
+            { token: 'macro', foreground: getCssVariable('macro-color', '#CB2431') },         // Красный для макросов (альтернативный токен)
+            { token: 'macro.attribute', foreground: getCssVariable('macro-color', '#CB2431') }, // Красный для атрибутивных макросов
+            { token: 'macro.derive', foreground: getCssVariable('macro-color', '#CB2431') },  // Красный для derive макросов
             
             // Лайфтаймы и атрибуты
-            { token: 'lifetime', foreground: '#FF6B8B' },      // Яркий красно-розовый для lifetime параметров
-            { token: 'lifetime.declaration', foreground: '#FF6B8B' }, // Яркий красно-розовый для декларации лайфтаймов
-            { token: 'attribute', foreground: '#56D4DD' },     // Бирюзовый для атрибутов
-            { token: 'attribute.bracket', foreground: '#56D4DD' }, // Бирюзовый для скобок атрибутов
-            { token: 'attribute.name', foreground: '#56D4DD' }, // Бирюзовый для имен атрибутов
+            { token: 'lifetime', foreground: getCssVariable('keyword-color', '#D73A49') },      // Красно-оранжевый для lifetime параметров
+            { token: 'lifetime.declaration', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для декларации лайфтаймов
+            { token: 'attribute', foreground: getCssVariable('attribute-color', '#0086B3') },     // Голубой для атрибутов
+            { token: 'attribute.bracket', foreground: getCssVariable('attribute-color', '#0086B3') }, // Голубой для скобок атрибутов
+            { token: 'attribute.name', foreground: getCssVariable('attribute-color', '#0086B3') }, // Голубой для имен атрибутов
             
             // Константы и статические переменные
-            { token: 'constant', foreground: '#79B8FF' },      // Яркий синий для констант
-            { token: 'constant.language', foreground: '#79B8FF' }, // Яркий синий для встроенных констант
-            { token: 'constant.numeric', foreground: '#79B8FF' }, // Яркий синий для числовых констант
-            { token: 'constant.character', foreground: '#7EEAB4' }, // Яркий зеленый для символьных констант
-            { token: 'constant.other', foreground: '#79B8FF' }, // Яркий синий для других констант
-            { token: 'static', foreground: '#79B8FF' },        // Яркий синий для статических переменных
+            { token: 'constant', foreground: getCssVariable('constant-color', '#005CC5') },      // Синий для констант
+            { token: 'constant.language', foreground: getCssVariable('constant-color', '#005CC5') }, // Синий для встроенных констант
+            { token: 'constant.numeric', foreground: getCssVariable('number-color', '#005CC5') }, // Синий для числовых констант
+            { token: 'constant.character', foreground: getCssVariable('string-color', '#0A8744') }, // Зеленый для символьных констант
+            { token: 'constant.other', foreground: getCssVariable('constant-color', '#005CC5') }, // Синий для других констант
+            { token: 'static', foreground: getCssVariable('constant-color', '#005CC5') },        // Синий для статических переменных
             
             // Операторы и разделители
-            { token: 'operator', foreground: '#FF6B8B' },      // Яркий красно-розовый для операторов
-            { token: 'operator.assignment', foreground: '#FF6B8B' }, // Яркий красно-розовый для операторов присваивания
-            { token: 'operator.arithmetic', foreground: '#FF6B8B' }, // Яркий красно-розовый для арифметических операторов
-            { token: 'operator.logical', foreground: '#FF6B8B' }, // Яркий красно-розовый для логических операторов
-            { token: 'operator.comparison', foreground: '#FF6B8B' }, // Яркий красно-розовый для операторов сравнения
-            { token: 'operator.range', foreground: '#FF6B8B' }, // Яркий красно-розовый для операторов диапазона
-            { token: 'delimiter', foreground: '#E1E4E8' },     // Светлый для разделителей
-            { token: 'delimiter.bracket', foreground: '#E1E4E8' }, // Светлый для скобок
-            { token: 'delimiter.parenthesis', foreground: '#E1E4E8' }, // Светлый для круглых скобок
-            { token: 'delimiter.square', foreground: '#E1E4E8' }, // Светлый для квадратных скобок
-            { token: 'delimiter.angle', foreground: '#E1E4E8' }, // Светлый для угловых скобок
-            { token: 'delimiter.curly', foreground: '#E1E4E8' }, // Светлый для фигурных скобок
-            { token: 'punctuation', foreground: '#E1E4E8' },    // Светлый для пунктуации
+            { token: 'operator', foreground: getCssVariable('keyword-color', '#D73A49') },      // Красно-оранжевый для операторов
+            { token: 'operator.assignment', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для операторов присваивания
+            { token: 'operator.arithmetic', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для арифметических операторов
+            { token: 'operator.logical', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для логических операторов
+            { token: 'operator.comparison', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для операторов сравнения
+            { token: 'operator.range', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для операторов диапазона
+            { token: 'delimiter', foreground: getCssVariable('text-color', '#24292E') },     // Темный для разделителей
+            { token: 'delimiter.bracket', foreground: getCssVariable('text-color', '#24292E') }, // Темный для скобок
+            { token: 'delimiter.parenthesis', foreground: getCssVariable('text-color', '#24292E') }, // Темный для круглых скобок
+            { token: 'delimiter.square', foreground: getCssVariable('text-color', '#24292E') }, // Темный для квадратных скобок
+            { token: 'delimiter.angle', foreground: getCssVariable('text-color', '#24292E') }, // Темный для угловых скобок
+            { token: 'delimiter.curly', foreground: getCssVariable('text-color', '#24292E') }, // Темный для фигурных скобок
+            { token: 'punctuation', foreground: getCssVariable('text-color', '#24292E') },    // Темный для пунктуации
             
             // Особые случаи и специфика Rust
-            { token: 'custom-error', foreground: '#FF5252' },  // Яркий красный для ошибок синтаксиса
-            { token: 'invalid', foreground: '#FF5252' },       // Яркий красный для недопустимого синтаксиса
-            { token: 'regexp', foreground: '#9CDCFE' },        // Светло-голубой для регулярных выражений
-            { token: 'storage', foreground: '#FF6B8B' },       // Яркий красно-розовый для storage keywords
-            { token: 'storage.type', foreground: '#FF6B8B' },  // Яркий красно-розовый для типов хранения
-            { token: 'storage.modifier', foreground: '#FF6B8B' }, // Яркий красно-розовый для модификаторов хранения
-            { token: 'annotation', foreground: '#FF6B8B' },    // Яркий красно-розовый для аннотаций
-            { token: 'modifier', foreground: '#FF6B8B' },      // Яркий красно-розовый для модификаторов
-            { token: 'entity.name.namespace', foreground: '#D2A8FF' },  // Светло-фиолетовый для пространств имен
-            { token: 'entity.name.type', foreground: '#D2A8FF' }, // Светло-фиолетовый для имен типов
-            { token: 'entity.name.function', foreground: '#79B8FF' }, // Яркий синий для имен функций
-            { token: 'entity.name.tag', foreground: '#7EEAB4' }, // Яркий зеленый для тегов
-            { token: 'entity.other.attribute-name', foreground: '#D2A8FF' }, // Светло-фиолетовый для имен атрибутов
-            { token: 'meta.tag', foreground: '#7EEAB4' },     // Яркий зеленый для метатегов
-            { token: 'meta.preprocessor', foreground: '#FF6B8B' }, // Яркий красно-розовый для препроцессора
-            { token: 'meta.preprocessor.string', foreground: '#7EEAB4' }, // Яркий зеленый для строк препроцессора
-            { token: 'meta.preprocessor.numeric', foreground: '#79B8FF' }, // Яркий синий для чисел препроцессора
-            { token: 'meta.structure.tuple', foreground: '#E1E4E8' }, // Светлый для структуры кортежей
-            { token: 'meta.parameter', foreground: '#FFAB70' }, // Оранжевый для параметров
-            { token: 'meta.return-type', foreground: '#D2A8FF' }, // Светло-фиолетовый для возвращаемых типов
-            { token: 'meta.impl', foreground: '#D2A8FF' },    // Светло-фиолетовый для impl блоков
-            { token: 'meta.trait', foreground: '#D2A8FF' },   // Светло-фиолетовый для trait блоков
-            { token: 'meta.directive', foreground: '#FF6B8B' }, // Яркий красно-розовый для директив
-            { token: 'meta.path', foreground: '#E1E4E8' },    // Светлый для путей
-            { token: 'meta.use', foreground: '#FF6B8B' },     // Яркий красно-розовый для use директив
+            { token: 'custom-error', foreground: getCssVariable('error-color', '#B31D28') },  // Ярко-красный для ошибок синтаксиса
+            { token: 'invalid', foreground: getCssVariable('error-color', '#B31D28') },       // Ярко-красный для недопустимого синтаксиса
+            { token: 'regexp', foreground: getCssVariable('regexp-color', '#032F62') },        // Темно-синий для регулярных выражений
+            { token: 'storage', foreground: getCssVariable('keyword-color', '#D73A49') },       // Красно-оранжевый для storage keywords
+            { token: 'storage.type', foreground: getCssVariable('keyword-color', '#D73A49') },  // Красно-оранжевый для типов хранения
+            { token: 'storage.modifier', foreground: getCssVariable('keyword-color', '#D73A49') }, // Красно-оранжевый для модификаторов хранения
+            { token: 'annotation', foreground: getCssVariable('macro-color', '#CB2431') },    // Красный для аннотаций
+            { token: 'modifier', foreground: getCssVariable('keyword-color', '#D73A49') },      // Красно-оранжевый для модификаторов
+            { token: 'entity.name.namespace', foreground: getCssVariable('type-color', '#6F42C1') },  // Фиолетовый для пространств имен
+            { token: 'entity.name.type', foreground: getCssVariable('type-color', '#6F42C1') }, // Фиолетовый для имен типов
+            { token: 'entity.name.function', foreground: getCssVariable('function-color', '#005CC5') }, // Синий для имен функций
+            { token: 'entity.name.tag', foreground: getCssVariable('tag-color', '#22863A') }, // Зеленый для тегов
+            { token: 'entity.other.attribute-name', foreground: getCssVariable('type-color', '#6F42C1') }, // Фиолетовый для имен атрибутов
+            { token: 'meta.tag', foreground: getCssVariable('tag-color', '#22863A') },     // Зеленый для метатегов
+            { token: 'meta.preprocessor', foreground: getCssVariable('macro-color', '#CB2431') }, // Красный для препроцессора
+            { token: 'meta.preprocessor.string', foreground: getCssVariable('string-color', '#0A8744') }, // Зеленый для строк препроцессора
+            { token: 'meta.preprocessor.numeric', foreground: getCssVariable('number-color', '#005CC5') }, // Синий для чисел препроцессора
+            { token: 'meta.structure.tuple', foreground: getCssVariable('text-color', '#24292E') }, // Темный для структуры кортежей
+            { token: 'meta.parameter', foreground: getCssVariable('parameter-color', '#953800') }, // Темно-оранжевый для параметров
+            { token: 'meta.return-type', foreground: getCssVariable('type-color', '#6F42C1') }, // Фиолетовый для возвращаемых типов
+            { token: 'meta.impl', foreground: getCssVariable('type-color', '#6F42C1') },    // Фиолетовый для impl блоков
+            { token: 'meta.trait', foreground: getCssVariable('type-color', '#6F42C1') },   // Фиолетовый для trait блоков
+            { token: 'meta.directive', foreground: getCssVariable('macro-color', '#CB2431') }, // Красный для директив
+            { token: 'meta.path', foreground: getCssVariable('text-color', '#24292E') },    // Темный для путей
+            { token: 'meta.use', foreground: getCssVariable('keyword-color', '#D73A49') },     // Красно-оранжевый для use директив
         ],
         colors: {
-            'editor.foreground': '#e0e0e0',
-            'editor.background': '#1e1e1e',
-            'editor.lineHighlightBackground': '#2a2a2a',
-            'editorCursor.foreground': '#ffffff',
-            'editor.selectionBackground': '#264f78'
+            'editor.foreground': getCssVariable('body-primary-text', '#e1e4e8'),
+            'editor.background': getCssVariable('body-background', '#1e1e1e'),
+            'editor.lineHighlightBackground': getCssVariable('tab-hover-bg', '#2a2d2e'),
+            'editorCursor.foreground': getCssVariable('cursor-separator', '#ffffff'),
+            'editor.selectionBackground': getCssVariable('tab-modified-indicator', '#264f78'),
+            'editor.selectionHighlightBackground': getCssVariable('editor-selection-highlight', 'rgba(173, 214, 255, 0.1)'),
+            'editor.wordHighlightTextBackground': getCssVariable('editor-word-highlight', 'rgba(87, 108, 188, 0.1)'),
+            'editorLineNumber.foreground': getCssVariable('editor-line-number', '#6e7681'),
+            'editorLineNumber.activeForeground': getCssVariable('editor-line-number-active', '#c6c6c6'),
+            'editorIndentGuide.background': getCssVariable('editor-indent-guide', '#3e3e3e'),
+            'editorIndentGuide.activeBackground': getCssVariable('editor-indent-guide-active', '#5a5a5a')
         }
     }
 };
@@ -336,9 +396,11 @@ function initMonaco() {
             const loadTime = performance.now() - startTime;
             console.log(`Monaco loaded in ${loadTime.toFixed(2)}ms`);
             
-            // Register custom themes
+            // Register themes (light and dark)
+            const isDarkMode = prefersDarkMode();
             monaco.editor.defineTheme('z-light', themes.light);
             monaco.editor.defineTheme('z-dark', themes.dark);
+            monaco.editor.setTheme(isDarkMode ? 'z-dark' : 'z-light');
             
             // Create editor instance with optimized settings
             editor = monaco.editor.create(editorDiv, {
@@ -346,7 +408,7 @@ function initMonaco() {
                 fontSize: 14,
                 fontFamily: "'Zed Mono', Consolas, 'Courier New', monospace",
                 minimap: {
-                    enabled: true,
+                    enabled: false,
                     maxColumn: 100, // Ограничиваем для производительности
                     renderCharacters: false // Отключаем рендер символов для повышения производительности
                 },
@@ -361,6 +423,7 @@ function initMonaco() {
                     alwaysConsumeMouseWheel: false // Улучшает прокрутку
                 },
                 theme: 'z-light',
+
                 // Оптимизация производительности
                 renderWhitespace: 'selection', // Отображаем пробелы только в выделении
                 renderControlCharacters: false,
@@ -449,6 +512,9 @@ function initMonaco() {
                     modelCache.clear();
                 }
             };
+            
+            // Перед возвратом из функции вызываем обновление темы
+            window.updateMonacoTheme(isDarkMode);
             
             resolve();
         });
@@ -1736,7 +1802,9 @@ function setTheme(theme) {
     };
     
     editor.updateOptions({
-        theme: themeMap[theme] || 'z-light'
+        theme: themeMap[theme] || 'z-light',
+        // Обновляем цвет выделения слов при смене темы
+        wordHighlightBackground: getCssVariable('monaco-editor-word-highlight', 'rgba(87, 108, 188, 0.1)')
     });
 }
 
@@ -2023,11 +2091,11 @@ function updateFileContent(filePath, content, forceFocus = false) {
  */
 function setupCursorPositionTracking() {
     // Находим элементы для отображения позиции курсора
-    const cursorColElement = document.querySelector('.cursor-col');
+
     const cursorLnElement = document.querySelector('.cursor-ln');
     
-    if (!cursorColElement || !cursorLnElement) {
-        console.error('Cursor position elements not found');
+    if (!cursorLnElement) {
+        console.error('Cursor position not found');
         return;
     }
     
@@ -2046,12 +2114,320 @@ function setupCursorPositionTracking() {
      * @param {number} lineNumber - Номер строки (начиная с 1)
      */
     function updateCursorPosition(column, lineNumber) {
-        cursorLnElement.textContent = lineNumber;
-        cursorColElement.textContent = column;
+        cursorLnElement.textContent = `${lineNumber},${column}`;
+
     }
 }
 
 // Export the initialization function
 window.initMonaco = initMonaco;
 // Export the dispose function
-window.disposeEditor = disposeEditor; 
+window.disposeEditor = disposeEditor;
+
+// Экспортируем функцию обновления темы редактора
+window.updateMonacoTheme = function(isDark = false) {
+    // Перезагружаем CSS переменные, чтобы получить актуальные значения
+    const computedStyle = getComputedStyle(document.documentElement);
+    
+    // Обновляем тему в зависимости от того, темная она или светлая
+    const themeType = isDark ? 'z-dark' : 'z-light';
+    
+    // Создаем обновленные объекты тем с актуальными CSS переменными
+    const updatedThemes = {
+        light: {
+            base: 'vs',
+            inherit: false,
+            rules: [
+                // Ключевые слова
+                { token: 'keyword', foreground: getCssVariable('monaco-syntax-keyword', '#D73A49') },
+                { token: 'keyword.control', foreground: getCssVariable('monaco-syntax-control', '#D73A49') },
+                { token: 'keyword.control.conditional', foreground: getCssVariable('monaco-syntax-control', '#D73A49') },
+                { token: 'keyword.control.loop', foreground: getCssVariable('monaco-syntax-control', '#D73A49') },
+                { token: 'keyword.control.flow', foreground: getCssVariable('monaco-syntax-control', '#D73A49') },
+                { token: 'keyword.operator', foreground: getCssVariable('monaco-syntax-control', '#D73A49') },
+                { token: 'keyword.other', foreground: getCssVariable('monaco-syntax-keyword', '#D73A49') },
+                { token: 'keyword.declaration', foreground: getCssVariable('monaco-syntax-keyword', '#D73A49') },
+                { token: 'keyword.unsafe', foreground: getCssVariable('monaco-syntax-unsafe', '#CB2431'), fontStyle: 'bold' },
+                
+                // Строки и символы
+                { token: 'string', foreground: getCssVariable('monaco-syntax-string', '#0A8744') },
+                { token: 'string.quote', foreground: getCssVariable('monaco-syntax-string', '#0A8744') },
+                { token: 'string.raw', foreground: getCssVariable('monaco-syntax-string', '#0A8744') },
+                { token: 'string.escape', foreground: getCssVariable('monaco-syntax-escape', '#E36209') },
+                { token: 'character', foreground: getCssVariable('monaco-syntax-character', '#0A8744') },
+                { token: 'character.escape', foreground: getCssVariable('monaco-syntax-escape', '#E36209') },
+                
+                // Числа
+                { token: 'number', foreground: getCssVariable('monaco-syntax-number', '#005CC5') },
+                { token: 'number.float', foreground: getCssVariable('monaco-syntax-number', '#005CC5') },
+                { token: 'number.hex', foreground: getCssVariable('monaco-syntax-number', '#005CC5') },
+                { token: 'number.octal', foreground: getCssVariable('monaco-syntax-number', '#005CC5') },
+                { token: 'number.binary', foreground: getCssVariable('monaco-syntax-number', '#005CC5') },
+                
+                // Комментарии
+                { token: 'comment', foreground: getCssVariable('monaco-syntax-comment', '#6A737D'), fontStyle: 'italic' },
+                { token: 'comment.doc', foreground: getCssVariable('monaco-syntax-doc-comment', '#5C6370'), fontStyle: 'italic' },
+                { token: 'comment.line', foreground: getCssVariable('monaco-syntax-comment', '#6A737D'), fontStyle: 'italic' },
+                { token: 'comment.block', foreground: getCssVariable('monaco-syntax-comment', '#6A737D'), fontStyle: 'italic' },
+                { token: 'comment.doc.tag', foreground: getCssVariable('monaco-syntax-doc-tag', '#85632E'), fontStyle: 'italic' },
+                
+                // Типы
+                { token: 'type', foreground: getCssVariable('monaco-syntax-type', '#6F42C1') },
+                { token: 'type.builtin', foreground: getCssVariable('monaco-syntax-type', '#6F42C1') },
+                { token: 'type.identifier', foreground: getCssVariable('monaco-syntax-type', '#6F42C1') },
+                { token: 'type.parameter', foreground: getCssVariable('monaco-syntax-type', '#6F42C1') },
+                { token: 'type.primitive', foreground: getCssVariable('monaco-syntax-type', '#6F42C1') },
+                { token: 'struct', foreground: getCssVariable('monaco-syntax-type', '#6F42C1') },
+                { token: 'struct.field', foreground: getCssVariable('monaco-syntax-struct-field', '#24292E') },
+                { token: 'enum', foreground: getCssVariable('monaco-syntax-type', '#6F42C1') },
+                { token: 'enum.variant', foreground: getCssVariable('monaco-syntax-struct-field', '#24292E') },
+                { token: 'trait', foreground: getCssVariable('monaco-syntax-type', '#6F42C1') },
+                { token: 'interface', foreground: getCssVariable('monaco-syntax-type', '#6F42C1') },
+                { token: 'typeAlias', foreground: getCssVariable('monaco-syntax-type', '#6F42C1') },
+                
+                // Идентификаторы, переменные и функции
+                { token: 'identifier', foreground: getCssVariable('monaco-syntax-variable', '#24292E') },
+                { token: 'variable', foreground: getCssVariable('monaco-syntax-variable', '#24292E') },
+                { token: 'variable.readonly', foreground: getCssVariable('monaco-syntax-variable', '#24292E') },
+                { token: 'variable.mutable', foreground: getCssVariable('monaco-syntax-mutable', '#953800'), fontStyle: 'italic' },
+                { token: 'variable.parameter', foreground: getCssVariable('monaco-syntax-parameter', '#953800') },
+                { token: 'variable.other', foreground: getCssVariable('monaco-syntax-variable', '#24292E') },
+                { token: 'function', foreground: getCssVariable('monaco-syntax-function', '#005CC5') },
+                { token: 'function.declaration', foreground: getCssVariable('monaco-syntax-function', '#005CC5') },
+                { token: 'function.call', foreground: getCssVariable('monaco-syntax-function', '#005CC5') },
+                { token: 'function.method', foreground: getCssVariable('monaco-syntax-method', '#005CC5') },
+                { token: 'function.method.call', foreground: getCssVariable('monaco-syntax-method', '#005CC5') },
+                { token: 'function.self', foreground: getCssVariable('monaco-syntax-self', '#953800') },
+                { token: 'function.parameter', foreground: getCssVariable('monaco-syntax-parameter', '#953800') },
+                
+                // Макросы и процедурные макросы
+                { token: 'function.macro', foreground: getCssVariable('monaco-syntax-macro', '#CB2431') },
+                { token: 'macro', foreground: getCssVariable('monaco-syntax-macro', '#CB2431') },
+                { token: 'macro.attribute', foreground: getCssVariable('monaco-syntax-macro', '#CB2431') },
+                { token: 'macro.derive', foreground: getCssVariable('monaco-syntax-macro', '#CB2431') },
+                
+                // Лайфтаймы и атрибуты
+                { token: 'lifetime', foreground: getCssVariable('monaco-syntax-lifetime', '#D73A49') },
+                { token: 'lifetime.declaration', foreground: getCssVariable('monaco-syntax-lifetime', '#D73A49') },
+                { token: 'attribute', foreground: getCssVariable('monaco-syntax-attribute', '#0086B3') },
+                { token: 'attribute.bracket', foreground: getCssVariable('monaco-syntax-attribute', '#0086B3') },
+                { token: 'attribute.name', foreground: getCssVariable('monaco-syntax-attribute', '#0086B3') },
+                
+                // Константы и статические переменные
+                { token: 'constant', foreground: getCssVariable('monaco-syntax-constant', '#005CC5') },
+                { token: 'constant.language', foreground: getCssVariable('monaco-syntax-constant', '#005CC5') },
+                { token: 'constant.numeric', foreground: getCssVariable('monaco-syntax-number', '#005CC5') },
+                { token: 'constant.character', foreground: getCssVariable('monaco-syntax-string', '#0A8744') },
+                { token: 'constant.other', foreground: getCssVariable('monaco-syntax-constant', '#005CC5') },
+                { token: 'static', foreground: getCssVariable('monaco-syntax-constant', '#005CC5') },
+                
+                // Операторы и разделители
+                { token: 'operator', foreground: getCssVariable('monaco-syntax-operator', '#D73A49') },
+                { token: 'operator.assignment', foreground: getCssVariable('monaco-syntax-operator', '#D73A49') },
+                { token: 'operator.arithmetic', foreground: getCssVariable('monaco-syntax-operator', '#D73A49') },
+                { token: 'operator.logical', foreground: getCssVariable('monaco-syntax-operator', '#D73A49') },
+                { token: 'operator.comparison', foreground: getCssVariable('monaco-syntax-operator', '#D73A49') },
+                { token: 'operator.range', foreground: getCssVariable('monaco-syntax-operator', '#D73A49') },
+                { token: 'delimiter', foreground: getCssVariable('monaco-syntax-delimiter', '#24292E') },
+                { token: 'delimiter.bracket', foreground: getCssVariable('monaco-syntax-delimiter', '#24292E') },
+                { token: 'delimiter.parenthesis', foreground: getCssVariable('monaco-syntax-delimiter', '#24292E') },
+                { token: 'delimiter.square', foreground: getCssVariable('monaco-syntax-delimiter', '#24292E') },
+                { token: 'delimiter.angle', foreground: getCssVariable('monaco-syntax-delimiter', '#24292E') },
+                { token: 'delimiter.curly', foreground: getCssVariable('monaco-syntax-delimiter', '#24292E') },
+                { token: 'punctuation', foreground: getCssVariable('monaco-syntax-delimiter', '#24292E') },
+                
+                // Особые случаи и специфика
+                { token: 'custom-error', foreground: getCssVariable('monaco-syntax-error', '#B31D28') },
+                { token: 'invalid', foreground: getCssVariable('monaco-syntax-error', '#B31D28') },
+                { token: 'regexp', foreground: getCssVariable('monaco-syntax-regexp', '#032F62') },
+                { token: 'storage', foreground: getCssVariable('monaco-syntax-keyword', '#D73A49') },
+                { token: 'storage.type', foreground: getCssVariable('monaco-syntax-keyword', '#D73A49') },
+                { token: 'storage.modifier', foreground: getCssVariable('monaco-syntax-keyword', '#D73A49') },
+                { token: 'annotation', foreground: getCssVariable('monaco-syntax-macro', '#CB2431') },
+                { token: 'modifier', foreground: getCssVariable('monaco-syntax-keyword', '#D73A49') },
+                { token: 'entity.name.namespace', foreground: getCssVariable('monaco-syntax-namespace', '#6F42C1') },
+                { token: 'entity.name.type', foreground: getCssVariable('monaco-syntax-type', '#6F42C1') },
+                { token: 'entity.name.function', foreground: getCssVariable('monaco-syntax-function', '#005CC5') },
+                { token: 'entity.name.tag', foreground: getCssVariable('monaco-syntax-tag', '#22863A') },
+                { token: 'entity.other.attribute-name', foreground: getCssVariable('monaco-syntax-type', '#6F42C1') },
+                { token: 'meta.tag', foreground: getCssVariable('monaco-syntax-tag', '#22863A') },
+                { token: 'meta.preprocessor', foreground: getCssVariable('monaco-syntax-macro', '#CB2431') },
+                { token: 'meta.preprocessor.string', foreground: getCssVariable('monaco-syntax-string', '#0A8744') },
+                { token: 'meta.preprocessor.numeric', foreground: getCssVariable('monaco-syntax-number', '#005CC5') },
+                { token: 'meta.structure.tuple', foreground: getCssVariable('monaco-syntax-variable', '#24292E') },
+                { token: 'meta.parameter', foreground: getCssVariable('monaco-syntax-parameter', '#953800') },
+                { token: 'meta.return-type', foreground: getCssVariable('monaco-syntax-type', '#6F42C1') },
+                { token: 'meta.impl', foreground: getCssVariable('monaco-syntax-type', '#6F42C1') },
+                { token: 'meta.trait', foreground: getCssVariable('monaco-syntax-type', '#6F42C1') },
+                { token: 'meta.directive', foreground: getCssVariable('monaco-syntax-macro', '#CB2431') },
+                { token: 'meta.path', foreground: getCssVariable('monaco-syntax-variable', '#24292E') },
+                { token: 'meta.use', foreground: getCssVariable('monaco-syntax-keyword', '#D73A49') }
+            ],
+            colors: {
+                'editor.foreground': getCssVariable('monaco-editor-foreground', '#000000'),
+                'editor.background': getCssVariable('monaco-editor-background', '#ffffff'),
+                'editor.lineHighlightBackground': getCssVariable('monaco-editor-line-highlight', '#f0f0f0'),
+                'editorCursor.foreground': getCssVariable('monaco-editor-cursor', '#000000'),
+                'editor.selectionBackground': getCssVariable('monaco-editor-selection', '#e3f2fd'),
+                'editor.selectionHighlightBackground': getCssVariable('monaco-editor-selection-highlight', 'rgba(173, 214, 255, 0.15)'),
+                'editor.wordHighlightBackground': getCssVariable('monaco-editor-word-highlight', 'rgba(87, 108, 188, 0.1)'),
+                'editorLineNumber.foreground': getCssVariable('monaco-editor-line-number', '#999999'),
+                'editorLineNumber.activeForeground': getCssVariable('monaco-editor-line-number-active', '#333333'),
+                'editorIndentGuide.background': getCssVariable('monaco-editor-indent-guide', '#e0e0e0'),
+                'editorIndentGuide.activeBackground': getCssVariable('monaco-editor-indent-guide-active', '#c0c0c0')
+            }
+        },
+        dark: {
+            base: 'vs-dark',
+            inherit: false,
+            rules: [
+                // Ключевые слова
+                { token: 'keyword', foreground: getCssVariable('monaco-syntax-keyword', '#FF6B8B') },
+                { token: 'keyword.control', foreground: getCssVariable('monaco-syntax-control', '#FF6B8B') },
+                { token: 'keyword.control.conditional', foreground: getCssVariable('monaco-syntax-control', '#FF6B8B') },
+                { token: 'keyword.control.loop', foreground: getCssVariable('monaco-syntax-control', '#FF6B8B') },
+                { token: 'keyword.control.flow', foreground: getCssVariable('monaco-syntax-control', '#FF6B8B') },
+                { token: 'keyword.operator', foreground: getCssVariable('monaco-syntax-control', '#FF6B8B') },
+                { token: 'keyword.other', foreground: getCssVariable('monaco-syntax-keyword', '#FF6B8B') },
+                { token: 'keyword.declaration', foreground: getCssVariable('monaco-syntax-keyword', '#FF6B8B') },
+                { token: 'keyword.unsafe', foreground: getCssVariable('monaco-syntax-unsafe', '#FF3333'), fontStyle: 'bold' },
+                
+                // Строки и символы
+                { token: 'string', foreground: getCssVariable('monaco-syntax-string', '#7EEAB4') },
+                { token: 'string.quote', foreground: getCssVariable('monaco-syntax-string', '#7EEAB4') },
+                { token: 'string.raw', foreground: getCssVariable('monaco-syntax-string', '#7EEAB4') },
+                { token: 'string.escape', foreground: getCssVariable('monaco-syntax-escape', '#FFAB70') },
+                { token: 'character', foreground: getCssVariable('monaco-syntax-character', '#7EEAB4') },
+                { token: 'character.escape', foreground: getCssVariable('monaco-syntax-escape', '#FFAB70') },
+                
+                // Числа
+                { token: 'number', foreground: getCssVariable('monaco-syntax-number', '#79B8FF') },
+                { token: 'number.float', foreground: getCssVariable('monaco-syntax-number', '#79B8FF') },
+                { token: 'number.hex', foreground: getCssVariable('monaco-syntax-number', '#79B8FF') },
+                { token: 'number.octal', foreground: getCssVariable('monaco-syntax-number', '#79B8FF') },
+                { token: 'number.binary', foreground: getCssVariable('monaco-syntax-number', '#79B8FF') },
+                
+                // Комментарии
+                { token: 'comment', foreground: getCssVariable('monaco-syntax-comment', '#8B949E'), fontStyle: 'italic' },
+                { token: 'comment.doc', foreground: getCssVariable('monaco-syntax-doc-comment', '#959DA5'), fontStyle: 'italic' },
+                { token: 'comment.line', foreground: getCssVariable('monaco-syntax-comment', '#8B949E'), fontStyle: 'italic' },
+                { token: 'comment.block', foreground: getCssVariable('monaco-syntax-comment', '#8B949E'), fontStyle: 'italic' },
+                { token: 'comment.doc.tag', foreground: getCssVariable('monaco-syntax-doc-tag', '#FFDF9E'), fontStyle: 'italic' },
+                
+                // Типы
+                { token: 'type', foreground: getCssVariable('monaco-syntax-type', '#D2A8FF') },
+                { token: 'type.builtin', foreground: getCssVariable('monaco-syntax-type', '#D2A8FF') },
+                { token: 'type.identifier', foreground: getCssVariable('monaco-syntax-type', '#D2A8FF') },
+                { token: 'type.parameter', foreground: getCssVariable('monaco-syntax-type', '#D2A8FF') },
+                { token: 'type.primitive', foreground: getCssVariable('monaco-syntax-type', '#D2A8FF') },
+                { token: 'struct', foreground: getCssVariable('monaco-syntax-type', '#D2A8FF') },
+                { token: 'struct.field', foreground: getCssVariable('monaco-syntax-struct-field', '#E1E4E8') },
+                { token: 'enum', foreground: getCssVariable('monaco-syntax-type', '#D2A8FF') },
+                { token: 'enum.variant', foreground: getCssVariable('monaco-syntax-struct-field', '#E1E4E8') },
+                { token: 'trait', foreground: getCssVariable('monaco-syntax-type', '#D2A8FF') },
+                { token: 'interface', foreground: getCssVariable('monaco-syntax-type', '#D2A8FF') },
+                { token: 'typeAlias', foreground: getCssVariable('monaco-syntax-type', '#D2A8FF') },
+                
+                // Идентификаторы, переменные и функции
+                { token: 'identifier', foreground: getCssVariable('monaco-syntax-variable', '#E1E4E8') },
+                { token: 'variable', foreground: getCssVariable('monaco-syntax-variable', '#E1E4E8') },
+                { token: 'variable.readonly', foreground: getCssVariable('monaco-syntax-variable', '#E1E4E8') },
+                { token: 'variable.mutable', foreground: getCssVariable('monaco-syntax-mutable', '#FFAB70'), fontStyle: 'italic' },
+                { token: 'variable.parameter', foreground: getCssVariable('monaco-syntax-parameter', '#FFAB70') },
+                { token: 'variable.other', foreground: getCssVariable('monaco-syntax-variable', '#E1E4E8') },
+                { token: 'function', foreground: getCssVariable('monaco-syntax-function', '#79B8FF') },
+                { token: 'function.declaration', foreground: getCssVariable('monaco-syntax-function', '#79B8FF') },
+                { token: 'function.call', foreground: getCssVariable('monaco-syntax-function', '#79B8FF') },
+                { token: 'function.method', foreground: getCssVariable('monaco-syntax-method', '#79B8FF') },
+                { token: 'function.method.call', foreground: getCssVariable('monaco-syntax-method', '#79B8FF') },
+                { token: 'function.self', foreground: getCssVariable('monaco-syntax-self', '#FFAB70') },
+                { token: 'function.parameter', foreground: getCssVariable('monaco-syntax-parameter', '#FFAB70') },
+                
+                // Макросы и процедурные макросы
+                { token: 'function.macro', foreground: getCssVariable('monaco-syntax-macro', '#FF6B8B') },
+                { token: 'macro', foreground: getCssVariable('monaco-syntax-macro', '#FF6B8B') },
+                { token: 'macro.attribute', foreground: getCssVariable('monaco-syntax-macro', '#FF6B8B') },
+                { token: 'macro.derive', foreground: getCssVariable('monaco-syntax-macro', '#FF6B8B') },
+                
+                // Лайфтаймы и атрибуты
+                { token: 'lifetime', foreground: getCssVariable('monaco-syntax-lifetime', '#FF6B8B') },
+                { token: 'lifetime.declaration', foreground: getCssVariable('monaco-syntax-lifetime', '#FF6B8B') },
+                { token: 'attribute', foreground: getCssVariable('monaco-syntax-attribute', '#56D4DD') },
+                { token: 'attribute.bracket', foreground: getCssVariable('monaco-syntax-attribute', '#56D4DD') },
+                { token: 'attribute.name', foreground: getCssVariable('monaco-syntax-attribute', '#56D4DD') },
+                
+                // Константы и статические переменные
+                { token: 'constant', foreground: getCssVariable('monaco-syntax-constant', '#79B8FF') },
+                { token: 'constant.language', foreground: getCssVariable('monaco-syntax-constant', '#79B8FF') },
+                { token: 'constant.numeric', foreground: getCssVariable('monaco-syntax-number', '#79B8FF') },
+                { token: 'constant.character', foreground: getCssVariable('monaco-syntax-string', '#7EEAB4') },
+                { token: 'constant.other', foreground: getCssVariable('monaco-syntax-constant', '#79B8FF') },
+                { token: 'static', foreground: getCssVariable('monaco-syntax-constant', '#79B8FF') },
+                
+                // Операторы и разделители
+                { token: 'operator', foreground: getCssVariable('monaco-syntax-operator', '#FF6B8B') },
+                { token: 'operator.assignment', foreground: getCssVariable('monaco-syntax-operator', '#FF6B8B') },
+                { token: 'operator.arithmetic', foreground: getCssVariable('monaco-syntax-operator', '#FF6B8B') },
+                { token: 'operator.logical', foreground: getCssVariable('monaco-syntax-operator', '#FF6B8B') },
+                { token: 'operator.comparison', foreground: getCssVariable('monaco-syntax-operator', '#FF6B8B') },
+                { token: 'operator.range', foreground: getCssVariable('monaco-syntax-operator', '#FF6B8B') },
+                { token: 'delimiter', foreground: getCssVariable('monaco-syntax-delimiter', '#E1E4E8') },
+                { token: 'delimiter.bracket', foreground: getCssVariable('monaco-syntax-delimiter', '#E1E4E8') },
+                { token: 'delimiter.parenthesis', foreground: getCssVariable('monaco-syntax-delimiter', '#E1E4E8') },
+                { token: 'delimiter.square', foreground: getCssVariable('monaco-syntax-delimiter', '#E1E4E8') },
+                { token: 'delimiter.angle', foreground: getCssVariable('monaco-syntax-delimiter', '#E1E4E8') },
+                { token: 'delimiter.curly', foreground: getCssVariable('monaco-syntax-delimiter', '#E1E4E8') },
+                { token: 'punctuation', foreground: getCssVariable('monaco-syntax-delimiter', '#E1E4E8') },
+                
+                // Особые случаи и специфика
+                { token: 'custom-error', foreground: getCssVariable('monaco-syntax-error', '#FF5252') },
+                { token: 'invalid', foreground: getCssVariable('monaco-syntax-error', '#FF5252') },
+                { token: 'regexp', foreground: getCssVariable('monaco-syntax-regexp', '#9CDCFE') },
+                { token: 'storage', foreground: getCssVariable('monaco-syntax-keyword', '#FF6B8B') },
+                { token: 'storage.type', foreground: getCssVariable('monaco-syntax-keyword', '#FF6B8B') },
+                { token: 'storage.modifier', foreground: getCssVariable('monaco-syntax-keyword', '#FF6B8B') },
+                { token: 'annotation', foreground: getCssVariable('monaco-syntax-macro', '#FF6B8B') },
+                { token: 'modifier', foreground: getCssVariable('monaco-syntax-keyword', '#FF6B8B') },
+                { token: 'entity.name.namespace', foreground: getCssVariable('monaco-syntax-namespace', '#D2A8FF') },
+                { token: 'entity.name.type', foreground: getCssVariable('monaco-syntax-type', '#D2A8FF') },
+                { token: 'entity.name.function', foreground: getCssVariable('monaco-syntax-function', '#79B8FF') },
+                { token: 'entity.name.tag', foreground: getCssVariable('monaco-syntax-tag', '#7EEAB4') },
+                { token: 'entity.other.attribute-name', foreground: getCssVariable('monaco-syntax-type', '#D2A8FF') },
+                { token: 'meta.tag', foreground: getCssVariable('monaco-syntax-tag', '#7EEAB4') },
+                { token: 'meta.preprocessor', foreground: getCssVariable('monaco-syntax-macro', '#FF6B8B') },
+                { token: 'meta.preprocessor.string', foreground: getCssVariable('monaco-syntax-string', '#7EEAB4') },
+                { token: 'meta.preprocessor.numeric', foreground: getCssVariable('monaco-syntax-number', '#79B8FF') },
+                { token: 'meta.structure.tuple', foreground: getCssVariable('monaco-syntax-variable', '#E1E4E8') },
+                { token: 'meta.parameter', foreground: getCssVariable('monaco-syntax-parameter', '#FFAB70') },
+                { token: 'meta.return-type', foreground: getCssVariable('monaco-syntax-type', '#D2A8FF') },
+                { token: 'meta.impl', foreground: getCssVariable('monaco-syntax-type', '#D2A8FF') },
+                { token: 'meta.trait', foreground: getCssVariable('monaco-syntax-type', '#D2A8FF') },
+                { token: 'meta.directive', foreground: getCssVariable('monaco-syntax-macro', '#FF6B8B') },
+                { token: 'meta.path', foreground: getCssVariable('monaco-syntax-variable', '#E1E4E8') },
+                { token: 'meta.use', foreground: getCssVariable('monaco-syntax-keyword', '#FF6B8B') }
+            ],
+            colors: {
+                'editor.foreground': getCssVariable('monaco-editor-foreground', '#e1e4e8'),
+                'editor.background': getCssVariable('monaco-editor-background', '#1e1e1e'),
+                'editor.lineHighlightBackground': getCssVariable('monaco-editor-line-highlight', '#2a2d2e'),
+                'editorCursor.foreground': getCssVariable('monaco-editor-cursor', '#ffffff'),
+                'editor.selectionBackground': getCssVariable('monaco-editor-selection', '#264f78'),
+                'editor.selectionHighlightBackground': getCssVariable('monaco-editor-selection-highlight', 'rgba(173, 214, 255, 0.1)'),
+                'editor.wordHighlightBackground': getCssVariable('monaco-editor-word-highlight', 'rgba(87, 108, 188, 0.1)'),
+                'editorLineNumber.foreground': getCssVariable('monaco-editor-line-number', '#6e7681'),
+                'editorLineNumber.activeForeground': getCssVariable('monaco-editor-line-number-active', '#c6c6c6'),
+                'editorIndentGuide.background': getCssVariable('monaco-editor-indent-guide', '#3e3e3e'),
+                'editorIndentGuide.activeBackground': getCssVariable('monaco-editor-indent-guide-active', '#5a5a5a')
+            }
+        }
+    };
+    
+    // Обновляем определение темы
+    monaco.editor.defineTheme('z-light', updatedThemes.light);
+    monaco.editor.defineTheme('z-dark', updatedThemes.dark);
+    
+    // Применяем текущую тему к редактору
+    monaco.editor.setTheme(themeType);
+    
+    console.log(`[monaco-init] Тема Monaco Editor обновлена на: ${themeType}`);
+}; 

@@ -28,7 +28,10 @@ contextBridge.exposeInMainWorld(
         getFileTree: (projectPath) => ipcRenderer.invoke('get-file-tree', { projectPath }),
         getFileContent: (filePath) => ipcRenderer.invoke('get-file-content', { filePath }),
         saveFile: (filePath, content) => ipcRenderer.invoke('save-file', { filePath, content }),
-        onFileChanged: (callback) => ipcRenderer.on('file-changed', callback)
+        onFileChanged: (callback) => ipcRenderer.on('file-changed', callback),
+        createItem: (options) => ipcRenderer.invoke('create-item', options),
+        getFolderContents: (folderPath) => ipcRenderer.invoke('get-folder-contents', { folderPath }),
+        deleteItem: (options) => ipcRenderer.invoke('delete-item', options)
     }
 );
 
@@ -49,13 +52,30 @@ contextBridge.exposeInMainWorld(
     }
 );
 
-// Expose z-rosetta translation API
+// Expose z-rosetta translation & theme API
 contextBridge.exposeInMainWorld(
     'zRosetta',
     {
+        // Language functions
         getLanguage: () => ipcRenderer.invoke('z-rosetta-get-language'),
         getTranslations: () => ipcRenderer.invoke('z-rosetta-get-translations'),
         setLanguage: (language) => ipcRenderer.invoke('z-rosetta-set-language', language),
-        onLanguageChanged: (callback) => ipcRenderer.on('z-rosetta-language-changed', callback)
+        onLanguageChanged: (callback) => ipcRenderer.on('z-rosetta-language-changed', callback),
+        
+        // Theme functions
+        getTheme: () => ipcRenderer.invoke('z-rosetta-get-theme'),
+        getThemeData: () => ipcRenderer.invoke('z-rosetta-get-theme-data'),
+        setTheme: (theme) => ipcRenderer.invoke('z-rosetta-set-theme', theme),
+        getAvailableThemes: () => ipcRenderer.invoke('z-rosetta-get-available-themes')
+    }
+);
+
+// Expose general IPC for events
+contextBridge.exposeInMainWorld(
+    'ipc',
+    {
+        on: (channel, callback) => ipcRenderer.on(channel, callback),
+        invoke: (channel, args) => ipcRenderer.invoke(channel, args),
+        send: (channel, args) => ipcRenderer.send(channel, args)
     }
 ); 

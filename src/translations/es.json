@@ -1,12 +1,12 @@
 {
   "welcome": {
-    "title": "Bienvenido a Z",
+    "title": "Bienvenido a Zen",
     "tagline": "Editor rápido y ligero para ti",
     "getStarted": "Comenzar",
     "newProject": "Nuevo Proyecto",
     "openProject": "Abrir Proyecto",
     "cloneRepository": "Clonar Repositorio",
-    "version": "Z",
+    "version": "Zen",
     "loading": "Cargando...",
     "message": "Abre un archivo o crea uno nuevo para comenzar",
     "openFile": "Abrir Archivo",
@@ -34,8 +34,8 @@
   },
   "analytics": {
     "title": "Análisis",
-    "modalTitle": "Ayuda a Mejorar Z",
-    "modalIntro": "Ayúdanos a mejorar Z compartiendo datos de uso anónimos. Puedes elegir qué información compartir:",
+    "modalTitle": "Ayuda a mejorar Zen",
+    "modalIntro": "Ayúdanos a mejorar Zen compartiendo datos de uso anónimos. Puedes elegir qué información compartir:",
     "basicInfo": "Datos de Uso Básicos",
     "basicDescription": "Versión de la aplicación, información de compilación, sistema operativo y estadísticas básicas de uso",
     "systemInfo": "Información del Sistema",
@@ -53,7 +53,7 @@
     "save": "Guardar",
     "analyticsDisabled": "Recopilación de datos desactivada",
     "onlyBasic": "Solo se recopilan datos de uso básicos",
-    "analyticsEnabled": "¡Gracias por ayudar a mejorar Z!"
+    "analyticsEnabled": "¡Gracias por ayudar a mejorar Zen!"
   },
   "language": {
     "title": "Idioma",
@@ -79,6 +79,6 @@
     "contributor": "Colaborador",
     "communityManager": "Gerente de Comunidad",
     "close": "Cerrar",
-    "buildMessage": "Las siguientes personas trabajaron arduamente en esta versión de Z:"
+    "buildMessage": "Las siguientes personas trabajaron duro en esta versión de Zen:"
   }
 } 

@@ -1,0 +1,76 @@
+/**
+ * monaco-theme-vars.css
+ * CSS переменные для тем Monaco Editor
+ */
+
+:root {
+    /* Основные цвета текста и фона */
+    --editor-foreground: var(--body-primary-text, #000000);
+    --editor-background: var(--body-background, #ffffff);
+    
+    /* Цвета синтаксиса для светлой темы */
+    --keyword-color: #D73A49;
+    --string-color: #0A8744;
+    --number-color: #005CC5;
+    --comment-color: #6A737D;
+    --comment-doc-color: #5C6370;
+    --comment-tag-color: #85632E;
+    --type-color: #6F42C1;
+    --text-color: #24292E;
+    --variable-mutable-color: #953800;
+    --parameter-color: #953800;
+    --function-color: #005CC5;
+    --macro-color: #CB2431;
+    --unsafe-color: #CB2431;
+    --attribute-color: #0086B3;
+    --constant-color: #005CC5;
+    --regexp-color: #032F62;
+    --tag-color: #22863A;
+    --escape-color: #E36209;
+    --error-color: #B31D28;
+    
+    /* Цвета UI для редактора */
+    --editor-line-number: #999999;
+    --editor-line-number-active: #333333;
+    --editor-indent-guide: #e0e0e0;
+    --editor-indent-guide-active: #c0c0c0;
+    --editor-selection-highlight: rgba(173, 214, 255, 0.15);
+    --editor-word-highlight: rgba(87, 108, 188, 0.1);
+}
+
+/* Переменные для темной темы */
+body.dark-theme, html[data-theme="dark"] {
+    /* Основные цвета текста и фона */
+    --editor-foreground: var(--body-primary-text, #e1e4e8);
+    --editor-background: var(--body-background, #1e1e1e);
+    
+    /* Цвета синтаксиса для темной темы */
+    --keyword-color: #FF6B8B;
+    --keyword-color-dark: #FF6B8B;
+    --string-color: #7EEAB4;
+    --number-color: #79B8FF;
+    --comment-color: #8B949E;
+    --comment-doc-color: #959DA5;
+    --comment-tag-color: #FFDF9E;
+    --type-color: #D2A8FF;
+    --text-color: #E1E4E8;
+    --variable-mutable-color: #FFAB70;
+    --parameter-color: #FFAB70;
+    --function-color: #79B8FF;
+    --macro-color: #FF6B8B;
+    --unsafe-color: #FF3333;
+    --attribute-color: #56D4DD;
+    --constant-color: #79B8FF;
+    --regexp-color: #9CDCFE;
+    --tag-color: #7EEAB4;
+    --escape-color: #FFAB70;
+    --error-color: #FF5252;
+    
+    /* Цвета UI для редактора */
+    --editor-line-number: #6e7681;
+    --editor-line-number-active: #c6c6c6;
+    --editor-indent-guide: #3e3e3e;
+    --editor-indent-guide-active: #5a5a5a;
+    --editor-selection-highlight: rgba(173, 214, 255, 0.1);
+    --editor-word-highlight: rgba(87, 108, 188, 0.1);
+} 
